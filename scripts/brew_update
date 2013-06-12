@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+
+function installcask() {
+    if brew cask info "${@}" | grep "Not installed" > /dev/null; then
+        brew cask install "${@}"
+    else
+        echo "${@} is already installed, ignored."
+    fi
+}
+
+
+## Update Homebrew and installed formulae
+
+# Make sure we’re using the latest Homebrew
+brew update
+# Upgrade any already-installed formulae
+brew upgrade
+# Install cask brew extrenal command
+brew tap phinze/homebrew-cask
+brew install brew-cask
+
+
+## Install common CLI tools:
+
+# Install GNU core utilities (those that come with OS X are outdated)
+brew install coreutils
+# Install GNU `find`, `locate`, `updatedb`, and `xargs`, g-prefixed
+brew install findutils
+# Install `rename` command
+brew install rename
+# Install `tree` command
+brew install tree
+# Install `pkill`, `pgrep` and `pfind`
+brew install proctools
+# Install wget with IRI support
+brew install wget --enable-iri
+
+
+## Install shells
+
+brew install bash
+brew install fish
+
+
+## Install devel tools
+
+brew install git
+brew install postgresql
+brew install node
+
+
+# Applications
+
+installcask dropbox
+installcask google-chrome
+installcask iterm2
+installcask macvim
+installcask the-unarchiver
+installcask tor-browser
+installcask transmission
+installcask virtualbox
+installcask vlc
+
+
+# Remove outdated versions from the cellar
+brew cleanup
+
+
+# Print notes
+echo "Don’t forget to add $(brew --prefix coreutils)/libexec/gnubin to \$PATH."
