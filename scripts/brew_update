@@ -4,7 +4,7 @@ function installcask() {
     if brew cask info "${@}" | grep "Not installed" > /dev/null; then
         brew cask install "${@}"
     else
-        echo "${@} is already installed, ignored."
+        echo "Warning: ${@} already installed"
     fi
 }
 
@@ -51,15 +51,23 @@ brew install node
 
 # Applications
 
-installcask dropbox
 installcask google-chrome
+installcask firefox
+installcask tor-browser
 installcask iterm2
+installcask emacs
 installcask macvim
 installcask the-unarchiver
-installcask tor-browser
 installcask transmission
 installcask virtualbox
 installcask vlc
+installcask alfred
+installcask clementine
+installcask f-lux
+installcask lime-chat
+installcask adium
+installcask skype
+installcask dropbox
 
 
 # Remove outdated versions from the cellar

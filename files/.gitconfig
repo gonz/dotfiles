@@ -1,0 +1,24 @@
+[user]
+    name = Gonz Saavedra
+    email = gonzalosaavedra@gmail.com
+[color]
+    ui = auto
+[core]
+    excludesfile = /Users/gonz/.gitignore
+[alias]
+    tree = log --pretty='%Cgreen%h%Creset [%ai] %s %Cred<%Creset%an%Cred>' --decorate --graph
+    mdiff = difftool
+[branch]
+    autosetupmerge = true
+[diff]
+    tool = mdiff
+[difftool]
+    prompt = false
+[difftool "mdiff"]
+    cmd = mdiff $LOCAL $REMOTE
+[difftool "sourcetree"]
+    cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+    path =
+[mergetool "sourcetree"]
+    cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+    trustExitCode = true

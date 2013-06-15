@@ -1,0 +1,16 @@
+-- Pimped prompt
+\set PROMPT1 '(%`date +"%H:%M:%S"`) %[%033[31;1m%]%n%[%033[33;1m%]@%[%033[32;1m%m%[%033[0m%] %[%033[37;1m%]%/%[%033[0m%] %[%033[31;5m%]%x%[%033[0m%] > '
+\set PROMPT2 '> '
+
+-- Borders
+\set linestyle unicode
+\set border 2
+
+-- Show null as this char
+\set null ¤
+
+-- No pager
+\set pager off
+
+-- Show timing after each query
+\timing
