@@ -1,5 +1,4 @@
-(defvar my-packages '(monokai-theme
-		      fsharp-mode
+(defvar my-packages '(fsharp-mode
 		      markdown-mode
 		      rainbow-mode
 		      ace-jump-mode
@@ -28,6 +27,8 @@
            (package-install package))))
  my-packages)
 
+;;;;;; Non package modules
+(add-to-list 'load-path "~/.emacs.d/modules")
 
 ;;;;; Settings
 
@@ -35,6 +36,7 @@
 (scroll-bar-mode -1)
 ;; Hide toolbar
 (tool-bar-mode -1)
+(menu-bar-mode 0)
 ;; Empty scratch buffer
 (setq initial-scratch-message "")
 ;; Don't show startup screen
@@ -66,7 +68,9 @@
 ;; flymake-cursor
 
 ;; Load monokai theme
+(require 'monokai-theme)
 (load-theme 'monokai t)
+
 (set-face-attribute 'default nil :height 140)
 
 ;; css/scss
@@ -133,10 +137,19 @@
 
 ;; expand-region
 (global-set-key (kbd "M-RET") 'er/expand-region)
+
 ;; buffers
 (global-set-key (kbd "C-ñ C-ñ") '(switch-to-buffer nil))
 (global-set-key (kbd "C-ñ C-n") 'next-buffer)
 (global-set-key (kbd "C-ñ C-p") 'previous-buffer)
+
+;; Start server
+(require 'server)
+(setq server-socket-dir "/tmp/emacs-shared")
+(if (display-graphic-p)
+    (unless (server-running-p)
+      (server-start)))
+
 
 ;; Uniquify
 (require 'uniquify)
@@ -187,25 +200,22 @@
 
 (add-hook 'find-file-hook 'flymake-find-file-hook)
 
-;;;;;; Non package modules
-
-(add-to-list  'load-path "~/.emacs.d/modules")
-
 ;; grep-ed
 (require 'grep-ed)
-
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(flymake-cursor-auto-enable t))
+ '(custom-safe-themes (quote ("7fde77d5b9fb5b203c2115ddf4dd0b4086390b55cc65975e2321c3d62b1398b1" default)))
+ '(flymake-cursor-auto-enable t)
+ '(safe-local-variable-values (quote ((encoding . utf-8)))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(default ((t (:background "#1c1c1c")))))
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
