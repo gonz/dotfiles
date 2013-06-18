@@ -44,3 +44,14 @@ set fish_greeting ""
 
 # Enable autojump
 [ -s ~/.autojump/etc/profile.d/autojump.fish ]; and . ~/.autojump/etc/profile.d/autojump.fish
+
+# Emacs aliases (override osx emacs binaries)
+function emacs
+    ~/Applications/Emacs.app/Contents/MacOS/Emacs -nw $argv
+end
+function emacsclient
+    ~/Applications/Emacs.app/Contents/MacOS/bin/emacsclient $argv
+end
+function emacsremote
+    emacsclient --tty --socket-name /tmp/emacs-shared/server $argv
+end
