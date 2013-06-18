@@ -68,6 +68,7 @@ installcask lime-chat
 installcask adium
 installcask skype
 installcask dropbox
+installcask optimal-layout
 
 
 # Remove outdated versions from the cellar
