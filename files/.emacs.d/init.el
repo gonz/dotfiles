@@ -28,7 +28,8 @@
  my-packages)
 
 ;;;;;; Non package modules
-(add-to-list 'load-path "~/.emacs.d/modules")
+(add-to-list 'load-path (concat user-emacs-directory
+            (convert-standard-filename "modules/")))
 
 ;;;;; Settings
 
@@ -185,7 +186,8 @@
 
 
 ;; python syntax check
-(defvar pycheck-bin "/Users/gonz/.emacs.d/bin/pycheckers")
+(defvar pycheck-bin (concat user-emacs-directory
+            (convert-standard-filename "bin/pycheckers")))
 
 (when (load "flymake" t)
   (defun flymake-pyflakes-init ()
