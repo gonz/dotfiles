@@ -64,10 +64,14 @@
 (setq auto-save-default nil)
 ;; Show column number
 (setq column-number-mode  t)
+;; encodig utf-8 is a safe file-local variable value
+(setq safe-local-variable-values (quote ((encoding . utf-8))))
 
 ;; Load monokai theme
 (require 'monokai-theme)
 (load-theme 'monokai t)
+;; Monokai is a safe theme
+(setq custom-safe-themes (quote ("7fde77d5b9fb5b203c2115ddf4dd0b4086390b55cc65975e2321c3d62b1398b1" default)))
 
 (set-face-attribute 'default nil :height 140)
 
@@ -148,7 +152,6 @@
     (unless (server-running-p)
       (server-start)))
 
-
 ;; Uniquify
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'forward)
@@ -181,15 +184,12 @@
 
 (global-set-key (kbd "M-SPC") 'hippie-expand)
 
-;; Flymake
-
 ;; Automatically enable flymake-mode upon opening any file for which
 ;; syntax check is possible
 (add-hook 'find-file-hook 'flymake-find-file-hook)
 ;; Show flymake error in minibuffer after a delay
-(custom-set-variables
-     '(help-at-pt-timer-delay 0.7)
-     '(help-at-pt-display-when-idle '(flymake-overlay)))
+(setq help-at-pt-timer-delay 0.7)
+(setq help-at-pt-display-when-idle '(flymake-overlay))
 
 ;; python syntax check
 (defvar pycheck-bin (concat user-emacs-directory
@@ -209,18 +209,17 @@
 ;; grep-ed
 (require 'grep-ed)
 
+(put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes (quote ("7fde77d5b9fb5b203c2115ddf4dd0b4086390b55cc65975e2321c3d62b1398b1" default)))
- '(safe-local-variable-values (quote ((encoding . utf-8)))))
+ )
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:background "#1c1c1c")))))
-(put 'downcase-region 'disabled nil)
-(put 'upcase-region 'disabled nil)
+ '(flymake-errline ((t (:underline (:color "red" :style wave))))))
