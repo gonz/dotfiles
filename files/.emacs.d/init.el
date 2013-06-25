@@ -7,7 +7,8 @@
 		      ido-ubiquitous
 		      haml-mode
 		      sass-mode
-		      smex))
+		      smex
+		      fill-column-indicator))
 
 (require 'package)
 (add-to-list 'package-archives
@@ -66,6 +67,13 @@
 (setq column-number-mode  t)
 ;; encodig utf-8 is a safe file-local variable value
 (setq safe-local-variable-values (quote ((encoding . utf-8))))
+
+;; Fill column indicator settings
+(setq fci-rule-column 80
+      fci-rule-color "#595959"
+      fci-rule-width 1
+      fci-rule-use-dashes t
+      fci-dash-pattern 0.4)
 
 ;; Load monokai theme
 (require 'monokai-theme)
@@ -141,7 +149,10 @@
 (global-set-key (kbd "M-RET") 'er/expand-region)
 
 ;; buffers
-(global-set-key (kbd "C-ñ C-ñ") '(switch-to-buffer nil))
+(global-set-key (kbd "C-ñ C-ñ")
+		(lambda ()
+		  (interactive)
+		  (other-window 1)))
 (global-set-key (kbd "C-ñ C-n") 'next-buffer)
 (global-set-key (kbd "C-ñ C-p") 'previous-buffer)
 
@@ -184,12 +195,42 @@
 
 (global-set-key (kbd "M-SPC") 'hippie-expand)
 
+;; Smart C-a from prelude
+(defun smarter-move-beginning-of-line (arg)
+  "Move point back to indentation of beginning of line.
+
+Move point to the first non-whitespace character on this line.
+If point is already there, move to the beginning of the line.
+Effectively toggle between the first non-whitespace character and
+the beginning of the line.
+
+If ARG is not nil or 1, move forward ARG - 1 lines first.  If
+point reaches the beginning or end of the buffer, stop there."
+  (interactive "^p")
+  (setq arg (or arg 1))
+
+  ;; Move lines first
+  (when (/= arg 1)
+    (let ((line-move-visual nil))
+      (forward-line (1- arg))))
+
+  (let ((orig-point (point)))
+    (back-to-indentation)
+    (when (= orig-point (point))
+      (move-beginning-of-line 1))))
+
+;; remap C-a to `smarter-move-beginning-of-line'
+(global-set-key [remap move-beginning-of-line]
+                'smarter-move-beginning-of-line)
+
 ;; Automatically enable flymake-mode upon opening any file for which
 ;; syntax check is possible
 (add-hook 'find-file-hook 'flymake-find-file-hook)
 ;; Show flymake error in minibuffer after a delay
-(setq help-at-pt-timer-delay 0.7)
-(setq help-at-pt-display-when-idle '(flymake-overlay))
+;(setq help-at-pt-timer-delay 0.7)
+;(setq help-at-pt-display-when-idle '(flymake-overlay))
+
+;;;; Python
 
 ;; python syntax check
 (defvar pycheck-bin (concat user-emacs-directory
@@ -198,24 +239,39 @@
 (when (load "flymake" t)
   (defun flymake-pyflakes-init ()
     (let* ((temp-file (flymake-init-create-temp-buffer-copy
-               'flymake-create-temp-inplace))
-       (local-file (file-relative-name
-            temp-file
-            (file-name-directory buffer-file-name))))
+		       'flymake-create-temp-inplace))
+	   (local-file (file-relative-name
+			temp-file
+			(file-name-directory buffer-file-name))))
       (list pycheck-bin  (list local-file))))
-   (add-to-list 'flymake-allowed-file-name-masks
-             '("\\.py\\'" flymake-pyflakes-init)))
+  (add-to-list 'flymake-allowed-file-name-masks
+	       '("\\.py\\'" flymake-pyflakes-init)))
+
+(add-hook 'python-mode-hook 'fci-mode)
+
+;; Join (next) line
+;; TODO: support
+(defun top-join-line ()
+  "Join the current line with the line beneath it."
+  (interactive)
+  (delete-indentation 1))
+(global-set-key (kbd "C-S-j") 'top-join-line)
+
 
 ;; grep-ed
 (require 'grep-ed)
 
+
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(help-at-pt-timer-delay 0.8)
+ '(help-at-pt-display-when-idle '(flymake-overlay))
  )
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
