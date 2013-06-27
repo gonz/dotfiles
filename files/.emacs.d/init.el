@@ -249,13 +249,21 @@ point reaches the beginning or end of the buffer, stop there."
 
 (add-hook 'python-mode-hook 'fci-mode)
 
-;; Join (next) line
-;; TODO: support
-(defun top-join-line ()
+;; Join next line or join all lines in region
+(defun smart-join-line ()
   "Join the current line with the line beneath it."
   (interactive)
-  (delete-indentation 1))
-(global-set-key (kbd "C-S-j") 'top-join-line)
+  (if (use-region-p)
+      (save-excursion
+	(let ((start-line (line-number-at-pos (region-beginning)))
+	      (current-line (line-number-at-pos (region-end))))
+	  (goto-char (region-end))
+	  (while (> current-line start-line)
+	    (join-line)
+	    (setq current-line (line-number-at-pos)))))
+    (delete-indentation 1)))
+
+(global-set-key (kbd "C-S-j") 'smart-join-line)
 
 
 ;; grep-ed
