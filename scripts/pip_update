@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+sudo pip install --upgrade -r ${SCRIPT_DIR}/pip_requirements.txt

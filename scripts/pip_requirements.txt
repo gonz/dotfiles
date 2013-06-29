@@ -1,0 +1,6 @@
+readline
+ipython
+pep8
+pyflakes
+virtualenv
+grc
