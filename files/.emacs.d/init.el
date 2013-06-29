@@ -79,7 +79,10 @@
 (require 'monokai-theme)
 (load-theme 'monokai t)
 ;; Monokai is a safe theme
-(setq custom-safe-themes (quote ("7fde77d5b9fb5b203c2115ddf4dd0b4086390b55cc65975e2321c3d62b1398b1" default)))
+(setq custom-safe-themes
+      (quote
+       ("7fde77d5b9fb5b203c2115ddf4dd0b4086390b55cc65975e2321c3d62b1398b1"
+	default)))
 
 (set-face-attribute 'default nil :height 140)
 
@@ -147,6 +150,14 @@
 
 ;; expand-region
 (global-set-key (kbd "M-RET") 'er/expand-region)
+
+;; Basic movements
+(global-set-key (kbd "M-p") 'backward-paragraph)
+(global-set-key (kbd "M-n") 'forward-paragraph)
+(global-set-key (kbd "C-{") 'backward-char)
+(global-set-key (kbd "C-}") 'forward-char)
+(global-set-key (kbd "M-{") 'backward-word)
+(global-set-key (kbd "M-}") 'forward-word)
 
 ;; buffers
 (global-set-key (kbd "C-ñ C-ñ")
@@ -251,7 +262,7 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;; Join next line or join all lines in region
 (defun smart-join-line ()
-  "Join the current line with the line beneath it."
+  "Join the current line with the line beneath it or all region lines."
   (interactive)
   (if (use-region-p)
       (save-excursion
