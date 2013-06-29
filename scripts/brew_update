@@ -47,7 +47,7 @@ brew install fish
 brew install git
 brew install postgresql
 brew install node
-
+brew install nmap
 
 # Applications
 
