@@ -268,6 +268,24 @@ point reaches the beginning or end of the buffer, stop there."
 	    (setq current-line (line-number-at-pos)))))
     (delete-indentation 1)))
 
+;; Add new line next
+(defun newline-next-and-indent ()
+  "Append a new line below, move the point to the innted point of the line."
+  (interactive)
+  (let ((oldpos (point)))
+    (end-of-line)
+    (newline-and-indent)))
+
+;; Add new line prev
+(defun newline-prev-and-indent ()
+  "Insert a new line above, move the point to the innted point of the line."
+  (interactive)
+  (let ((oldpos (point)))
+    (beginning-of-line)
+    (newline-and-indent)
+    (previous-line)
+    (indent-for-tab-command)))
+
 
 ;;;;; key bindings
 
@@ -278,6 +296,9 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "C-}") 'forward-char)
 (global-set-key (kbd "M-{") 'backward-word)
 (global-set-key (kbd "M-}") 'forward-word)
+
+;; Basic deleting key bindings
+(global-set-key (kbd "C-S-k") 'kill-whole-line)
 
 ;; Buffers related key bindings
 (global-set-key (kbd "C-ñ C-ñ")
@@ -311,6 +332,9 @@ point reaches the beginning or end of the buffer, stop there."
                 'smarter-move-beginning-of-line)
 ;; Smart line join
 (global-set-key (kbd "C-S-j") 'smart-join-line)
+;; Newline next/prev and indent
+(global-set-key (kbd "<C-return>") 'newline-next-and-indent)
+(global-set-key (kbd "<C-S-return>") 'newline-prev-and-indent)
 
 
 (custom-set-variables
