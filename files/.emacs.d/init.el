@@ -36,6 +36,7 @@
             (convert-standard-filename "modules/")))
 (require 'monokai-theme)
 (require 'grep-ed)
+(require 'syntax-subword)
 
 
 ;;;; Settings
@@ -169,6 +170,9 @@
      (set-face-foreground 'magit-diff-del "red3")
      (set-face-background 'magit-item-highlight "black")))
 (put 'scroll-left 'disabled nil)
+
+;; syntax-subword
+(global-syntax-subword-mode)
 
 
 ;;;; Automodes
