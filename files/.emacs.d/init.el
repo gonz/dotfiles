@@ -127,6 +127,21 @@
   (add-to-list 'flymake-allowed-file-name-masks
 	       '("\\.py\\'" flymake-pyflakes-init)))
 
+;; Setup local info dir
+(eval-after-load "info"
+  '(progn (info-initialize)
+	  (push (concat user-emacs-directory
+			(convert-standard-filename "info/"))
+		Info-directory-list)))
+
+;; Fix python info-lookup-symbol
+(require 'info-look)
+(info-lookup-add-help
+ :mode 'python-mode
+ :regexp "[[:alnum:]_]+"
+ :doc-spec
+ '(("(python)Index" nil "")))
+
 
 ;;;; Non-builtin packages settings
 
