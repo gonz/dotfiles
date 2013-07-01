@@ -1,11 +1,10 @@
 ;;; monokai-theme.el --- REQUIRES EMACS 24: Monokai Color Theme for Emacs.
 
-;; Copyright (C) 2012 Lorenzo Villani.
-;;
-;; Author: Lorenzo Villani <lorenzo@villani.me>
-;; URL: https://github.com/lvillani/el-monokai-theme
-;; Version: 0.0.10
-;;
+;; Copyright (C) 2013 Gonzalo Saavedra.
+
+;; Author: Gonzalo Saavedra <talduken@gmail.com>
+;; Version: 0.0.11
+
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, version 3 of the License.
@@ -17,6 +16,14 @@
 ;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with GNU Emacs.
+
+;; Forked from Lorenzo's 0.0.10 version.
+;; Original copyright notice:
+
+;; Copyright (C) 2012 Lorenzo Villani.
+;;
+;; Author: Lorenzo Villani <lorenzo@villani.me>
+;; URL: https://github.com/lvillani/el-monokai-theme
 
 (unless (>= 24 emacs-major-version)
   (error "monokai-theme requires Emacs 24 or later."))
@@ -76,7 +83,7 @@
   (add-to-list 'custom-theme-load-path
                (file-name-as-directory (file-name-directory load-file-name)))
   (when (not window-system)
-    (custom-set-faces '(default ((t (:background "nil")))))))
+    (custom-set-faces '(default ((t (:background "#1c1c1c")))))))
 
 (provide-theme 'monokai)
 
