@@ -228,23 +228,6 @@
   (interactive)
   (insert (format-time-string "%a %Y-%m-%d - %l:%M %p")))
 
-;; Smart tabs
-(defun smart-tab ()
-  "This smart tab is minibuffer compliant: it acts as usual in
-    the minibuffer. Else, if mark is active, indents region. Else if
-    point is at the end of a symbol, expands it. Else indents the
-    current line."
-  (interactive)
-  (if (minibufferp)
-      (unless (minibuffer-complete)
-        (hippie-expand nil))
-    (if mark-active
-        (indent-region (region-beginning)
-                       (region-end))
-      (if (looking-at "\\_>")
-          (hippie-expand nil)
-        (indent-for-tab-command)))))
-
 ;; Smart C-a from prelude
 (defun smarter-move-beginning-of-line (arg)
   "Move point back to indentation of beginning of line.
@@ -316,10 +299,11 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "C-S-k") 'kill-whole-line)
 
 ;; Buffers related key bindings
-(global-set-key (kbd "C-ñ C-ñ")
+(global-set-key (kbd "C-M-ñ")
 		(lambda ()
 		  (interactive)
 		  (other-window 1)))
+(global-set-key (kbd "C-ñ C-ñ") 'ido-switch-buffer)
 (global-set-key (kbd "C-ñ C-}") 'next-buffer)
 (global-set-key (kbd "C-ñ C-{") 'previous-buffer)
 
