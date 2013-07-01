@@ -279,17 +279,24 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "M-{") 'backward-word)
 (global-set-key (kbd "M-}") 'forward-word)
 
-;; buffer related key bindings
+;; Buffers related key bindings
 (global-set-key (kbd "C-ñ C-ñ")
 		(lambda ()
 		  (interactive)
 		  (other-window 1)))
-(global-set-key (kbd "C-ñ C-n") 'next-buffer)
-(global-set-key (kbd "C-ñ C-p") 'previous-buffer)
+(global-set-key (kbd "C-ñ C-}") 'next-buffer)
+(global-set-key (kbd "C-ñ C-{") 'previous-buffer)
 
 ;; hippie-expand
-(global-set-key (kbd "M-SPC") 'hippie-expand)
-
+(global-set-key (kbd "M-SPC") (make-hippie-expand-function
+                               '(try-expand-dabbrev-visible
+                                 try-expand-dabbrev
+                                 try-expand-dabbrev-all-buffers) t))
+(global-set-key (kbd "C-M-SPC") (make-hippie-expand-function
+                               '(try-expand-line
+				 try-expand-line-all-buffers
+				 try-complete-file-name-partially
+				 try-complete-file-name) t))
 
 ;;;; Local packages bindings
 
