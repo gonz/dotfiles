@@ -1,4 +1,4 @@
-set -gx PATH ~/Bin ~/.rbenv/bin ~/.rbenv/shims $PATH
+set -gx PATH /usr/local/opt/coreutils/libexec/gnubin $PATH ~/Bin
 set -gx LC_ALL en_US.UTF-8
 set -gx CDPATH .
 
