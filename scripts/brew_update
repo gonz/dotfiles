@@ -69,6 +69,7 @@ installcask adium
 installcask skype
 installcask dropbox
 installcask optimal-layout
+installcask opera
 
 
 # Remove outdated versions from the cellar
