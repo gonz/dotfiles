@@ -320,6 +320,9 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;;;; Local packages bindings
 
+;; magit
+(global-set-key (kbd "C-.") 'magit-status)
+
 ;; smex
 (global-set-key (kbd "M-x") 'smex)
 
