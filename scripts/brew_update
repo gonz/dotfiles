@@ -70,6 +70,7 @@ installcask skype
 installcask dropbox
 installcask optimal-layout
 installcask opera
+installcask libre-office
 
 
 # Remove outdated versions from the cellar
