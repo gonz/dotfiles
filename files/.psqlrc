@@ -10,7 +10,7 @@
 \pset border 2
 
 -- Show null as this char
-\pset null '¤'
+\pset null 'ω'
 
 -- No pager
 \pset pager off
