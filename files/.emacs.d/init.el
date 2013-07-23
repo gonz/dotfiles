@@ -9,6 +9,7 @@
 		      ido-ubiquitous
 		      haml-mode
 		      sass-mode
+		      yaml-mode
 		      smex
 		      fill-column-indicator))
 
@@ -37,6 +38,7 @@
 (require 'monokai-theme)
 (require 'grep-ed)
 (require 'syntax-subword)
+(require 'php-mode)
 
 
 ;;;; Settings
@@ -209,6 +211,7 @@
 (add-to-list 'auto-mode-alist '("Vagrantfile$" . ruby-mode))
 ;; html
 (add-to-list 'auto-mode-alist '("\\.html$" . jinja2-mode))
+(add-to-list 'auto-mode-alist '("\\.j2$" . jinja2-mode))
 ;; fish
 (add-to-list 'auto-mode-alist '("\\.fish$" . conf-mode))
 
