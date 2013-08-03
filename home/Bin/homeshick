@@ -1,0 +1,2 @@
+#!/bin/bash
+~/.homesick/repos/homeshick/home/.homeshick $*

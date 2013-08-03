@@ -1,0 +1,10 @@
+#!/usr/bin/python
+import sys
+from urllib import splitquery
+from cgi import parse_qs
+from pprint import pprint
+
+
+if __name__ == '__main__':
+    pprint(parse_qs(splitquery(sys.argv[1])[1]))
+
