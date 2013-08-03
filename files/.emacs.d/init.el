@@ -128,6 +128,7 @@
       (list pycheck-bin  (list local-file))))
   (add-to-list 'flymake-allowed-file-name-masks
 	       '("\\.py\\'" flymake-pyflakes-init)))
+(delete '("\\.html?\\'" flymake-xml-init) flymake-allowed-file-name-masks)
 
 ;; Setup local info dir
 (eval-after-load "info"
