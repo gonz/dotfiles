@@ -48,6 +48,7 @@ brew install git
 brew install postgresql
 brew install node
 brew install nmap
+brew install the_silver_searcher
 
 # Applications
 
