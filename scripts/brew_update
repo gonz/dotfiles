@@ -72,6 +72,8 @@ installcask dropbox
 installcask optimal-layout
 installcask opera
 installcask libre-office
+installcask diffmerge
+installcask sourcetree
 
 
 # Remove outdated versions from the cellar
