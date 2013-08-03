@@ -1,5 +1,5 @@
-function mkvirtualenv2 -d "Create a new python 2.7 virtual environment in $VIRTUALENVS_PATH"
-  set python_bin /usr/local/bin/python2.7
+function mkvirtualenv -d "Create a new python 2.7 virtual environment in $VIRTUALENVS_PATH"
+  set python_bin /usr/bin/python2.7
   set tgt {$VIRTUALENVS_PATH}$argv[1]
 
   if [ -d $tgt ]
@@ -8,19 +8,6 @@ function mkvirtualenv2 -d "Create a new python 2.7 virtual environment in $VIRTU
     virtualenv --no-site-packages --distribute -p $python_bin $tgt
   end
 end
-
-
-function mkvirtualenv3 -d "Create a new python 3.3 virtual environment in $VIRTUALENVS_PATH"
-  set python_bin /usr/local/bin/python3.3
-  set tgt {$VIRTUALENVS_PATH}$argv[1]
-
-  if [ -d $tgt ]
-    echo "$tgt already exists"
-  else
-    virtualenv --no-site-packages --distribute -p $python_bin $tgt
-  end
-end
-
 
 function workon -d "Activate virtual environment in $VIRTUALENVS_PATH"
   set tgt {$VIRTUALENVS_PATH}$argv[1]
