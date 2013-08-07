@@ -74,6 +74,7 @@
 (put 'narrow-to-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
+(put 'scroll-left 'disabled nil)
 
 ;; AltGr != Meta
 (setq ns-right-alternate-modifier nil)
@@ -225,14 +226,6 @@
       (quote
        ("7fde77d5b9fb5b203c2115ddf4dd0b4086390b55cc65975e2321c3d62b1398b1"
 	default)))
-
-;; magit
-(eval-after-load 'magit
-  '(progn
-     (set-face-foreground 'magit-diff-add "green3")
-     (set-face-foreground 'magit-diff-del "red3")
-     (set-face-background 'magit-item-highlight "black")))
-(put 'scroll-left 'disabled nil)
 
 ;; syntax-subword
 (global-syntax-subword-mode)

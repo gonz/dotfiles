@@ -75,6 +75,12 @@
    `(ido-subdir ((t (:foreground ,monokai-blue-light))))
    ;; Whitespace
    `(whitespace-space ((t (:foreground ,monokai-gray))))
+   ;; Magit
+   `(magit-diff-add ((t (:foreground ,monokai-green :background ,monokai-grey-dark))))
+   `(magit-diff-del ((t (:foreground ,"red3" :background ,monokai-grey-dark))))
+   `(magit-item-highlight ((t (:background ,monokai-gray-darkest))))
+   `(magit-diff-file-header ((t (:foreground ,monokai-yellow :background ,monokai-grey-dark))))
+   `(magit-diff-hunk-header ((t (:foreground ,monokai-blue-light :background ,monokai-grey-dark))))
    ;; Yasnippet
    `(yas/field-highlight-face ((t (:background ,monokai-gray-darker))))))
 
