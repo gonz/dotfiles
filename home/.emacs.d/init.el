@@ -361,10 +361,10 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "C-S-k") 'kill-whole-line)
 
 ;; Buffers related key bindings
-(global-set-key (kbd "C-M-Ã±") 'switch-window)
-(global-set-key (kbd "C-Ã± C-Ã±") 'ido-switch-buffer)
-(global-set-key (kbd "C-Ã± C-}") 'next-buffer)
-(global-set-key (kbd "C-Ã± C-{") 'previous-buffer)
+(global-set-key (kbd "C-M-ñ") 'switch-window)
+(global-set-key (kbd "C-ñ C-ñ") 'ido-switch-buffer)
+(global-set-key (kbd "C-ñ C-}") 'next-buffer)
+(global-set-key (kbd "C-ñ C-{") 'previous-buffer)
 
 ;; hippie-expand
 (global-set-key (kbd "M-SPC") (make-hippie-expand-function
