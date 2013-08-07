@@ -93,6 +93,8 @@
 (show-paren-mode 1)
 (setq show-paren-style 'mixed)
 
+;; Always use spaces when indenting (unless overridden for buffer)
+(setq-default indent-tabs-mode nil)
 ;; Delete trailing whitespaces after saving
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
