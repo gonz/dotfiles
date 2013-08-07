@@ -129,21 +129,44 @@
 ;; Automatically enable flymake-mode upon opening any file for which
 ;; syntax check is possible
 (add-hook 'find-file-hook 'flymake-find-file-hook)
-;; python syntax check
-(defvar pycheck-bin
-  (concat user-emacs-directory
-	  (convert-standard-filename "bin/pycheckers")))
+;; Disable flymake for html files
+(delete '("\\.html?\\'" flymake-xml-init) flymake-allowed-file-name-masks)
+;; Custom flymake syntax checkers
 (when (load "flymake" t)
+
+  ;; python syntax check
   (defun flymake-pyflakes-init ()
     (let* ((temp-file (flymake-init-create-temp-buffer-copy
-		       'flymake-create-temp-inplace))
-	   (local-file (file-relative-name
-			temp-file
-			(file-name-directory buffer-file-name))))
-      (list pycheck-bin  (list local-file))))
+  		       'flymake-create-temp-inplace))
+  	   (local-file (file-relative-name
+  			temp-file
+  			(file-name-directory buffer-file-name)))
+  	   (pycheck-bin (concat my-emacs-bin-directory
+  				"pycheckers")))
+      (list pycheck-bin (list local-file))))
+
   (add-to-list 'flymake-allowed-file-name-masks
-	       '("\\.py\\'" flymake-pyflakes-init)))
-(delete '("\\.html?\\'" flymake-xml-init) flymake-allowed-file-name-masks)
+  	       '("\\.py\\'" flymake-pyflakes-init))
+
+  ;; javascript jslint
+  (defun flymake-jslint-init ()
+    (let* ((temp-file (flymake-init-create-temp-buffer-copy
+  		       'flymake-create-temp-inplace))
+           (local-file (file-relative-name
+                        temp-file
+                        (file-name-directory buffer-file-name)))
+  	   (jscheck-bin (concat my-emacs-bin-directory
+  				"jschecker")))
+      (list jscheck-bin (list local-file))))
+
+  (setq flymake-err-line-patterns
+  	(cons '("^\\(.*\\)(\\([[:digit:]]+\\)):\\(.*\\)$"
+  		1 2 nil 3)
+  	      flymake-err-line-patterns))
+
+  (add-to-list 'flymake-allowed-file-name-masks
+               '("\\.js\\'" flymake-jslint-init))
+)
 
 ;; Setup local info dir
 (eval-after-load "info"

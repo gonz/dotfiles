@@ -1,0 +1,3 @@
+#!/bin/bash
+/Users/gonz/node_modules/.bin/jslint --terse "$1"
+true

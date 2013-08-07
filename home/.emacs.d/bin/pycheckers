@@ -1,5 +1,4 @@
 #!/bin/bash
-#epylint "$1" 2>/dev/null
 /usr/local/bin/pyflakes "$1"
 /usr/local/bin/pep8 --ignore=E221,E701,E202 --repeat "$1"
 true
