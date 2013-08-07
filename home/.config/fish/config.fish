@@ -1,4 +1,4 @@
-set -gx PATH /usr/local/opt/coreutils/libexec/gnubin $PATH ~/Bin
+set -gx PATH /usr/local/opt/coreutils/libexec/gnubin /usr/bin /bin /usr/sbin /sbin /usr/local/bin /Users/gonz/Bin /Users/gonz/node_modules/.bin
 set -gx LC_ALL en_US.UTF-8
 set -gx CDPATH .
 
