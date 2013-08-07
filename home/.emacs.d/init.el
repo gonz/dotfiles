@@ -39,7 +39,8 @@
 (require 'grep-ed)
 (require 'syntax-subword)
 (require 'php-mode)
-
+(require 'dim-ack)
+(require 'switch-window)
 
 ;;;; Settings
 
@@ -147,6 +148,11 @@
 
 
 ;;;; Non-builtin packages settings
+
+;; switch-window
+(setq switch-window-shortcut-style 'qwerty)
+(setq switch-window-qwerty-shortcuts
+      '("a" "s" "d" "f" "j" "k" "l" "�" "w" "e" "i" "o"))
 
 ;; smex
 (smex-initialize)
@@ -355,10 +361,7 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "C-S-k") 'kill-whole-line)
 
 ;; Buffers related key bindings
-(global-set-key (kbd "C-M-ñ")
-		(lambda ()
-		  (interactive)
-		  (other-window 1)))
+(global-set-key (kbd "C-M-ñ") 'switch-window)
 (global-set-key (kbd "C-ñ C-ñ") 'ido-switch-buffer)
 (global-set-key (kbd "C-ñ C-}") 'next-buffer)
 (global-set-key (kbd "C-ñ C-{") 'previous-buffer)
