@@ -43,6 +43,20 @@
 (require 'switch-window)
 
 ;;;; Settings
+(defvar my-paths '("/usr/local/opt/coreutils/libexec/gnubin"
+		   "/usr/local/bin"
+		   "/usr/bin"
+		   "/bin"
+		   "/usr/sbin"
+		   "/sbin"
+		   "/Users/gonz/Bin"
+		   "/Users/gonz/node_modules/.bin"))
+(defvar my-emacs-bin-directory
+  (convert-standard-filename (concat user-emacs-directory "bin/")))
+
+;; Manually set PATH env var and exec-path
+(setenv "PATH" (mapconcat 'identity my-paths ":") )
+(setq exec-path (append my-paths (list "." exec-directory)))
 
 ;; Hide scrollbars
 (scroll-bar-mode -1)
