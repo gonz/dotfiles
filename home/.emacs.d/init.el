@@ -21,7 +21,7 @@
 		      yaml-mode
 		      smex
                       wgrep
-                      wgrep-el
+                      wgrep-ag
 		      fill-column-indicator))
 
 (require 'package)
