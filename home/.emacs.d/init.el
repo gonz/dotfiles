@@ -115,6 +115,12 @@
 (setq org-default-notes-file "~/notes.org")
 (define-key global-map "\C-cc" 'org-capture)
 
+;; help-at-pt
+(setq help-at-pt-timer-delay 0.3)
+(help-at-pt-cancel-timer)
+(help-at-pt-set-timer)
+(setq help-at-pt-display-when-idle '(flymake-overlay))
+
 ;; server
 (require 'server)
 ;;Start emacs server in running GUI and not already running
@@ -433,18 +439,3 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "<C-S-return>") 'newline-prev-and-indent)
 ;; Go to symbol
 (global-set-key (kbd "M-j") 'goto-symbol)
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(help-at-pt-timer-delay 0.3)
- '(help-at-pt-display-when-idle '(flymake-overlay))
- )
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(flymake-errline ((t (:underline (:color "red" :style wave))))))

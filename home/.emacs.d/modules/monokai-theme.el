@@ -81,6 +81,8 @@
    `(magit-item-highlight ((t (:background ,monokai-gray-darkest))))
    `(magit-diff-file-header ((t (:foreground ,monokai-yellow :background ,monokai-grey-dark))))
    `(magit-diff-hunk-header ((t (:foreground ,monokai-blue-light :background ,monokai-grey-dark))))
+   ;; Flymake
+   `(flymake-errline ((t (:underline (:color "red" :style wave)))))
    ;; Yasnippet
    `(yas/field-highlight-face ((t (:background ,monokai-gray-darker))))))
 
