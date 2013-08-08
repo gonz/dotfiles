@@ -39,7 +39,7 @@
 (require 'grep-ed)
 (require 'syntax-subword)
 (require 'php-mode)
-(require 'dim-ack)
+(require 'ag)
 (require 'switch-window)
 
 ;;;; Settings
