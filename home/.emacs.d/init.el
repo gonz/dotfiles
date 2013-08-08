@@ -32,15 +32,18 @@
 
 
 ;;;; Local Packages
-
-(add-to-list 'load-path (concat user-emacs-directory
-            (convert-standard-filename "modules/")))
+(let ((default-directory
+        (concat user-emacs-directory
+                (convert-standard-filename "modules"))))
+  (add-to-list 'load-path default-directory)
+  (normal-top-level-add-subdirs-to-load-path))
 (require 'monokai-theme)
 (require 'grep-ed)
 (require 'syntax-subword)
 (require 'php-mode)
 (require 'ag)
 (require 'switch-window)
+(require 'powerline)
 
 ;;;; Settings
 (defvar my-paths '("/usr/local/opt/coreutils/libexec/gnubin"
@@ -205,6 +208,9 @@
 
 ;; smex
 (smex-initialize)
+
+;; powerline
+(powerline-default-theme)
 
 ;; ido-mode
 (ido-mode t)
