@@ -29,8 +29,9 @@
 (deftheme gmonokai
   "Gmonokai color theme")
 
-(let ((monokai-gray-darkest  "#141411")
-      (monokai-grey-dark     "#20211c")
+(let ((monokai-black         "#141412")
+      (monokai-gray-darkest  "#1b1c18")
+      (monokai-gray-dark     "#20211c")
       (monokai-gray-darker   "#383830")
       (monokai-gray-lightest "#595959")
       (monokai-gray-light    "#E6E6E6")
@@ -46,43 +47,84 @@
       (monokai-yellow-dark   "#75715E"))
   (custom-theme-set-faces
    'gmonokai
+
    ;; Frame
-   `(default ((t (:foreground ,monokai-yellow-light :background ,monokai-grey-dark))))
-   `(cursor ((t (:foreground ,monokai-magenta))))
-   `(hl-line ((t (:background ,monokai-gray-darkest))))
-   `(minibuffer-prompt ((t (:foreground ,monokai-yellow-dark))))
-   `(modeline ((t (:background ,monokai-gray-lightest :foreground ,monokai-gray-light))))
-   `(region ((t (:background ,monokai-gray-darker))))
-   `(show-paren-match-face ((t (:background ,monokai-gray-lightest))))
+   `(default
+     ((t (:foreground ,monokai-yellow-light :background ,monokai-gray-darkest))))
+   `(cursor
+     ((t (:foreground ,monokai-magenta))))
+   `(hl-line
+     ((t (:background ,monokai-black))))
+   `(minibuffer-prompt
+     ((t (:foreground ,monokai-yellow-dark))))
+   `(modeline
+     ((t (:background ,monokai-gray-lightest :foreground ,monokai-gray-light))))
+   `(region
+     ((t (:background ,monokai-gray-dark))))
+   `(show-paren-match-face
+     ((t (:background ,monokai-black))))
+
    ;; Main
-   `(font-lock-builtin-face ((t (:foreground ,monokai-green))))
-   `(font-lock-comment-face ((t (:foreground ,monokai-yellow-dark))))
-   `(font-lock-constant-face ((t (:foreground ,monokai-purple))))
-   `(font-lock-doc-string-face ((t (:foreground ,monokai-yellow))))
-   `(font-lock-function-name-face ((t (:foreground ,monokai-green))))
-   `(font-lock-keyword-face ((t (:foreground ,monokai-magenta))))
-   `(font-lock-string-face ((t (:foreground ,monokai-yellow))))
-   `(font-lock-type-face ((t (:foreground ,monokai-blue-light))))
-   `(font-lock-variable-name-face ((t (:foreground ,monokai-magenta))))
-   `(font-lock-warning-face ((t (:bold t :foreground ,monokai-purple-light))))
+   `(font-lock-builtin-face
+     ((t (:foreground ,monokai-green))))
+   `(font-lock-comment-face
+     ((t (:foreground ,monokai-yellow-dark))))
+   `(font-lock-constant-face
+     ((t (:foreground ,monokai-purple))))
+   `(font-lock-doc-string-face
+     ((t (:foreground ,monokai-yellow))))
+   `(font-lock-function-name-face
+     ((t (:foreground ,monokai-green))))
+   `(font-lock-keyword-face
+     ((t (:foreground ,monokai-magenta))))
+   `(font-lock-string-face
+     ((t (:foreground ,monokai-yellow))))
+   `(font-lock-type-face
+     ((t (:foreground ,monokai-blue-light))))
+   `(font-lock-variable-name-face
+     ((t (:foreground ,monokai-magenta))))
+   `(font-lock-warning-face
+     ((t (:bold t :foreground ,monokai-purple-light))))
+
    ;; CUA
-   `(cua-rectangle ((t (:background ,monokai-gray-darkest))))
+   `(cua-rectangle
+     ((t (:background ,monokai-gray-dark))))
+
    ;; IDO
-   `(ido-first-match ((t (:foreground ,monokai-purple))))
-   `(ido-only-match ((t (:foreground ,monokai-green))))
-   `(ido-subdir ((t (:foreground ,monokai-blue-light))))
+   `(ido-first-match
+     ((t (:foreground ,monokai-purple))))
+   `(ido-only-match
+     ((t (:foreground ,monokai-green))))
+   `(ido-subdir
+     ((t (:foreground ,monokai-blue-light))))
+
    ;; Whitespace
-   `(whitespace-space ((t (:foreground ,monokai-gray-lightest))))
+   `(whitespace-space
+     ((t (:foreground ,monokai-gray-lightest))))
+
    ;; Magit
-   `(magit-diff-add ((t (:foreground ,monokai-green :background ,monokai-grey-dark))))
-   `(magit-diff-del ((t (:foreground ,monokai-red-light :background ,monokai-grey-dark))))
-   `(magit-item-highlight ((t (:background ,monokai-gray-darkest))))
-   `(magit-diff-file-header ((t (:foreground ,monokai-yellow :background ,monokai-grey-dark))))
-   `(magit-diff-hunk-header ((t (:foreground ,monokai-blue-light :background ,monokai-grey-dark))))
+   `(magit-item-highlight
+     ((t (:background ,monokai-black))))
+   `(magit-section-title
+     ((t (:foreground ,monokai-purple :background ,monokai-gray-darkest))))
+   `(magit-branch
+     ((t (:foreground ,monokai-red :background ,monokai-gray-darkest))))
+   `(magit-diff-file-header
+     ((t (:foreground ,monokai-yellow :background ,monokai-gray-darkest))))
+   `(magit-diff-add
+     ((t (:foreground ,monokai-green :background ,monokai-gray-darkest))))
+   `(magit-diff-del
+     ((t (:foreground ,monokai-red-light :background ,monokai-gray-darkest))))
+   `(magit-diff-hunk-header
+     ((t (:foreground ,monokai-blue-light :background ,monokai-gray-darkest))))
+
    ;; Flymake
-   `(flymake-errline ((t (:underline (:color ,monokai-red :style wave)))))
+   `(flymake-errline
+     ((t (:underline (:color ,monokai-red :style wave)))))
+
    ;; Yasnippet
-   `(yas/field-highlight-face ((t (:background ,monokai-gray-darker))))))
+   `(yas/field-highlight-face
+     ((t (:background ,monokai-gray-darker))))))
 
 ;;;###autoload
 ;; (when load-file-name
