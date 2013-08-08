@@ -63,7 +63,7 @@
 (setq show-paren-style 'mixed)
 
 ;; Highlight line
-(global-highlight-line-mode)
+(global-hl-line-mode)
 
 ;; Always use spaces when indenting (unless overridden for buffer)
 (setq-default indent-tabs-mode nil)
