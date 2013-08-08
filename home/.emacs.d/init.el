@@ -1,5 +1,14 @@
-;;;; Remote Packages
+;; Themes
+(add-to-list 'custom-theme-load-path
+             (concat user-emacs-directory
+                     (convert-standard-filename "themes")))
+(load-theme 'gmonokai t)
+(setq custom-safe-themes
+      (quote
+       ("27c0599626f0a132bbdc06c55e8cd20693d2ca4f07e386a81dad86d57b9e3c64"
+        default)))
 
+;;;; Remote Packages
 (defvar my-packages '(fsharp-mode
 		      markdown-mode
 		      rainbow-mode
@@ -41,7 +50,6 @@
                 (convert-standard-filename "modules"))))
   (add-to-list 'load-path default-directory)
   (normal-top-level-add-subdirs-to-load-path))
-(require 'monokai-theme)
 (require 'syntax-subword)
 (require 'php-mode)
 (require 'ag)
@@ -237,13 +245,6 @@
       fci-rule-use-dashes t
       fci-dash-pattern 0.4)
 (add-hook 'python-mode-hook 'fci-mode)
-
-;; monokai theme
-(load-theme 'monokai t)
-(setq custom-safe-themes
-      (quote
-       ("7fde77d5b9fb5b203c2115ddf4dd0b4086390b55cc65975e2321c3d62b1398b1"
-	default)))
 
 ;; syntax-subword
 (global-syntax-subword-mode)

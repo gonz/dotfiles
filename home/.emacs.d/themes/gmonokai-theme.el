@@ -1,4 +1,4 @@
-;;; monokai-theme.el --- REQUIRES EMACS 24: Monokai Color Theme for Emacs.
+;;; gmonokai-theme.el --- REQUIRES EMACS 24: Gmonokai Color Theme for Emacs.
 
 ;; Copyright (C) 2013 Gonzalo Saavedra.
 
@@ -17,19 +17,17 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with GNU Emacs.
 
-;; Forked from Lorenzo's 0.0.10 version.
+;; Forked from Lorenzo's monokai 0.0.10 version.
 ;; Original copyright notice:
-
 ;; Copyright (C) 2012 Lorenzo Villani.
-;;
 ;; Author: Lorenzo Villani <lorenzo@villani.me>
 ;; URL: https://github.com/lvillani/el-monokai-theme
 
 (unless (>= 24 emacs-major-version)
-  (error "monokai-theme requires Emacs 24 or later."))
+  (error "gmonokai-theme requires Emacs 24 or later."))
 
-(deftheme monokai
-  "Monokai color theme")
+(deftheme gmonokai
+  "Gmonokai color theme")
 
 (let ((monokai-blue-light "#89BDFF")
       (monokai-gray "#595959")
@@ -47,7 +45,7 @@
       (monokai-yellow-dark "#75715E")
       (monokai-yellow-light "#F8F8F2"))
   (custom-theme-set-faces
-   'monokai
+   'gmonokai
    ;; Frame
    `(default ((t (:foreground ,monokai-yellow-light :background ,monokai-grey-dark))))
    `(cursor ((t (:foreground ,monokai-magenta))))
@@ -87,16 +85,16 @@
    `(yas/field-highlight-face ((t (:background ,monokai-gray-darker))))))
 
 ;;;###autoload
-(when load-file-name
-  (add-to-list 'custom-theme-load-path
-               (file-name-as-directory (file-name-directory load-file-name)))
-  (when (not window-system)
-    (custom-set-faces '(default ((t (:background "#1c1c1c")))))))
+;; (when load-file-name
+;;   (add-to-list 'custom-theme-load-path
+;;                (file-name-as-directory (file-name-directory load-file-name)))
+;;   (when (not window-system)
+;;     (custom-set-faces '(default ((t (:background "#1c1c1c")))))))
 
-(provide-theme 'monokai)
+(provide-theme 'gmonokai)
 
 ;; Local Variables:
 ;; no-byte-compile: t
 ;; End:
 
-;;; monokai-theme.el ends here
+;;; gmonokai-theme.el ends here
