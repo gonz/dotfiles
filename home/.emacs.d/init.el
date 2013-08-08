@@ -11,6 +11,8 @@
 		      sass-mode
 		      yaml-mode
 		      smex
+                      wgrep
+                      wgrep-el
 		      fill-column-indicator))
 
 (require 'package)
@@ -30,6 +32,8 @@
            (package-install package))))
  my-packages)
 
+(require 'wgrep-ag)
+
 
 ;;;; Local Packages
 (let ((default-directory
@@ -38,7 +42,6 @@
   (add-to-list 'load-path default-directory)
   (normal-top-level-add-subdirs-to-load-path))
 (require 'monokai-theme)
-(require 'grep-ed)
 (require 'syntax-subword)
 (require 'php-mode)
 (require 'ag)
