@@ -189,6 +189,9 @@
 
 ;;;; Non-builtin packages settings
 
+;; ag
+(setq ag-highlight-search 1)
+
 ;; switch-window
 (setq switch-window-shortcut-style 'qwerty)
 (setq switch-window-qwerty-shortcuts
