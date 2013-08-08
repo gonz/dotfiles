@@ -180,6 +180,7 @@
 		      smex
                       wgrep
                       wgrep-ag
+                      multi-web-mode
 		      fill-column-indicator))
 
 (require 'package)
@@ -215,6 +216,14 @@
 
 
 ;;;; Non-builtin packages settings
+
+;; multi-web-mode
+(require 'multi-web-mode)
+(setq mweb-default-major-mode 'jinja2-mode)
+(setq mweb-tags '((js-mode "<script[^>]*>" "</script>")
+                  (css-mode "<style +type=\"text/css\"[^>]*>" "</style>")))
+(setq mweb-filename-extensions '("htm" "html"))
+(multi-web-global-mode 1)
 
 ;; wgrep-ag
 (require 'wgrep-ag)
@@ -278,7 +287,6 @@
 (add-to-list 'auto-mode-alist '("Capfile$" . ruby-mode))
 (add-to-list 'auto-mode-alist '("Vagrantfile$" . ruby-mode))
 ;; html
-(add-to-list 'auto-mode-alist '("\\.html$" . jinja2-mode))
 (add-to-list 'auto-mode-alist '("\\.j2$" . jinja2-mode))
 ;; fish
 (add-to-list 'auto-mode-alist '("\\.fish$" . conf-mode))
