@@ -180,23 +180,21 @@
 		      fill-column-indicator))
 
 (require 'package)
-(add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/") t)
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                         ("marmalade" . "http://marmalade-repo.org/packages/")
+                         ("melpa" . "http://melpa.milkbox.net/packages/")))
 (package-initialize)
 
 (when (not package-archive-contents)
   (package-refresh-contents))
-;; check if packages in my-packages are installed; if not, install.
+
+;; Check if packages in my-packages are installed; if not, install.
 (mapc
  (lambda (package)
    (or (package-installed-p package)
        (if (y-or-n-p (format "Package %s is missing. Install it? " package))
            (package-install package))))
  my-packages)
-
-(require 'wgrep-ag)
 
 
 ;;;; Local Packages
@@ -214,6 +212,9 @@
 
 
 ;;;; Non-builtin packages settings
+
+;; wgrep-ag
+(require 'wgrep-ag)
 
 ;; ag
 (setq ag-highlight-search 1)
