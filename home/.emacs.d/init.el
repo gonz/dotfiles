@@ -8,55 +8,9 @@
        ("27c0599626f0a132bbdc06c55e8cd20693d2ca4f07e386a81dad86d57b9e3c64"
         default)))
 
-;;;; Remote Packages
-(defvar my-packages '(fsharp-mode
-		      markdown-mode
-		      rainbow-mode
-		      ace-jump-mode
-		      expand-region
-		      magit
-		      ido-ubiquitous
-		      haml-mode
-		      sass-mode
-		      yaml-mode
-		      smex
-                      wgrep
-                      wgrep-ag
-		      fill-column-indicator))
-
-(require 'package)
-(add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/") t)
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(package-initialize)
-
-(when (not package-archive-contents)
-  (package-refresh-contents))
-;; check if packages in my-packages are installed; if not, install.
-(mapc
- (lambda (package)
-   (or (package-installed-p package)
-       (if (y-or-n-p (format "Package %s is missing. Install it? " package))
-           (package-install package))))
- my-packages)
-
-(require 'wgrep-ag)
-
-
-;;;; Local Packages
-(let ((default-directory
-        (concat user-emacs-directory
-                (convert-standard-filename "modules"))))
-  (add-to-list 'load-path default-directory)
-  (normal-top-level-add-subdirs-to-load-path))
-(require 'syntax-subword)
-(require 'php-mode)
-(require 'ag)
-(require 'switch-window)
-(require 'powerline)
 
 ;;;; Settings
+
 (defvar my-paths '("/usr/local/opt/coreutils/libexec/gnubin"
 		   "/usr/local/bin"
 		   "/usr/bin"
@@ -152,10 +106,11 @@
 ;; Automatically enable flymake-mode upon opening any file for which
 ;; syntax check is possible
 (add-hook 'find-file-hook 'flymake-find-file-hook)
-;; Disable flymake for html files
-(delete '("\\.html?\\'" flymake-xml-init) flymake-allowed-file-name-masks)
+
 ;; Custom flymake syntax checkers
 (when (load "flymake" t)
+  ;; Disable flymake for html files
+  (delete '("\\.html?\\'" flymake-xml-init) flymake-allowed-file-name-masks)
 
   ;; python syntax check
   (defun flymake-pyflakes-init ()
@@ -205,6 +160,57 @@
  :regexp "[[:alnum:]_]+"
  :doc-spec
  '(("(python)Index" nil "")))
+
+
+;;;; Remote Packages
+
+(defvar my-packages '(fsharp-mode
+		      markdown-mode
+		      rainbow-mode
+		      ace-jump-mode
+		      expand-region
+		      magit
+		      ido-ubiquitous
+		      haml-mode
+		      sass-mode
+		      yaml-mode
+		      smex
+                      wgrep
+                      wgrep-ag
+		      fill-column-indicator))
+
+(require 'package)
+(add-to-list 'package-archives
+             '("marmalade" . "http://marmalade-repo.org/packages/") t)
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(package-initialize)
+
+(when (not package-archive-contents)
+  (package-refresh-contents))
+;; check if packages in my-packages are installed; if not, install.
+(mapc
+ (lambda (package)
+   (or (package-installed-p package)
+       (if (y-or-n-p (format "Package %s is missing. Install it? " package))
+           (package-install package))))
+ my-packages)
+
+(require 'wgrep-ag)
+
+
+;;;; Local Packages
+
+(let ((default-directory
+        (concat user-emacs-directory
+                (convert-standard-filename "modules"))))
+  (add-to-list 'load-path default-directory)
+  (normal-top-level-add-subdirs-to-load-path))
+(require 'syntax-subword)
+(require 'php-mode)
+(require 'ag)
+(require 'switch-window)
+(require 'powerline)
 
 
 ;;;; Non-builtin packages settings
