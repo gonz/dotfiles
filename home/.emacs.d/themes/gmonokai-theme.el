@@ -29,21 +29,21 @@
 (deftheme gmonokai
   "Gmonokai color theme")
 
-(let ((monokai-blue-light "#89BDFF")
-      (monokai-gray "#595959")
-      (monokai-gray-darker "#383830")
-      (monokai-gray-darkest "#141411")
+(let ((monokai-gray-darkest  "#141411")
+      (monokai-grey-dark     "#20211c")
+      (monokai-gray-darker   "#383830")
       (monokai-gray-lightest "#595959")
-      (monokai-gray-light "#E6E6E6")
-      (monokai-green "#A6E22A")
-      (monokai-green-light "#A6E22E")
-      (monokai-grey-dark "#272822")
-      (monokai-magenta "#F92672")
-      (monokai-purple "#AE81FF")
-      (monokai-purple-light "#FD5FF1")
-      (monokai-yellow "#E6DB74")
-      (monokai-yellow-dark "#75715E")
-      (monokai-yellow-light "#F8F8F2"))
+      (monokai-gray-light    "#E6E6E6")
+      (monokai-blue-light    "#89BDFF")
+      (monokai-green         "#A6E22A")
+      (monokai-red-light     "#fc6060")
+      (monokai-red           "#fc1c1c")
+      (monokai-magenta       "#F92672")
+      (monokai-purple-light  "#FD5FF1")
+      (monokai-purple        "#AE81FF")
+      (monokai-yellow-light  "#F8F8F2")
+      (monokai-yellow        "#E6DB74")
+      (monokai-yellow-dark   "#75715E"))
   (custom-theme-set-faces
    'gmonokai
    ;; Frame
@@ -72,15 +72,15 @@
    `(ido-only-match ((t (:foreground ,monokai-green))))
    `(ido-subdir ((t (:foreground ,monokai-blue-light))))
    ;; Whitespace
-   `(whitespace-space ((t (:foreground ,monokai-gray))))
+   `(whitespace-space ((t (:foreground ,monokai-gray-lightest))))
    ;; Magit
    `(magit-diff-add ((t (:foreground ,monokai-green :background ,monokai-grey-dark))))
-   `(magit-diff-del ((t (:foreground ,"red3" :background ,monokai-grey-dark))))
+   `(magit-diff-del ((t (:foreground ,monokai-red-light :background ,monokai-grey-dark))))
    `(magit-item-highlight ((t (:background ,monokai-gray-darkest))))
    `(magit-diff-file-header ((t (:foreground ,monokai-yellow :background ,monokai-grey-dark))))
    `(magit-diff-hunk-header ((t (:foreground ,monokai-blue-light :background ,monokai-grey-dark))))
    ;; Flymake
-   `(flymake-errline ((t (:underline (:color "red" :style wave)))))
+   `(flymake-errline ((t (:underline (:color ,monokai-red :style wave)))))
    ;; Yasnippet
    `(yas/field-highlight-face ((t (:background ,monokai-gray-darker))))))
 
