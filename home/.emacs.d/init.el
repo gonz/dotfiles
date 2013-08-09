@@ -217,6 +217,7 @@
 (require 'ag)
 (require 'switch-window)
 (require 'powerline)
+(require 'hide-region)
 
 
 ;;;; Non-builtin packages settings
