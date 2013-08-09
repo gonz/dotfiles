@@ -269,6 +269,7 @@
       fci-rule-use-dashes t
       fci-dash-pattern 0.4)
 (add-hook 'python-mode-hook 'fci-mode)
+(add-hook 'js-mode-hook 'fci-mode)
 
 ;; syntax-subword
 (global-syntax-subword-mode)
