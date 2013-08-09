@@ -422,6 +422,10 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;;;;; key bindings
 
+;; Open init.el
+(global-set-key (kbd "<f8>")
+                (lambda()(interactive)(find-file "~/.emacs.d/init.el")))
+
 ;; Basic movement key bindings
 (global-set-key (kbd "M-p") 'backward-paragraph)
 (global-set-key (kbd "M-n") 'forward-paragraph)
