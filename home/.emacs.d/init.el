@@ -62,6 +62,10 @@
 (show-paren-mode 1)
 (setq show-paren-style 'mixed)
 
+;; Don't ask for confirm when following symlinks that point to
+;; versioned files, always follow.
+(setq vc-follow-symlinks t)
+
 ;; Highlight line
 (global-hl-line-mode)
 
