@@ -1,16 +1,3 @@
-;; Themes
-(add-to-list 'custom-theme-load-path
-             (concat user-emacs-directory
-                     (convert-standard-filename "themes")))
-(load-theme 'gmonokai t)
-(setq custom-safe-themes
-      (quote
-       ("27c0599626f0a132bbdc06c55e8cd20693d2ca4f07e386a81dad86d57b9e3c64"
-        default)))
-
-
-;;;; Settings
-
 (defvar my-paths '("/usr/local/opt/coreutils/libexec/gnubin"
 		   "/usr/local/bin"
 		   "/usr/bin"
@@ -19,8 +6,54 @@
 		   "/sbin"
 		   "/Users/gonz/Bin"
 		   "/Users/gonz/node_modules/.bin"))
+
 (defvar my-emacs-bin-directory
   (convert-standard-filename (concat user-emacs-directory "bin/")))
+
+(defvar my-modules-directory
+  (convert-standard-filename (concat user-emacs-directory "modules")))
+
+(defvar my-themes-directory
+  (convert-standard-filename (concat user-emacs-directory "themes")))
+
+(defvar my-packages '(fsharp-mode
+		      markdown-mode
+		      rainbow-mode
+		      ace-jump-mode
+		      expand-region
+		      magit
+		      ido-ubiquitous
+		      haml-mode
+		      sass-mode
+		      yaml-mode
+		      smex
+                      wgrep
+                      wgrep-ag
+                      multi-web-mode
+		      fill-column-indicator))
+
+
+;;;; Theme
+
+(add-to-list 'custom-theme-load-path my-themes-directory)
+(load-theme 'gmonokai t)
+(setq custom-safe-themes
+      (quote
+       ("27c0599626f0a132bbdc06c55e8cd20693d2ca4f07e386a81dad86d57b9e3c64"
+        default)))
+
+
+;;;; Set default frame size/position
+
+(if window-system
+    (setq default-frame-alist
+          '((top . 80)
+            (left . 180)
+            (height . 47)
+            (width . 160))))
+
+
+;;;; Settings
 
 ;; Manually set PATH env var and exec-path
 (setenv "PATH" (mapconcat 'identity my-paths ":") )
@@ -109,6 +142,9 @@
 ;; include part of the file directory name at the beginning of the buffer name
 (setq uniquify-buffer-name-style 'forward)
 
+;; linum
+(setq linum-format "%4d ")
+
 ;; flymake
 ;; Automatically enable flymake-mode upon opening any file for which
 ;; syntax check is possible
@@ -171,22 +207,6 @@
 
 ;;;; Remote Packages
 
-(defvar my-packages '(fsharp-mode
-		      markdown-mode
-		      rainbow-mode
-		      ace-jump-mode
-		      expand-region
-		      magit
-		      ido-ubiquitous
-		      haml-mode
-		      sass-mode
-		      yaml-mode
-		      smex
-                      wgrep
-                      wgrep-ag
-                      multi-web-mode
-		      fill-column-indicator))
-
 (require 'package)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")
@@ -207,9 +227,7 @@
 
 ;;;; Local Packages
 
-(let ((default-directory
-        (concat user-emacs-directory
-                (convert-standard-filename "modules"))))
+(let ((default-directory my-modules-directory))
   (add-to-list 'load-path default-directory)
   (normal-top-level-add-subdirs-to-load-path))
 (require 'syntax-subword)
