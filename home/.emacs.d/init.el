@@ -47,9 +47,9 @@
 
 (if window-system
     (setq default-frame-alist
-          '((top . 80)
-            (left . 180)
-            (height . 47)
+          '((top . 40)
+            (left . 65)
+            (height . 44)
             (width . 160))))
 
 
