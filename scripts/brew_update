@@ -32,8 +32,12 @@ brew install rename
 brew install tree
 # Install `pkill`, `pgrep` and `pfind`
 brew install proctools
-# Install wget with IRI support
+# Install `wget` with IRI support
 brew install wget --enable-iri
+# Install `ag` command
+brew install the_silver_searcher
+# Install `nmap` command
+brew install nmap
 
 
 ## Install shells
@@ -44,13 +48,18 @@ brew install fish
 
 ## Install devel tools
 
+# Version control
 brew install git
-brew install postgresql
-brew install node
-brew install nmap
-brew install the_silver_searcher
 
-# Applications
+# Databases
+brew install postgresql
+
+# Node
+brew install node
+
+
+
+## Applications casks
 
 installcask google-chrome
 installcask firefox
@@ -75,6 +84,8 @@ installcask libre-office
 installcask diffmerge
 installcask sourcetree
 
+
+## Cleanup
 
 # Remove outdated versions from the cellar
 brew cleanup
