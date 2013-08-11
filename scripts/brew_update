@@ -1,13 +1,5 @@
 #!/usr/bin/env bash
 
-function installcask() {
-    if brew cask info "${@}" | grep "Not installed" > /dev/null; then
-        brew cask install "${@}"
-    else
-        echo "Warning: ${@} already installed"
-    fi
-}
-
 
 ## Update Homebrew and installed formulae
 
@@ -50,46 +42,63 @@ brew install fish
 
 # Version control
 brew install git
-
 # Databases
 brew install postgresql
-
 # Node
 brew install node
-
+# OCAML
+brew install ocaml
+brew install ocaml-pcre
+brew install opam
 
 
 ## Applications casks
 
+function installcask() {
+    if brew cask info "${@}" | grep "Not installed" > /dev/null; then
+        brew cask install "${@}"
+    else
+        echo "Warning: ${@} already installed"
+    fi
+}
+
+# Web browsers
 installcask google-chrome
 installcask firefox
+installcask opera
 installcask tor-browser
+# Terms
 installcask iterm2
+# Editors / Word processors
 installcask emacs
 installcask macvim
-installcask the-unarchiver
-installcask transmission
+installcask libre-office
+# Devel tools
 installcask virtualbox
-installcask vlc
-installcask alfred
-installcask clementine
-installcask f-lux
+installcask diffmerge
+installcask sourcetree
+# Chat
 installcask lime-chat
 installcask adium
 installcask skype
+# Download / Share
+installcask transmission
 installcask dropbox
+# Media
+installcask vlc
+installcask clementine
+# File utils
+installcask the-unarchiver
+# Desktop utils
 installcask optimal-layout
-installcask opera
-installcask libre-office
-installcask diffmerge
-installcask sourcetree
+installcask alfred
+# Misc
+installcask f-lux
 
 
 ## Cleanup
 
 # Remove outdated versions from the cellar
 brew cleanup
-
-
 # Print notes
 echo "Don’t forget to add $(brew --prefix coreutils)/libexec/gnubin to \$PATH."
