@@ -48,7 +48,7 @@ brew install postgresql
 brew install node
 # OCAML
 brew install ocaml
-brew install ocaml-pcre
+brew install pcre
 brew install opam
 
 
