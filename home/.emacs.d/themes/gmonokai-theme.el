@@ -60,9 +60,9 @@
    `(modeline
      ((t (:background ,monokai-gray-lightest :foreground ,monokai-gray-light))))
    `(region
-     ((t (:background ,monokai-gray-dark))))
+     ((t (:background ,monokai-gray-darker))))
    `(show-paren-match-face
-     ((t (:background ,monokai-black))))
+     ((t (:background ,monokai-purple))))
 
    ;; Main
    `(font-lock-builtin-face
@@ -88,7 +88,7 @@
 
    ;; CUA
    `(cua-rectangle
-     ((t (:background ,monokai-gray-dark))))
+     ((t (:background ,monokai-gray-darker))))
 
    ;; IDO
    `(ido-first-match
