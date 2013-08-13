@@ -4,3 +4,4 @@ pep8
 pyflakes
 virtualenv
 grc
+httpie
