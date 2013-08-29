@@ -248,6 +248,10 @@
 (setq mweb-filename-extensions '("htm" "html"))
 (multi-web-global-mode 1)
 
+;; magit
+(setq magit-default-tracking-name-function
+      'magit-default-tracking-name-branch-only)
+
 ;; wgrep-ag
 (require 'wgrep-ag)
 
