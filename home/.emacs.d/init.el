@@ -486,6 +486,10 @@ point reaches the beginning or end of the buffer, stop there."
 ;; smex
 (global-set-key (kbd "M-x") 'smex)
 
+;; wgrep-ag
+(defun wgrep-custom-bindings ()
+  (local-set-key (kbd "C-x C-e") 'wgrep-change-to-wgrep-mode))
+(add-hook 'ag-mode-hook 'wgrep-custom-bindings)
 
 ;;;; Custom functions bindings
 
