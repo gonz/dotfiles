@@ -234,7 +234,6 @@
 (require 'php-mode)
 (require 'ag)
 (require 'switch-window)
-(require 'powerline)
 (require 'hide-region)
 
 
@@ -265,9 +264,6 @@
 
 ;; smex
 (smex-initialize)
-
-;; powerline
-(powerline-default-theme)
 
 ;; ido-mode
 (ido-mode t)
