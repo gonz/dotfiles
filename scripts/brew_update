@@ -30,6 +30,8 @@ brew install wget --enable-iri
 brew install the_silver_searcher
 # Install `nmap` command
 brew install nmap
+# Instal `jq` command to process json
+brew install jq
 
 
 ## Install shells
@@ -42,6 +44,8 @@ brew install fish
 
 # Version control
 brew install git
+# Fortran
+brew install gfortran
 # Databases
 brew install postgresql
 # Node
@@ -50,6 +54,10 @@ brew install node
 brew install ocaml
 brew install pcre
 brew install opam
+# Rabbitmq
+brew install rabbitmq
+# Heroku
+brew install heroku
 
 
 ## Applications casks
@@ -91,6 +99,7 @@ installcask clementine
 installcask the-unarchiver
 # Desktop utils
 installcask optimal-layout
+installcask totalspaces
 installcask alfred
 # Misc
 installcask f-lux
