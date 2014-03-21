@@ -302,6 +302,8 @@
 
 ;; sass-mode
 (add-to-list 'auto-mode-alist '("\\.scss$" . sass-mode))
+;; less css
+(add-to-list 'auto-mode-alist '("\\.less$" . css-mode))
 ;; Markdown
 (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
