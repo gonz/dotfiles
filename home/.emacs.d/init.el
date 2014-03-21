@@ -254,6 +254,11 @@
 ;; wgrep-ag
 (require 'wgrep-ag)
 
+;; hl-tags
+(require 'hl-tags-mode)
+(add-hook 'sgml-mode-hook (lambda () (hl-tags-mode 1)))
+(add-hook 'nxml-mode-hook (lambda () (hl-tags-mode 1)))
+
 ;; ag
 (setq ag-highlight-search 1)
 
@@ -499,3 +504,15 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "<C-S-return>") 'newline-prev-and-indent)
 ;; Go to symbol
 (global-set-key (kbd "M-j") 'goto-symbol)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes (quote ("c0c1cde3a69c17a4af4f3029c6726fed93647f0cce443e611f124e1a704ba7f6" "1665a707c9341e12eb3657620e3e736398f9f2f4ddc2f2700210492c62a75dad" "ade9cf1e914f671e08f1450367f5de0404ce1014420248232175e1d6383bfa27" "29a93c8b21f44d7df56230d0080785d8b0774edd462cbab9e213b942ca4d61a5" "27c0599626f0a132bbdc06c55e8cd20693d2ca4f07e386a81dad86d57b9e3c64" default))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

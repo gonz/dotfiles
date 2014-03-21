@@ -124,7 +124,13 @@
 
    ;; Yasnippet
    `(yas/field-highlight-face
-     ((t (:background ,monokai-gray-darker))))))
+     ((t (:background, monokai-gray-darker))))
+
+   ;; Hl tags
+   `(hl-tags-face
+     ((t (:background, monokai-black))))
+   ))
+
 
 ;;;###autoload
 ;; (when load-file-name
