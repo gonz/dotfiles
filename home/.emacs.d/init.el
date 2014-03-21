@@ -481,14 +481,14 @@ point reaches the beginning or end of the buffer, stop there."
 				 try-complete-file-name-partially
 				 try-complete-file-name) t))
 
-;;;; Local packages bindings
-
 ;; html-mode
 (defun html-mode-keys ()
   "Modify keymaps used by `html-mode'."
   (local-set-key (kbd "C-c -") 'sgml-close-tag))
 (add-hook 'jinja2-mode-hook 'html-mode-keys)
 
+
+;;;; Local packages bindings
 
 ;; magit
 (global-set-key (kbd "C-.") 'magit-status)
