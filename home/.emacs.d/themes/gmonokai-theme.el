@@ -29,7 +29,8 @@
 (deftheme gmonokai
   "Gmonokai color theme")
 
-(let ((monokai-black         "#141412")
+(let ((monokai-black         "#000000")
+      (monokai-almost-black  "#141412")
       (monokai-gray-darkest  "#1b1c18")
       (monokai-gray-dark     "#20211c")
       (monokai-gray-darker   "#383830")
@@ -50,77 +51,77 @@
 
    ;; Frame
    `(default
-     ((t (:foreground ,monokai-yellow-light :background ,monokai-gray-darkest))))
+     ((t (:foreground, monokai-yellow-light :background, monokai-gray-darkest))))
    `(cursor
-     ((t (:foreground ,monokai-magenta))))
+     ((t (:foreground, monokai-magenta))))
    `(hl-line
-     ((t (:background ,monokai-black))))
+     ((t (:background, monokai-almost-black))))
    `(minibuffer-prompt
-     ((t (:foreground ,monokai-yellow-dark))))
+     ((t (:foreground, monokai-yellow-dark))))
    `(modeline
-     ((t (:background ,monokai-gray-lightest :foreground ,monokai-gray-light))))
+     ((t (:background, monokai-gray-lightest :foreground, monokai-gray-light))))
    `(region
-     ((t (:background ,monokai-gray-darker))))
+     ((t (:background, monokai-gray-darker))))
    `(show-paren-match-face
-     ((t (:background ,monokai-purple))))
+     ((t (:background, monokai-gray-darkest))))
 
    ;; Main
    `(font-lock-builtin-face
-     ((t (:foreground ,monokai-green))))
+     ((t (:foreground, monokai-green))))
    `(font-lock-comment-face
-     ((t (:foreground ,monokai-yellow-dark))))
+     ((t (:foreground, monokai-yellow-dark))))
    `(font-lock-constant-face
-     ((t (:foreground ,monokai-purple))))
+     ((t (:foreground, monokai-purple))))
    `(font-lock-doc-string-face
-     ((t (:foreground ,monokai-yellow))))
+     ((t (:foreground, monokai-yellow))))
    `(font-lock-function-name-face
-     ((t (:foreground ,monokai-green))))
+     ((t (:foreground, monokai-green))))
    `(font-lock-keyword-face
-     ((t (:foreground ,monokai-magenta))))
+     ((t (:foreground, monokai-magenta))))
    `(font-lock-string-face
-     ((t (:foreground ,monokai-yellow))))
+     ((t (:foreground, monokai-yellow))))
    `(font-lock-type-face
-     ((t (:foreground ,monokai-blue-light))))
+     ((t (:foreground, monokai-blue-light))))
    `(font-lock-variable-name-face
-     ((t (:foreground ,monokai-magenta))))
+     ((t (:foreground, monokai-magenta))))
    `(font-lock-warning-face
-     ((t (:bold t :foreground ,monokai-purple-light))))
+     ((t (:bold t :foreground, monokai-purple-light))))
 
    ;; CUA
    `(cua-rectangle
-     ((t (:background ,monokai-gray-darker))))
+     ((t (:background, monokai-gray-darker))))
 
    ;; IDO
    `(ido-first-match
-     ((t (:foreground ,monokai-purple))))
+     ((t (:foreground, monokai-purple))))
    `(ido-only-match
-     ((t (:foreground ,monokai-green))))
+     ((t (:foreground, monokai-green))))
    `(ido-subdir
-     ((t (:foreground ,monokai-blue-light))))
+     ((t (:foreground, monokai-blue-light))))
 
    ;; Whitespace
    `(whitespace-space
-     ((t (:foreground ,monokai-gray-lightest))))
+     ((t (:foreground, monokai-gray-lightest))))
 
    ;; Magit
    `(magit-item-highlight
-     ((t (:background ,monokai-black))))
+     ((t (:background, monokai-almost-black))))
    `(magit-section-title
-     ((t (:foreground ,monokai-purple :background ,monokai-gray-darkest))))
+     ((t (:foreground, monokai-purple :background, monokai-gray-darkest))))
    `(magit-branch
-     ((t (:foreground ,monokai-red :background ,monokai-gray-darkest))))
+     ((t (:foreground, monokai-red :background, monokai-gray-darkest))))
    `(magit-diff-file-header
-     ((t (:foreground ,monokai-yellow :background ,monokai-gray-darkest))))
+     ((t (:foreground, monokai-yellow :background, monokai-gray-darkest))))
    `(magit-diff-add
-     ((t (:foreground ,monokai-green :background ,monokai-gray-darkest))))
+     ((t (:foreground, monokai-green :background, monokai-gray-darkest))))
    `(magit-diff-del
-     ((t (:foreground ,monokai-red-light :background ,monokai-gray-darkest))))
+     ((t (:foreground, monokai-red-light :background, monokai-gray-darkest))))
    `(magit-diff-hunk-header
-     ((t (:foreground ,monokai-blue-light :background ,monokai-gray-darkest))))
+     ((t (:foreground, monokai-blue-light :background, monokai-gray-darkest))))
 
    ;; Flymake
    `(flymake-errline
-     ((t (:underline (:color ,monokai-red :style wave)))))
+     ((t (:underline (:color, monokai-red :style wave)))))
 
    ;; Yasnippet
    `(yas/field-highlight-face
