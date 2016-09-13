@@ -31,6 +31,7 @@
                       wgrep-ag
                       multi-web-mode
 		      fill-column-indicator))
+                      json-mode
 
 
 ;;;; Theme
@@ -188,6 +189,10 @@
   (add-to-list 'flymake-allowed-file-name-masks
                '("\\.js\\'" flymake-jslint-init))
 )
+
+;; json-mode
+(add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
+(add-to-list 'auto-mode-alist '("\\.eslintrc$" . json-mode))
 
 ;; Setup local info dir
 (eval-after-load "info"
