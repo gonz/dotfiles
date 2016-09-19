@@ -6,6 +6,10 @@ set -gx CDPATH .
 set -gx VIRTUALENVS_PATH $HOME/.virtualenvs/
 . ~/.config/fish/virtualenv.fish
 
+# ML
+set -gx ML_VBOX_CPUS 4
+set -gx ML_VBOX_MEM "8192"
+
 # Postgres
 set -gx PGHOST localhost
 
@@ -47,10 +51,10 @@ set fish_greeting ""
 
 # Emacs aliases (override osx emacs binaries)
 function emacs
-    ~/Applications/Emacs.app/Contents/MacOS/Emacs -nw $argv
+    /Applications/Emacs.app/Contents/MacOS/Emacs -nw $argv
 end
 function emacsclient
-    ~/Applications/Emacs.app/Contents/MacOS/bin/emacsclient $argv
+    /Applications/Emacs.app/Contents/MacOS/bin/emacsclient $argv
 end
 function emacsremote
     emacsclient --tty --socket-name /tmp/emacs-shared/server $argv
