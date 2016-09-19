@@ -1,3 +1,34 @@
+;;; init.el --- Emacs configuration of Gonzalo Saavedra
+;;
+;; Copyright (c) 2010-2016 Gonzalo Saavedra <gonzalosaavedra@gmail.com>
+;;
+;; Author: Gonzalo Saavedra <gonzalosaavedra@gmail.com>
+;; URL: https://gihub.com/gonz/dotfiles/
+;; Keywords: convenience
+
+;; This file is not part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or modify it under
+;; the terms of the GNU General Public License as published by the Free Software
+;; Foundation; either version 3 of the License, or (at your option) any later
+;; version.
+
+;; This program is distributed in the hope that it will be useful, but WITHOUT
+;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+;; FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+;; details.
+
+;; You should have received a copy of the GNU General Public License along with
+;; GNU Emacs; see the file COPYING.  If not, write to the Free Software
+;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+;; USA.
+
+;;; Commentary:
+
+;; My emacs configuration file
+
+;;; Code:
+
 (defvar my-paths '("/usr/local/opt/coreutils/libexec/gnubin"
 		   "/usr/local/bin"
 		   "/usr/bin"
@@ -15,23 +46,6 @@
 
 (defvar my-themes-directory
   (convert-standard-filename (concat user-emacs-directory "themes")))
-
-(defvar my-packages '(fsharp-mode
-		      markdown-mode
-		      rainbow-mode
-		      ace-jump-mode
-		      expand-region
-		      magit
-		      ido-ubiquitous
-		      haml-mode
-		      sass-mode
-		      yaml-mode
-		      smex
-                      wgrep
-                      wgrep-ag
-                      multi-web-mode
-		      fill-column-indicator))
-                      json-mode
 
 
 ;;;; Theme
@@ -52,6 +66,22 @@
             (left . 65)
             (height . 44)
             (width . 160))))
+
+
+(defvar my-packages '(markdown-mode
+		      rainbow-mode
+		      ace-jump-mode
+		      expand-region
+                      magit
+		      ido-ubiquitous
+		      haml-mode
+		      sass-mode
+		      yaml-mode
+		      smex
+                      wgrep
+		      fill-column-indicator
+                      flycheck
+                      use-package))
 
 
 ;;;; Settings
@@ -128,7 +158,7 @@
 (setq help-at-pt-timer-delay 0.3)
 (help-at-pt-cancel-timer)
 (help-at-pt-set-timer)
-(setq help-at-pt-display-when-idle '(flymake-overlay))
+;; (setq help-at-pt-display-when-idle '(flymake-overlay))
 
 ;; server
 (require 'server)
@@ -146,60 +176,55 @@
 ;; linum
 (setq linum-format "%4d ")
 
+
+;; dired
+(add-hook 'dired-load-hook
+          (function (lambda () (load "dired-x"))))
+
 ;; flymake
 ;; Automatically enable flymake-mode upon opening any file for which
 ;; syntax check is possible
-(add-hook 'find-file-hook 'flymake-find-file-hook)
+;; (add-hook 'find-file-hook 'flymake-find-file-hook)
 
 ;; Custom flymake syntax checkers
-(when (load "flymake" t)
-  ;; Disable flymake for html files
-  (delete '("\\.html?\\'" flymake-xml-init) flymake-allowed-file-name-masks)
+;; (when (load "flymake" t)
+;;   ;; Disable flymake for html files
+;;   (delete '("\\.html?\\'" flymake-xml-init) flymake-allowed-file-name-masks)
 
-  ;; python syntax check
-  (defun flymake-pyflakes-init ()
-    (let* ((temp-file (flymake-init-create-temp-buffer-copy
-  		       'flymake-create-temp-inplace))
-  	   (local-file (file-relative-name
-  			temp-file
-  			(file-name-directory buffer-file-name)))
-  	   (pycheck-bin (concat my-emacs-bin-directory
-  				"pycheckers")))
-      (list pycheck-bin (list local-file))))
+;;   ;; python syntax check
+;;   (defun flymake-pyflakes-init ()
+;;     (let* ((temp-file (flymake-init-create-temp-buffer-copy
+;;   		       'flymake-create-temp-inplace))
+;;   	   (local-file (file-relative-name
+;;   			temp-file
+;;   			(file-name-directory buffer-file-name)))
+;;   	   (pycheck-bin (concat my-emacs-bin-directory
+;;   				"pycheckers")))
+;;       (list pycheck-bin (list local-file))))
 
-  (add-to-list 'flymake-allowed-file-name-masks
-  	       '("\\.py\\'" flymake-pyflakes-init))
+;;   (add-to-list 'flymake-allowed-file-name-masks
+;;   	       '("\\.py\\'" flymake-pyflakes-init))
 
-  ;; javascript jslint
-  (defun flymake-jslint-init ()
-    (let* ((temp-file (flymake-init-create-temp-buffer-copy
-  		       'flymake-create-temp-inplace))
-           (local-file (file-relative-name
-                        temp-file
-                        (file-name-directory buffer-file-name)))
-  	   (jscheck-bin (concat my-emacs-bin-directory
-  				"jschecker")))
-      (list jscheck-bin (list local-file))))
+;;   ;; javascript jslint
+;;   (defun flymake-jslint-init ()
+;;     (let* ((temp-file (flymake-init-create-temp-buffer-copy
+;;   		       'flymake-create-temp-inplace))
+;;            (local-file (file-relative-name
+;;                         temp-file
+;;                         (file-name-directory buffer-file-name)))
+;;   	   (jscheck-bin (concat my-emacs-bin-directory
+;;   				"jschecker")))
+;;       (list jscheck-bin (list local-file))))
 
-  (setq flymake-err-line-patterns
-  	(cons '("^\\(.*\\)(\\([[:digit:]]+\\)):\\(.*\\)$"
-  		1 2 nil 3)
-  	      flymake-err-line-patterns))
+;;   (setq flymake-err-line-patterns
+;;   	(cons '("^\\(.*\\)(\\([[:digit:]]+\\)):\\(.*\\)$"
+;;   		1 2 nil 3)
+;;   	      flymake-err-line-patterns))
 
-  (add-to-list 'flymake-allowed-file-name-masks
-               '("\\.js\\'" flymake-jslint-init))
-)
+;;   (add-to-list 'flymake-allowed-file-name-masks
+;;                '("\\.js\\'" flymake-jslint-init))
+;; )
 
-;; json-mode
-(add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
-(add-to-list 'auto-mode-alist '("\\.eslintrc$" . json-mode))
-
-;; Setup local info dir
-(eval-after-load "info"
-  '(progn (info-initialize)
-	  (push (concat user-emacs-directory
-			(convert-standard-filename "info/"))
-		Info-directory-list)))
 
 ;; Fix python info-lookup-symbol
 (require 'info-look)
@@ -215,7 +240,8 @@
 (require 'package)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")
-                         ("melpa" . "http://melpa.milkbox.net/packages/")))
+                         ("melpa-stable" . "https://stable.melpa.org")
+                         ("melpa" . "https://melpa.org/packages/")))
 (package-initialize)
 
 (when (not package-archive-contents)
@@ -241,23 +267,48 @@
 (require 'switch-window)
 (require 'hide-region)
 
-
 ;;;; Non-builtin packages settings
 
-;; multi-web-mode
-(require 'multi-web-mode)
-(setq mweb-default-major-mode 'jinja2-mode)
-(setq mweb-tags '((js-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>" "</script>")
-                  (css-mode "<style +type=\"text/css\"[^>]*>" "</style>")))
-(setq mweb-filename-extensions '("htm" "html"))
-(multi-web-global-mode 1)
+(use-package magit
+  :ensure t
+  :bind (("C-." . magit-status))
+  :config (setq magit-default-tracking-name-function
+                'magit-default-tracking-name-branch-only))
 
-;; magit
-(setq magit-default-tracking-name-function
-      'magit-default-tracking-name-branch-only)
 
-;; wgrep-ag
-(require 'wgrep-ag)
+(use-package fsharp-mode
+  :ensure t)
+
+
+(use-package multi-web-mode
+  :ensure t
+  :init
+  (setq mweb-default-major-mode 'jinja2-mode)
+  (setq mweb-tags '((js2-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>" "</script>")
+                    (css-mode "<style +type=\"text/css\"[^>]*>" "</style>")))
+  (setq mweb-filename-extensions '("htm" "html"))
+  :config
+  (multi-web-global-mode 1))
+
+
+(use-package js2-mode
+  :ensure t
+  :mode (("\\.js\\'" . js2-mode)
+         ("\\.jsx\\'" . js2-jsx-mode))
+  :config
+  ;; Disable parse errors and strict warnings use flycheck. Highlight most ECMA built-ins
+  (setq js2-mode-show-parse-errors nil
+        js2-mode-show-strict-warnings nil
+        js2-highlight-level 3))
+
+
+(use-package wgrep-ag
+  :ensure t
+  :init
+  (defun wgrep-custom-bindings ()
+    (local-set-key (kbd "C-x C-e") 'wgrep-change-to-wgrep-mode))
+  :config
+ (add-hook 'ag-mode-hook 'wgrep-custom-bindings))
 
 ;; hl-tags
 (require 'hl-tags-mode)
@@ -270,13 +321,14 @@
 ;; switch-window
 (setq switch-window-shortcut-style 'qwerty)
 (setq switch-window-qwerty-shortcuts
-      '("a" "s" "d" "f" "j" "k" "l" "�" "w" "e" "i" "o"))
+      '("a" "s" "d" "f" "j" "k" "l" "ñ" "w" "e" "i" "o"))
 
 ;; smex
 (smex-initialize)
 
 ;; ido-mode
 (ido-mode t)
+(ido-everywhere 1)
 (ido-ubiquitous t)
 (setq ido-enable-prefix nil
       ido-enable-flex-matching t
@@ -287,11 +339,12 @@
       ido-handle-duplicate-virtual-buffers 2
       ido-max-prospects 10)
 
+
 ;; expand-region
 (global-set-key (kbd "M-RET") 'er/expand-region)
 
 ;; fci-mode (Fill column indicator)
-(setq fci-rule-column 80
+(setq fci-rule-column 100
       fci-rule-color "#595959"
       fci-rule-width 1
       fci-rule-use-dashes t
@@ -454,7 +507,7 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;;;;; key bindings
 
-;; Open init.el
+;; open init.el
 (global-set-key (kbd "<f8>")
                 (lambda()(interactive)(find-file "~/.emacs.d/init.el")))
 
@@ -466,14 +519,24 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "M-{") 'backward-word)
 (global-set-key (kbd "M-}") 'forward-word)
 
+;; Register shortcuts
+(global-set-key (kbd "C-ñ m") 'point-to-register)
+(global-set-key (kbd "C-ñ j") 'jump-to-register)
+
 ;; Basic deleting key bindings
 (global-set-key (kbd "C-S-k") 'kill-whole-line)
 
 ;; Buffers related key bindings
-(global-set-key (kbd "C-M-�") 'switch-window)
-(global-set-key (kbd "C-� C-�") 'ido-switch-buffer)
-(global-set-key (kbd "C-� C-}") 'next-buffer)
-(global-set-key (kbd "C-� C-{") 'previous-buffer)
+(global-set-key (kbd "C-M-ñ") 'ido-switch-buffer)
+
+(global-set-key (kbd "C-ñ C-ñ") 'switch-window)
+(global-set-key (kbd "C-ñ ñ") 'switch-window)
+
+(global-set-key (kbd "C-ñ C-j") 'next-buffer)
+(global-set-key (kbd "C-ñ j") 'next-buffer)
+
+(global-set-key (kbd "C-ñ C-k") 'previous-buffer)
+(global-set-key (kbd "C-ñ k") 'previous-buffer)
 
 ;; hippie-expand
 (global-set-key (kbd "M-SPC") (make-hippie-expand-function
@@ -495,16 +558,8 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;;;; Local packages bindings
 
-;; magit
-(global-set-key (kbd "C-.") 'magit-status)
-
 ;; smex
 (global-set-key (kbd "M-x") 'smex)
-
-;; wgrep-ag
-(defun wgrep-custom-bindings ()
-  (local-set-key (kbd "C-x C-e") 'wgrep-change-to-wgrep-mode))
-(add-hook 'ag-mode-hook 'wgrep-custom-bindings)
 
 ;;;; Custom functions bindings
 
@@ -518,15 +573,68 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "<C-S-return>") 'newline-prev-and-indent)
 ;; Go to symbol
 (global-set-key (kbd "M-j") 'goto-symbol)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes (quote ("c0c1cde3a69c17a4af4f3029c6726fed93647f0cce443e611f124e1a704ba7f6" "1665a707c9341e12eb3657620e3e736398f9f2f4ddc2f2700210492c62a75dad" "ade9cf1e914f671e08f1450367f5de0404ce1014420248232175e1d6383bfa27" "29a93c8b21f44d7df56230d0080785d8b0774edd462cbab9e213b942ca4d61a5" "27c0599626f0a132bbdc06c55e8cd20693d2ca4f07e386a81dad86d57b9e3c64" default))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+
+
+(use-package json-mode
+  :ensure t
+  :mode (("\\.json$" . json-mode)
+         ("\\.eslintrc$" . json-mode)))
+
+
+(use-package flycheck
+  :ensure t
+  :init (global-flycheck-mode))
+
+
+(use-package helm
+  :ensure t)
+
+
+(use-package helm-swoop
+  :ensure t
+  :init
+  ;; Save buffer when helm-multi-swoop-edit complete
+  (setq helm-multi-swoop-edit-save t)
+  ;; If this value is t, split window inside the current window
+  (setq helm-swoop-split-with-multiple-windows nil)
+  ;; Split direcion. 'split-window-vertically or 'split-window-horizontally
+  (setq helm-swoop-split-direction 'split-window-vertically)
+  ;; If nil, you can slightly boost invoke speed in exchange for text color
+  (setq helm-swoop-speed-or-color nil)
+  ;; ;; Go to the opposite side of line from the end or beginning of line
+  (setq helm-swoop-move-to-line-cycle t)
+  ;; Optional face for line numbers
+  ;; Face name is `helm-swoop-line-number-face`
+  (setq helm-swoop-use-line-number-face t)
+  ;; If you prefer fuzzy matching
+  (setq helm-swoop-use-fuzzy-match t)
+  :config
+  ;; Change the keybinds to whatever you like :)
+  (global-set-key (kbd "M-i") 'helm-swoop)
+  (global-set-key (kbd "M-I") 'helm-swoop-back-to-last-point)
+  (global-set-key (kbd "C-c M-i") 'helm-multi-swoop)
+  (global-set-key (kbd "C-x M-i") 'helm-multi-swoop-all)
+
+  ;; When doing isearch, hand the word over to helm-swoop
+  (define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
+  ;; From helm-swoop to helm-multi-swoop-all
+  (define-key helm-swoop-map (kbd "M-i") 'helm-multi-swoop-all-from-helm-swoop)
+  ;; When doing evil-search, hand the word over to helm-swoop
+  ;; (define-key evil-motion-state-map (kbd "M-i") 'helm-swoop-from-evil-search)
+
+  ;; Instead of helm-multi-swoop-all, you can also use helm-multi-swoop-current-mode
+  (define-key helm-swoop-map (kbd "M-m") 'helm-multi-swoop-current-mode-from-helm-swoop)
+
+  ;; Move up and down like isearch
+  (define-key helm-swoop-map (kbd "C-r") 'helm-previous-line)
+  (define-key helm-swoop-map (kbd "C-s") 'helm-next-line)
+  (define-key helm-multi-swoop-map (kbd "C-r") 'helm-previous-line)
+  (define-key helm-multi-swoop-map (kbd "C-s") 'helm-next-line)
+  )
+
+;; Local Variables:
+;; coding: utf-8
+;; indent-tabs-mode: nil
+;; End:
+
+;;; init.el ends here
