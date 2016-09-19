@@ -23,8 +23,8 @@
 ;; Author: Lorenzo Villani <lorenzo@villani.me>
 ;; URL: https://github.com/lvillani/el-monokai-theme
 
-(unless (>= 24 emacs-major-version)
-  (error "gmonokai-theme requires Emacs 24 or later."))
+;;(unless (>= 24 emacs-major-version)
+;;  (error "gmonokai-theme requires Emacs 24 or later."))
 
 (deftheme gmonokai
   "Gmonokai color theme")
@@ -34,6 +34,7 @@
       (monokai-gray-darkest  "#1b1c18")
       (monokai-gray-dark     "#20211c")
       (monokai-gray-darker   "#383830")
+      (monokai-gray          "#454545")
       (monokai-gray-lightest "#595959")
       (monokai-gray-light    "#E6E6E6")
       (monokai-blue-light    "#89BDFF")
@@ -63,7 +64,7 @@
    `(region
      ((t (:background ,monokai-gray-darker))))
    `(show-paren-match-face
-     ((t (:background ,monokai-gray-darkest))))
+     ((t (:background ,monokai-gray))))
 
    ;; Main
    `(font-lock-builtin-face
