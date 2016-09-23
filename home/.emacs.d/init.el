@@ -27,7 +27,7 @@
 
 ;; My emacs configuration file
 
-;;; Code:
+;;; Code
 
 (defvar my-paths '("/usr/local/opt/coreutils/libexec/gnubin"
 		   "/usr/local/bin"
@@ -61,26 +61,17 @@
 ;;;; Set default frame size/position
 
 (if window-system
-    (setq default-frame-alist
-          '((top . 40)
-            (left . 65)
-            (height . 44)
-            (width . 160))))
+    (add-to-list 'default-frame-alist '(fullscreen . maximized)))
 
 
-(defvar my-packages '(markdown-mode
-		      rainbow-mode
+(defvar my-packages '(rainbow-mode
 		      ace-jump-mode
 		      expand-region
-                      magit
-		      ido-ubiquitous
 		      haml-mode
 		      sass-mode
 		      yaml-mode
-		      smex
                       wgrep
 		      fill-column-indicator
-                      flycheck
                       use-package))
 
 
@@ -181,6 +172,7 @@
 (add-hook 'dired-load-hook
           (function (lambda () (load "dired-x"))))
 
+
 ;; flymake
 ;; Automatically enable flymake-mode upon opening any file for which
 ;; syntax check is possible
@@ -238,10 +230,9 @@
 ;;;; Remote Packages
 
 (require 'package)
-(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("marmalade" . "http://marmalade-repo.org/packages/")
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
                          ("melpa-stable" . "https://stable.melpa.org")
-                         ("melpa" . "https://melpa.org/packages/")))
+                         ("gnu" . "http://elpa.gnu.org/packages/")))
 (package-initialize)
 
 (when (not package-archive-contents)
@@ -261,19 +252,49 @@
 (let ((default-directory my-modules-directory))
   (add-to-list 'load-path default-directory)
   (normal-top-level-add-subdirs-to-load-path))
-(require 'syntax-subword)
-(require 'php-mode)
 (require 'ag)
 (require 'switch-window)
 (require 'hide-region)
 
-;;;; Non-builtin packages settings
+;;;; Non-builtin packages setting
+
+(use-package helm-ag
+  :ensure t
+  :bind
+  ("C-c g p" . helm-do-ag-project-root)
+  ("C-c g f" . helm-do-ag-this-file)
+  ("C-c g b" . helm-do-ag-buffers)
+  :conf
+  (global-set-key (kbd "C-c g d") '(lambda ()
+   (interactive)
+   (setq current-prefix-arg '(4))
+   (helm-ag)))
+  )
+
+
+
+(use-package syntax-subword
+  :ensure t
+  :config
+  (global-syntax-subword-mode))
+
 
 (use-package magit
   :ensure t
-  :bind (("C-." . magit-status))
-  :config (setq magit-default-tracking-name-function
-                'magit-default-tracking-name-branch-only))
+  :bind
+  ("C-c m s" . magit-status)
+  ("C-c m l" . magit-log)
+  :config
+  (setq magit-default-tracking-name-function 'magit-default-tracking-name-branch-only))
+
+
+(use-package markdown-mode
+  :ensure t
+  :mode
+  ("\\.md$" . markdown-mode)
+  ("\\.markdown$" . markdown-mode)
+  ("\\.js\\'" . js2-mode)
+  ("\\.jsx\\'" . js2-jsx-mode))
 
 
 (use-package fsharp-mode
@@ -293,8 +314,9 @@
 
 (use-package js2-mode
   :ensure t
-  :mode (("\\.js\\'" . js2-mode)
-         ("\\.jsx\\'" . js2-jsx-mode))
+  :mode
+  ("\\.js\\'" . js2-mode)
+  ("\\.jsx\\'" . js2-jsx-mode)
   :config
   ;; Disable parse errors and strict warnings use flycheck. Highlight most ECMA built-ins
   (setq js2-mode-show-parse-errors nil
@@ -323,21 +345,29 @@
 (setq switch-window-qwerty-shortcuts
       '("a" "s" "d" "f" "j" "k" "l" "ñ" "w" "e" "i" "o"))
 
-;; smex
-(smex-initialize)
 
-;; ido-mode
-(ido-mode t)
-(ido-everywhere 1)
-(ido-ubiquitous t)
-(setq ido-enable-prefix nil
-      ido-enable-flex-matching t
-      ido-auto-merge-work-directories-length nil
-      ido-create-new-buffer 'always
-      ido-use-filename-at-point 'guess
-      ido-use-virtual-buffers t
-      ido-handle-duplicate-virtual-buffers 2
-      ido-max-prospects 10)
+(use-package smex
+  :bind
+  ("M-x" . smex)
+  :config
+  (smex-initialize))
+
+
+(use-package ido-ubiquitous
+  :ensure t
+  :init
+  (setq ido-enable-prefix nil
+        ido-enable-flex-matching t
+        ido-auto-merge-work-directories-length nil
+        ido-create-new-buffer 'always
+        ido-use-filename-at-point 'guess
+        ido-use-virtual-buffers t
+        ido-handle-duplicate-virtual-buffers 2
+        ido-max-prospects 10)
+  :config
+  (ido-mode t)
+  (ido-everywhere 1)
+  (ido-ubiquitous t))
 
 
 ;; expand-region
@@ -352,9 +382,6 @@
 (add-hook 'python-mode-hook 'fci-mode)
 (add-hook 'js-mode-hook 'fci-mode)
 
-;; syntax-subword
-(global-syntax-subword-mode)
-
 
 ;;;; Automodes
 
@@ -362,9 +389,6 @@
 (add-to-list 'auto-mode-alist '("\\.scss$" . sass-mode))
 ;; less css
 (add-to-list 'auto-mode-alist '("\\.less$" . css-mode))
-;; Markdown
-(add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
 ;; Ruby
 (add-to-list 'auto-mode-alist '("\\.rake$" . ruby-mode))
 (add-to-list 'auto-mode-alist '("\\.thor$" . ruby-mode))
@@ -511,6 +535,13 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "<f8>")
                 (lambda()(interactive)(find-file "~/.emacs.d/init.el")))
 
+(autoload 'zap-up-to-char "misc"
+  "Kill up to, but not including ARGth occurrence of CHAR.
+
+  \(fn arg char)"
+    'interactive)
+(global-set-key (kbd "M-z") 'zap-up-to-char)
+
 ;; Basic movement key bindings
 (global-set-key (kbd "M-p") 'backward-paragraph)
 (global-set-key (kbd "M-n") 'forward-paragraph)
@@ -558,9 +589,6 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;;;; Local packages bindings
 
-;; smex
-(global-set-key (kbd "M-x") 'smex)
-
 ;;;; Custom functions bindings
 
 ;; Smart C-a
@@ -605,7 +633,7 @@ point reaches the beginning or end of the buffer, stop there."
   (setq helm-swoop-move-to-line-cycle t)
   ;; Optional face for line numbers
   ;; Face name is `helm-swoop-line-number-face`
-  (setq helm-swoop-use-line-number-face t)
+  (setq helm-swoop-use-line-number-face nil)
   ;; If you prefer fuzzy matching
   (setq helm-swoop-use-fuzzy-match t)
   :config
@@ -629,8 +657,23 @@ point reaches the beginning or end of the buffer, stop there."
   (define-key helm-swoop-map (kbd "C-r") 'helm-previous-line)
   (define-key helm-swoop-map (kbd "C-s") 'helm-next-line)
   (define-key helm-multi-swoop-map (kbd "C-r") 'helm-previous-line)
-  (define-key helm-multi-swoop-map (kbd "C-s") 'helm-next-line)
-  )
+  (define-key helm-multi-swoop-map (kbd "C-s") 'helm-next-line))
+
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (helm-ag syntax-subword yaml-mode wgrep-ag web-mode use-package smex seq sass-mode s rainbow-mode projectile multi-web-mode markdown-mode magit json-mode js2-mode jinja2-mode ido-ubiquitous helm-swoop fsharp-mode flycheck flx-ido fill-column-indicator expand-region dot-mode ace-jump-mode))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
 
 ;; Local Variables:
 ;; coding: utf-8
