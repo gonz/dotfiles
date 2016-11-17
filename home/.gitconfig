@@ -9,3 +9,5 @@
     tree = log --pretty='%Cgreen%h%Creset [%ai] %s %Cred<%Creset%an%Cred>' --decorate --graph
 [branch]
     autosetupmerge = true
+[push]
+	default = simple
