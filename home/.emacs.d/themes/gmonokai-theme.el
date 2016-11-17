@@ -1,4 +1,4 @@
-;;; gmonokai-theme.el --- REQUIRES EMACS 24: Gmonokai Color Theme for Emacs.
+;;; gmonokai-theme.el --- Gmonokai Color Theme for Emacs.
 
 ;; Copyright (C) 2013 Gonzalo Saavedra.
 
@@ -23,8 +23,11 @@
 ;; Author: Lorenzo Villani <lorenzo@villani.me>
 ;; URL: https://github.com/lvillani/el-monokai-theme
 
-;;(unless (>= 24 emacs-major-version)
-;;  (error "gmonokai-theme requires Emacs 24 or later."))
+;;; Commentary:
+
+;; My custom monokai emacs theme.
+
+;;;; Code:
 
 (deftheme gmonokai
   "Gmonokai color theme")
@@ -62,7 +65,7 @@
    `(modeline
      ((t (:background ,monokai-gray-lightest :foreground ,monokai-gray-light))))
    `(region
-     ((t (:background ,monokai-gray-darker))))
+     ((t (:background ,monokai-gray))))
    `(show-paren-match-face
      ((t (:background ,monokai-gray))))
 
@@ -133,13 +136,6 @@
      ((t (:background ,monokai-black))))
    ))
 
-
-;;;###autoload
-;; (when load-file-name
-;;   (add-to-list 'custom-theme-load-path
-;;                (file-name-as-directory (file-name-directory load-file-name)))
-;;   (when (not window-system)
-;;     (custom-set-faces '(default ((t (:background "#1c1c1c")))))))
 
 (provide-theme 'gmonokai)
 
