@@ -27,7 +27,7 @@
 
 ;; My emacs configuration file
 
-;;; Code
+;;; Code:
 
 (defvar my-paths '("/usr/local/opt/coreutils/libexec/gnubin"
 		   "/usr/local/bin"
@@ -48,6 +48,10 @@
   (convert-standard-filename (concat user-emacs-directory "themes")))
 
 
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file 'noerror)
+
+
 ;;;; Theme
 
 (add-to-list 'custom-theme-load-path my-themes-directory)
@@ -64,16 +68,8 @@
     (add-to-list 'default-frame-alist '(fullscreen . maximized)))
 
 
-(defvar my-packages '(rainbow-mode
-		      ace-jump-mode
-		      expand-region
-		      haml-mode
-		      sass-mode
-		      yaml-mode
-                      wgrep
-		      fill-column-indicator
+(defvar my-packages '(wgrep
                       use-package))
-
 
 ;;;; Settings
 
@@ -159,6 +155,7 @@
     (unless (server-running-p)
       (server-start)))
 
+
 ;; uniquify
 (require 'uniquify)
 ;; include part of the file directory name at the beginning of the buffer name
@@ -171,6 +168,37 @@
 ;; dired
 (add-hook 'dired-load-hook
           (function (lambda () (load "dired-x"))))
+
+
+(defun package-upgrade-all ()
+  "Upgrade all packages automatically without showing *Packages* buffer."
+  (interactive)
+  (package-refresh-contents)
+  (let (upgrades)
+    (cl-flet ((get-version (name where)
+                (let ((pkg (cadr (assq name where))))
+                  (when pkg
+                    (package-desc-version pkg)))))
+      (dolist (package (mapcar #'car package-alist))
+        (let ((in-archive (get-version package package-archive-contents)))
+          (when (and in-archive
+                     (version-list-< (get-version package package-alist)
+                                     in-archive))
+            (push (cadr (assq package package-archive-contents))
+                  upgrades)))))
+    (if upgrades
+        (when (yes-or-no-p
+               (message "Upgrade %d package%s (%s)? "
+                        (length upgrades)
+                        (if (= (length upgrades) 1) "" "s")
+                        (mapconcat #'package-desc-full-name upgrades ", ")))
+          (save-window-excursion
+            (dolist (package-desc upgrades)
+              (let ((old-package (cadr (assq (package-desc-name package-desc)
+                                             package-alist))))
+                (package-install package-desc)
+                (package-delete  old-package)))))
+      (message "All packages are up to date"))))
 
 
 ;; flymake
@@ -230,9 +258,7 @@
 ;;;; Remote Packages
 
 (require 'package)
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                         ("melpa-stable" . "https://stable.melpa.org")
-                         ("gnu" . "http://elpa.gnu.org/packages/")))
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")))
 (package-initialize)
 
 (when (not package-archive-contents)
@@ -242,21 +268,49 @@
 (mapc
  (lambda (package)
    (or (package-installed-p package)
-       (if (y-or-n-p (format "Package %s is missing. Install it? " package))
+       (if (y-or-n-p (format "Package %s is missing.  Install it? " package))
            (package-install package))))
  my-packages)
 
 
-;;;; Local Packages
-
 (let ((default-directory my-modules-directory))
   (add-to-list 'load-path default-directory)
   (normal-top-level-add-subdirs-to-load-path))
-(require 'ag)
-(require 'switch-window)
-(require 'hide-region)
 
-;;;; Non-builtin packages setting
+
+
+;; (eval-when-compile
+;;   (require 'use-package))
+(require 'use-package)
+(require 'diminish)                ;; if you use :diminish
+(require 'bind-key)                ;; if you use any :bind variant
+
+
+(use-package hide-region
+  :ensure t)
+
+
+(use-package switch-window
+  :ensure t
+  :bind
+  ("C-x o" . switch-window)
+  ("C-ñ C-ñ" . switch-window)
+  ("C-ñ ñ" . switch-window)
+  :init
+  (setq switch-window-shortcut-style 'qwerty)
+  (setq switch-window-qwerty-shortcuts
+        '("a" "s" "d" "f" "j" "k" "l" "ñ" "w" "e" "i" "o")))
+
+
+(require 'flycheck)
+(global-flycheck-mode)
+
+
+(use-package ag
+  :ensure t
+  :init
+  (setq ag-highlight-search 1))
+
 
 (use-package helm-ag
   :ensure t
@@ -264,13 +318,19 @@
   ("C-c g p" . helm-do-ag-project-root)
   ("C-c g f" . helm-do-ag-this-file)
   ("C-c g b" . helm-do-ag-buffers)
-  :conf
+  :config
   (global-set-key (kbd "C-c g d") '(lambda ()
    (interactive)
    (setq current-prefix-arg '(4))
-   (helm-ag)))
-  )
+   (helm-ag))))
 
+
+(use-package ace-jump-mode
+  :ensure t)
+
+
+(use-package rainbow-mode
+  :ensure t)
 
 
 (use-package syntax-subword
@@ -288,6 +348,10 @@
   (setq magit-default-tracking-name-function 'magit-default-tracking-name-branch-only))
 
 
+(use-package yaml-mode
+  :ensure t)
+
+
 (use-package markdown-mode
   :ensure t
   :mode
@@ -295,10 +359,6 @@
   ("\\.markdown$" . markdown-mode)
   ("\\.js\\'" . js2-mode)
   ("\\.jsx\\'" . js2-jsx-mode))
-
-
-(use-package fsharp-mode
-  :ensure t)
 
 
 (use-package multi-web-mode
@@ -332,19 +392,6 @@
   :config
  (add-hook 'ag-mode-hook 'wgrep-custom-bindings))
 
-;; hl-tags
-(require 'hl-tags-mode)
-(add-hook 'sgml-mode-hook (lambda () (hl-tags-mode 1)))
-(add-hook 'nxml-mode-hook (lambda () (hl-tags-mode 1)))
-
-;; ag
-(setq ag-highlight-search 1)
-
-;; switch-window
-(setq switch-window-shortcut-style 'qwerty)
-(setq switch-window-qwerty-shortcuts
-      '("a" "s" "d" "f" "j" "k" "l" "ñ" "w" "e" "i" "o"))
-
 
 (use-package smex
   :bind
@@ -370,23 +417,34 @@
   (ido-ubiquitous t))
 
 
-;; expand-region
-(global-set-key (kbd "M-RET") 'er/expand-region)
+(use-package expand-region
+  :ensure t
+  :bind
+  ("M-RET" . er/expand-region))
 
-;; fci-mode (Fill column indicator)
-(setq fci-rule-column 100
-      fci-rule-color "#595959"
-      fci-rule-width 1
-      fci-rule-use-dashes t
-      fci-dash-pattern 0.4)
-(add-hook 'python-mode-hook 'fci-mode)
-(add-hook 'js-mode-hook 'fci-mode)
+
+(use-package sass-mode
+  :ensure t
+  :mode
+  ("\\.scss$" . sass-mode))
+
+
+(use-package fill-column-indicator
+  :ensure t
+  :init
+  (setq fci-rule-column 100
+        fci-rule-color "#595959"
+        fci-rule-width 1
+        fci-rule-use-dashes t
+        fci-dash-pattern 0.4)
+  :config
+  (add-hook 'python-mode-hook 'fci-mode)
+  (add-hook 'js-mode-hook 'fci-mode))
 
 
 ;;;; Automodes
 
-;; sass-mode
-(add-to-list 'auto-mode-alist '("\\.scss$" . sass-mode))
+
 ;; less css
 (add-to-list 'auto-mode-alist '("\\.less$" . css-mode))
 ;; Ruby
@@ -560,9 +618,6 @@ point reaches the beginning or end of the buffer, stop there."
 ;; Buffers related key bindings
 (global-set-key (kbd "C-M-ñ") 'ido-switch-buffer)
 
-(global-set-key (kbd "C-ñ C-ñ") 'switch-window)
-(global-set-key (kbd "C-ñ ñ") 'switch-window)
-
 (global-set-key (kbd "C-ñ C-j") 'next-buffer)
 (global-set-key (kbd "C-ñ j") 'next-buffer)
 
@@ -607,11 +662,6 @@ point reaches the beginning or end of the buffer, stop there."
   :ensure t
   :mode (("\\.json$" . json-mode)
          ("\\.eslintrc$" . json-mode)))
-
-
-(use-package flycheck
-  :ensure t
-  :init (global-flycheck-mode))
 
 
 (use-package helm
@@ -659,21 +709,6 @@ point reaches the beginning or end of the buffer, stop there."
   (define-key helm-multi-swoop-map (kbd "C-r") 'helm-previous-line)
   (define-key helm-multi-swoop-map (kbd "C-s") 'helm-next-line))
 
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (helm-ag syntax-subword yaml-mode wgrep-ag web-mode use-package smex seq sass-mode s rainbow-mode projectile multi-web-mode markdown-mode magit json-mode js2-mode jinja2-mode ido-ubiquitous helm-swoop fsharp-mode flycheck flx-ido fill-column-indicator expand-region dot-mode ace-jump-mode))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
 
 ;; Local Variables:
 ;; coding: utf-8
