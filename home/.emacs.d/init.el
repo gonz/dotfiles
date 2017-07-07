@@ -94,6 +94,7 @@
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 (put 'scroll-left 'disabled nil)
+(put 'set-goal-column 'disabled nil)
 
 ;; AltGr != Meta
 (setq ns-right-alternate-modifier nil)
@@ -138,7 +139,6 @@
 (setq safe-local-variable-values (quote ((encoding . utf-8))))
 
 ;; org-mode
-(setq org-default-notes-file "~/notes.org")
 (define-key global-map "\C-cc" 'org-capture)
 
 ;; help-at-pt
@@ -155,95 +155,14 @@
     (unless (server-running-p)
       (server-start)))
 
-
 ;; uniquify
 (require 'uniquify)
 ;; include part of the file directory name at the beginning of the buffer name
 (setq uniquify-buffer-name-style 'forward)
 
-;; linum
-(setq linum-format "%4d ")
-
-
 ;; dired
 (add-hook 'dired-load-hook
           (function (lambda () (load "dired-x"))))
-
-
-(defun package-upgrade-all ()
-  "Upgrade all packages automatically without showing *Packages* buffer."
-  (interactive)
-  (package-refresh-contents)
-  (let (upgrades)
-    (cl-flet ((get-version (name where)
-                (let ((pkg (cadr (assq name where))))
-                  (when pkg
-                    (package-desc-version pkg)))))
-      (dolist (package (mapcar #'car package-alist))
-        (let ((in-archive (get-version package package-archive-contents)))
-          (when (and in-archive
-                     (version-list-< (get-version package package-alist)
-                                     in-archive))
-            (push (cadr (assq package package-archive-contents))
-                  upgrades)))))
-    (if upgrades
-        (when (yes-or-no-p
-               (message "Upgrade %d package%s (%s)? "
-                        (length upgrades)
-                        (if (= (length upgrades) 1) "" "s")
-                        (mapconcat #'package-desc-full-name upgrades ", ")))
-          (save-window-excursion
-            (dolist (package-desc upgrades)
-              (let ((old-package (cadr (assq (package-desc-name package-desc)
-                                             package-alist))))
-                (package-install package-desc)
-                (package-delete  old-package)))))
-      (message "All packages are up to date"))))
-
-
-;; flymake
-;; Automatically enable flymake-mode upon opening any file for which
-;; syntax check is possible
-;; (add-hook 'find-file-hook 'flymake-find-file-hook)
-
-;; Custom flymake syntax checkers
-;; (when (load "flymake" t)
-;;   ;; Disable flymake for html files
-;;   (delete '("\\.html?\\'" flymake-xml-init) flymake-allowed-file-name-masks)
-
-;;   ;; python syntax check
-;;   (defun flymake-pyflakes-init ()
-;;     (let* ((temp-file (flymake-init-create-temp-buffer-copy
-;;   		       'flymake-create-temp-inplace))
-;;   	   (local-file (file-relative-name
-;;   			temp-file
-;;   			(file-name-directory buffer-file-name)))
-;;   	   (pycheck-bin (concat my-emacs-bin-directory
-;;   				"pycheckers")))
-;;       (list pycheck-bin (list local-file))))
-
-;;   (add-to-list 'flymake-allowed-file-name-masks
-;;   	       '("\\.py\\'" flymake-pyflakes-init))
-
-;;   ;; javascript jslint
-;;   (defun flymake-jslint-init ()
-;;     (let* ((temp-file (flymake-init-create-temp-buffer-copy
-;;   		       'flymake-create-temp-inplace))
-;;            (local-file (file-relative-name
-;;                         temp-file
-;;                         (file-name-directory buffer-file-name)))
-;;   	   (jscheck-bin (concat my-emacs-bin-directory
-;;   				"jschecker")))
-;;       (list jscheck-bin (list local-file))))
-
-;;   (setq flymake-err-line-patterns
-;;   	(cons '("^\\(.*\\)(\\([[:digit:]]+\\)):\\(.*\\)$"
-;;   		1 2 nil 3)
-;;   	      flymake-err-line-patterns))
-
-;;   (add-to-list 'flymake-allowed-file-name-masks
-;;                '("\\.js\\'" flymake-jslint-init))
-;; )
 
 
 ;; Fix python info-lookup-symbol
@@ -258,8 +177,10 @@
 ;;;; Remote Packages
 
 (require 'package)
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")))
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                         ("elpy" . "https://jorgenschaefer.github.io/packages/")))
 (package-initialize)
+
 
 (when (not package-archive-contents)
   (package-refresh-contents))
@@ -284,6 +205,26 @@
 (require 'use-package)
 (require 'diminish)                ;; if you use :diminish
 (require 'bind-key)                ;; if you use any :bind variant
+
+
+;; buffers
+(define-key global-map (kbd "C-x C-b") 'ibuffer)
+(setq ibuffer-saved-filter-groups
+      '(("default"
+         ("Python" (mode . python-mode))
+         ("Magit" (name . "\*magit"))
+         ("emacs-config" (filename . ".emacs.d"))
+	 ("Org" (or (mode . org-mode)
+		    (filename . "OrgMode")))
+	 ("Help" (or (name . "\*Help\*")
+		     (name . "\*Apropos\*")
+		     (name . "\*info\*"))))
+      (ibuffer-vc-generate-filter-groups-by-vc-root)))
+(add-hook 'ibuffer-mode-hook
+	  '(lambda ()
+	     (ibuffer-switch-to-saved-filter-groups "default")))
+(use-package ibuffer-vc
+  :ensure t)
 
 
 (use-package hide-region
@@ -326,7 +267,9 @@
 
 
 (use-package ace-jump-mode
-  :ensure t)
+  :ensure t
+  :bind
+  ("C-c SPC" . ace-jump-mode))
 
 
 (use-package rainbow-mode
@@ -339,13 +282,26 @@
   (global-syntax-subword-mode))
 
 
+(use-package elpy
+  :ensure t
+  :init
+  (elpy-enable))
+
+
 (use-package magit
   :ensure t
   :bind
-  ("C-c m s" . magit-status)
-  ("C-c m l" . magit-log)
-  :config
-  (setq magit-default-tracking-name-function 'magit-default-tracking-name-branch-only))
+  ("C-." . magit-status)
+  ("C-:" . magit-list-repositories)
+  :init
+  (setq magit-repository-directories `(("~/ml/" . 1)))
+  (setq magit-completing-read-function 'magit-ido-completing-read)
+  (setq magit-repolist-columns
+        '(("⬇"      1 magit-repolist-column-unpulled-from-upstream   ())
+          ("⬆"      1 magit-repolist-column-unpushed-to-upstream     ())
+          ("*"        1 magit-repolist-column-dirty                  ())
+          ("Branch"  13 magit-repolist-column-branch                 ())
+          ("Name"    31 magit-repolist-column-ident                  ()))))
 
 
 (use-package yaml-mode
@@ -608,8 +564,7 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "M-{") 'backward-word)
 (global-set-key (kbd "M-}") 'forward-word)
 
-;; Register shortcuts
-(global-set-key (kbd "C-ñ m") 'point-to-register)
+;; Register shortcuts (global-set-key (kbd "C-ñ m") 'point-to-register)
 (global-set-key (kbd "C-ñ j") 'jump-to-register)
 
 ;; Basic deleting key bindings
