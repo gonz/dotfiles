@@ -30,11 +30,11 @@
 ;;; Code:
 
 
-(setq custom-file "~/.emacs.d/custom.el")
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file 'noerror)
 
 
-;; Manually set PATH env var and exec-path
+; Manually set PATH env var and exec-path
 (defvar my-paths '("/usr/local/opt/coreutils/libexec/gnubin"
 		   "/usr/local/bin"
 		   "/usr/bin"
@@ -47,36 +47,29 @@
 (setq exec-path (append my-paths (list "." exec-directory)))
 
 
-;;;; Theme
-
-(add-to-list 'custom-theme-load-path
-             (convert-standard-filename
-              (concat user-emacs-directory "themes")))
-(load-theme 'gmonokai t)
-(setq custom-safe-themes
-      (quote
-       ("27c0599626f0a132bbdc06c55e8cd20693d2ca4f07e386a81dad86d57b9e3c64"
-        default)))
-
-
-;;;; Set default frame size/position
-
-(if window-system
-    (add-to-list 'default-frame-alist '(fullscreen . maximized)))
-
-
-
 ;;;; Settings
+
+
+;; Scroll one line at a time
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+;; Don't accelerate scrolling
+(setq mouse-wheel-progressive-speed nil)
+;; Scroll window under mouse
+(setq mouse-wheel-follow-mouse 't)
+ ;; Keyboard scroll five lines at a time
+(setq scroll-step 5)
 
 ;; Hide scrollbars
 (scroll-bar-mode -1)
 ;; Hide toolbar
 (tool-bar-mode -1)
 (menu-bar-mode 0)
+
 ;; Empty scratch buffer
 (setq initial-scratch-message "")
 ;; Don't show startup screen
 (setq inhibit-splash-screen t)
+
 ;; Always y/n o p
 (fset 'yes-or-no-p 'y-or-n-p)
 
@@ -115,17 +108,17 @@
 
 ;; Always use spaces when indenting (unless overridden for buffer)
 (setq-default indent-tabs-mode nil)
+
 ;; Delete trailing whitespaces after saving
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
+;; Add final newline after save
+(setq require-final-newline t)
 
 ;; Region is like a tipical selection, type and region is replaced
 (pending-delete-mode t)
 
 ;; ispell bin location
 (setq ispell-program-name "/usr/local/bin/ispell")
-
-;; Add final newline on save
-(setq require-final-newline t)
 
 ;; encodig utf-8 is a safe file-local variable value
 (setq safe-local-variable-values (quote ((encoding . utf-8))))
@@ -148,16 +141,9 @@
           (function (lambda () (load "dired-x"))))
 
 
-;; Fix python info-lookup-symbol
-(require 'info-look)
-(info-lookup-add-help
- :mode 'python-mode
- :regexp "[[:alnum:]_]+"
- :doc-spec
- '(("(python)Index" nil "")))
-
 
 ;;;; Remote Packages
+
 
 (require 'package)
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
@@ -179,8 +165,7 @@
   (package-install 'use-package))
 (eval-when-compile
   (require 'use-package))
-(require 'diminish)                ;; if you use :diminish
-(require 'bind-key)                ;; if you use any :bind variant
+(require 'bind-key)
 
 
 ;; Server
@@ -192,28 +177,43 @@
   (unless (server-running-p)
     (server-start)))
 
-;; buffers
-(define-key global-map (kbd "C-x C-b") 'ibuffer)
-(setq ibuffer-saved-filter-groups
-      '(("default"
-         ("Python" (mode . python-mode))
-         ("Magit" (name . "\*magit"))
-         ("emacs-config" (filename . ".emacs.d"))
-	 ("Org" (or (mode . org-mode)
-		    (filename . "OrgMode")))
-	 ("Help" (or (name . "\*Help\*")
-		     (name . "\*Apropos\*")
-		     (name . "\*info\*"))))
-      (ibuffer-vc-generate-filter-groups-by-vc-root)))
-(add-hook 'ibuffer-mode-hook
-	  '(lambda ()
-	     (ibuffer-switch-to-saved-filter-groups "default")))
+
+;; Theme
+(use-package monokai-theme
+  :ensure t
+  :config
+  (load-theme 'monokai t)
+  (if window-system
+    (add-to-list 'default-frame-alist '(fullscreen . maximized))))
+
+
+;; Buffers
 (use-package ibuffer-vc
-  :ensure t)
+  :ensure t
+  :bind
+  ("C-x C-b" . ibuffer)
+  :config
+  (setq ibuffer-saved-filter-groups
+        '(("default"
+           ("Python" (mode . python-mode))
+           ("Magit" (name . "\*magit"))
+           ("emacs-config" (filename . ".emacs.d"))
+           ("Org" (or (mode . org-mode)
+                      (filename . "OrgMode")))
+           ("Help" (or (name . "\*Help\*")
+                       (name . "\*Apropos\*")
+                       (name . "\*info\*"))))
+          (ibuffer-vc-generate-filter-groups-by-vc-root)))
+  (add-hook 'ibuffer-mode-hook
+            '(lambda ()
+               (ibuffer-switch-to-saved-filter-groups "default"))))
 
 
 (use-package hide-region
-  :ensure t)
+  :ensure t
+  :bind
+  ("C-c h r" . hide-region-hide)
+  ("C-c h u" . hide-region-unhide))
 
 
 (use-package switch-window
@@ -228,27 +228,15 @@
         '("a" "s" "d" "f" "j" "k" "l" "ñ" "w" "e" "i" "o")))
 
 
-(require 'flycheck)
-(global-flycheck-mode)
+(use-package flycheck
+  :config
+  (global-flycheck-mode))
 
 
 (use-package ag
   :ensure t
   :init
   (setq ag-highlight-search 1))
-
-
-(use-package helm-ag
-  :ensure t
-  :bind
-  ("C-c g p" . helm-do-ag-project-root)
-  ("C-c g f" . helm-do-ag-this-file)
-  ("C-c g b" . helm-do-ag-buffers)
-  :config
-  (global-set-key (kbd "C-c g d") '(lambda ()
-   (interactive)
-   (setq current-prefix-arg '(4))
-   (helm-ag))))
 
 
 (use-package ace-jump-mode
@@ -338,13 +326,6 @@
  (add-hook 'ag-mode-hook 'wgrep-custom-bindings))
 
 
-(use-package smex
-  :bind
-  ("M-x" . smex)
-  :config
-  (smex-initialize))
-
-
 (use-package ido-ubiquitous
   :ensure t
   :init
@@ -360,6 +341,13 @@
   (ido-mode t)
   (ido-everywhere 1)
   (ido-ubiquitous t))
+
+
+(use-package smex
+  :bind
+  ("M-x" . smex)
+  :config
+  (smex-initialize))
 
 
 (use-package expand-region
@@ -387,6 +375,80 @@
   (add-hook 'js-mode-hook 'fci-mode))
 
 
+
+(use-package json-mode
+  :ensure t
+  :mode (("\\.json$" . json-mode)
+         ("\\.eslintrc$" . json-mode)))
+
+
+
+(use-package helm
+  :ensure t
+  :bind
+  ("M-x" . helm-M-x)
+  ("C-x C-f" . helm-find-files)
+  ("C-x b" . helm-buffers-list)
+  ("M-y" . helm-show-kill-ring)
+  :config
+  (helm-mode 1))
+
+
+(use-package helm-ag
+  :ensure t
+  :bind
+  ("C-c g p" . helm-do-ag-project-root)
+  ("C-c g f" . helm-do-ag-this-file)
+  ("C-c g b" . helm-do-ag-buffers)
+  :config
+  (global-set-key (kbd "C-c g d") '(lambda ()
+   (interactive)
+   (setq current-prefix-arg '(4))
+   (helm-ag))))
+
+
+(use-package helm-swoop
+  :ensure t
+  :init
+  ;; Save buffer when helm-multi-swoop-edit complete
+  (setq helm-multi-swoop-edit-save t)
+  ;; If this value is t, split window inside the current window
+  (setq helm-swoop-split-with-multiple-windows nil)
+  ;; Split direcion. 'split-window-vertically or 'split-window-horizontally
+  (setq helm-swoop-split-direction 'split-window-vertically)
+  ;; If nil, you can slightly boost invoke speed in exchange for text color
+  (setq helm-swoop-speed-or-color nil)
+  ;; ;; Go to the opposite side of line from the end or beginning of line
+  (setq helm-swoop-move-to-line-cycle t)
+  ;; Optional face for line numbers
+  ;; Face name is `helm-swoop-line-number-face`
+  (setq helm-swoop-use-line-number-face nil)
+  ;; If you prefer fuzzy matching
+  (setq helm-swoop-use-fuzzy-match t)
+  :config
+  (global-set-key (kbd "M-i") 'helm-swoop)
+  (global-set-key (kbd "M-I") 'helm-swoop-back-to-last-point)
+  (global-set-key (kbd "C-c M-i") 'helm-multi-swoop)
+  (global-set-key (kbd "C-x M-i") 'helm-multi-swoop-all)
+
+  ;; When doing isearch, hand the word over to helm-swoop
+  (define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
+  ;; From helm-swoop to helm-multi-swoop-all
+  (define-key helm-swoop-map (kbd "M-i") 'helm-multi-swoop-all-from-helm-swoop)
+  ;; When doing evil-search, hand the word over to helm-swoop
+  ;; (define-key evil-motion-state-map (kbd "M-i") 'helm-swoop-from-evil-search)
+
+  ;; Instead of helm-multi-swoop-all, you can also use helm-multi-swoop-current-mode
+  (define-key helm-swoop-map (kbd "M-m") 'helm-multi-swoop-current-mode-from-helm-swoop)
+
+  ;; Move up and down like isearch
+  (define-key helm-swoop-map (kbd "C-r") 'helm-previous-line)
+  (define-key helm-swoop-map (kbd "C-s") 'helm-next-line)
+  (define-key helm-multi-swoop-map (kbd "C-r") 'helm-previous-line)
+  (define-key helm-multi-swoop-map (kbd "C-s") 'helm-next-line))
+
+
+
 ;;;; Automodes
 
 
@@ -402,13 +464,15 @@
 (add-to-list 'auto-mode-alist '("Gemfile$" . ruby-mode))
 (add-to-list 'auto-mode-alist '("Capfile$" . ruby-mode))
 (add-to-list 'auto-mode-alist '("Vagrantfile$" . ruby-mode))
-;; html
+;; jinja2
 (add-to-list 'auto-mode-alist '("\\.j2$" . jinja2-mode))
 ;; fish
 (add-to-list 'auto-mode-alist '("\\.fish$" . conf-mode))
 
 
+
 ;;;; Custom functions
+
 
 ;; Kill the characters from the cursor to the beginning of line
 ;;(global-set-key [M-delete] 'backward-kill-line)
@@ -532,16 +596,12 @@ point reaches the beginning or end of the buffer, stop there."
           (add-to-list 'name-and-pos (cons (substring-no-properties name) position))))))))
 
 
+
 ;;;;; key bindings
 
-;; open init.el
-(global-set-key (kbd "<f8>")
-                (lambda()(interactive)(find-file "~/.emacs.d/init.el")))
 
+;; Kill up to char
 (autoload 'zap-up-to-char "misc"
-  "Kill up to, but not including ARGth occurrence of CHAR.
-
-  \(fn arg char)"
     'interactive)
 (global-set-key (kbd "M-z") 'zap-up-to-char)
 
@@ -586,9 +646,9 @@ point reaches the beginning or end of the buffer, stop there."
 (add-hook 'jinja2-mode-hook 'html-mode-keys)
 
 
-;;;; Local packages bindings
 
 ;;;; Custom functions bindings
+
 
 ;; Smart C-a
 (global-set-key [remap move-beginning-of-line]
@@ -600,58 +660,6 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "<C-S-return>") 'newline-prev-and-indent)
 ;; Go to symbol
 (global-set-key (kbd "M-j") 'goto-symbol)
-
-
-(use-package json-mode
-  :ensure t
-  :mode (("\\.json$" . json-mode)
-         ("\\.eslintrc$" . json-mode)))
-
-
-(use-package helm
-  :ensure t)
-
-
-(use-package helm-swoop
-  :ensure t
-  :init
-  ;; Save buffer when helm-multi-swoop-edit complete
-  (setq helm-multi-swoop-edit-save t)
-  ;; If this value is t, split window inside the current window
-  (setq helm-swoop-split-with-multiple-windows nil)
-  ;; Split direcion. 'split-window-vertically or 'split-window-horizontally
-  (setq helm-swoop-split-direction 'split-window-vertically)
-  ;; If nil, you can slightly boost invoke speed in exchange for text color
-  (setq helm-swoop-speed-or-color nil)
-  ;; ;; Go to the opposite side of line from the end or beginning of line
-  (setq helm-swoop-move-to-line-cycle t)
-  ;; Optional face for line numbers
-  ;; Face name is `helm-swoop-line-number-face`
-  (setq helm-swoop-use-line-number-face nil)
-  ;; If you prefer fuzzy matching
-  (setq helm-swoop-use-fuzzy-match t)
-  :config
-  ;; Change the keybinds to whatever you like :)
-  (global-set-key (kbd "M-i") 'helm-swoop)
-  (global-set-key (kbd "M-I") 'helm-swoop-back-to-last-point)
-  (global-set-key (kbd "C-c M-i") 'helm-multi-swoop)
-  (global-set-key (kbd "C-x M-i") 'helm-multi-swoop-all)
-
-  ;; When doing isearch, hand the word over to helm-swoop
-  (define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
-  ;; From helm-swoop to helm-multi-swoop-all
-  (define-key helm-swoop-map (kbd "M-i") 'helm-multi-swoop-all-from-helm-swoop)
-  ;; When doing evil-search, hand the word over to helm-swoop
-  ;; (define-key evil-motion-state-map (kbd "M-i") 'helm-swoop-from-evil-search)
-
-  ;; Instead of helm-multi-swoop-all, you can also use helm-multi-swoop-current-mode
-  (define-key helm-swoop-map (kbd "M-m") 'helm-multi-swoop-current-mode-from-helm-swoop)
-
-  ;; Move up and down like isearch
-  (define-key helm-swoop-map (kbd "C-r") 'helm-previous-line)
-  (define-key helm-swoop-map (kbd "C-s") 'helm-next-line)
-  (define-key helm-multi-swoop-map (kbd "C-r") 'helm-previous-line)
-  (define-key helm-multi-swoop-map (kbd "C-s") 'helm-next-line))
 
 
 ;; Local Variables:
