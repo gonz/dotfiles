@@ -29,6 +29,12 @@
 
 ;;; Code:
 
+
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file 'noerror)
+
+
+;; Manually set PATH env var and exec-path
 (defvar my-paths '("/usr/local/opt/coreutils/libexec/gnubin"
 		   "/usr/local/bin"
 		   "/usr/bin"
@@ -37,24 +43,15 @@
 		   "/sbin"
 		   "/Users/gonz/Bin"
 		   "/Users/gonz/node_modules/.bin"))
-
-(defvar my-emacs-bin-directory
-  (convert-standard-filename (concat user-emacs-directory "bin/")))
-
-(defvar my-modules-directory
-  (convert-standard-filename (concat user-emacs-directory "modules")))
-
-(defvar my-themes-directory
-  (convert-standard-filename (concat user-emacs-directory "themes")))
-
-
-(setq custom-file "~/.emacs.d/custom.el")
-(load custom-file 'noerror)
+(setenv "PATH" (mapconcat 'identity my-paths ":") )
+(setq exec-path (append my-paths (list "." exec-directory)))
 
 
 ;;;; Theme
 
-(add-to-list 'custom-theme-load-path my-themes-directory)
+(add-to-list 'custom-theme-load-path
+             (convert-standard-filename
+              (concat user-emacs-directory "themes")))
 (load-theme 'gmonokai t)
 (setq custom-safe-themes
       (quote
@@ -68,14 +65,8 @@
     (add-to-list 'default-frame-alist '(fullscreen . maximized)))
 
 
-(defvar my-packages '(wgrep
-                      use-package))
 
 ;;;; Settings
-
-;; Manually set PATH env var and exec-path
-(setenv "PATH" (mapconcat 'identity my-paths ":") )
-(setq exec-path (append my-paths (list "." exec-directory)))
 
 ;; Hide scrollbars
 (scroll-bar-mode -1)
@@ -110,8 +101,9 @@
 ;; Don't autosave
 (setq auto-save-default nil)
 
-;; Highlight matching parentheses, or whole expr if not visible.
+;; Enable matching parentheses highlight
 (show-paren-mode 1)
+;; highlight brackets if visible, else entire expression
 (setq show-paren-style 'mixed)
 
 ;; Don't ask for confirm when following symlinks that point to
@@ -145,15 +137,6 @@
 (setq help-at-pt-timer-delay 0.3)
 (help-at-pt-cancel-timer)
 (help-at-pt-set-timer)
-;; (setq help-at-pt-display-when-idle '(flymake-overlay))
-
-;; server
-(require 'server)
-;;Start emacs server in running GUI and not already running
-(setq server-socket-dir "/tmp/emacs-shared")
-(if (display-graphic-p)
-    (unless (server-running-p)
-      (server-start)))
 
 ;; uniquify
 (require 'uniquify)
@@ -181,31 +164,33 @@
                          ("elpy" . "https://jorgenschaefer.github.io/packages/")))
 (package-initialize)
 
-
 (when (not package-archive-contents)
   (package-refresh-contents))
 
-;; Check if packages in my-packages are installed; if not, install.
-(mapc
- (lambda (package)
-   (or (package-installed-p package)
-       (if (y-or-n-p (format "Package %s is missing.  Install it? " package))
-           (package-install package))))
- my-packages)
 
-
-(let ((default-directory my-modules-directory))
+(let ((default-directory (convert-standard-filename (concat user-emacs-directory "modules"))))
   (add-to-list 'load-path default-directory)
   (normal-top-level-add-subdirs-to-load-path))
 
 
-
-;; (eval-when-compile
-;;   (require 'use-package))
-(require 'use-package)
+;; Load use-package (install if needed)
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(eval-when-compile
+  (require 'use-package))
 (require 'diminish)                ;; if you use :diminish
 (require 'bind-key)                ;; if you use any :bind variant
 
+
+;; Server
+(use-package server
+  :ensure t
+  :init
+  (server-mode 1)
+  :config
+  (unless (server-running-p)
+    (server-start)))
 
 ;; buffers
 (define-key global-map (kbd "C-x C-b") 'ibuffer)
@@ -338,6 +323,10 @@
   (setq js2-mode-show-parse-errors nil
         js2-mode-show-strict-warnings nil
         js2-highlight-level 3))
+
+
+(use-package wgrep
+  :ensure t)
 
 
 (use-package wgrep-ag
