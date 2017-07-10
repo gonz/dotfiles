@@ -25,7 +25,7 @@
 
 ;;; Commentary:
 
-;; My emacs configuration file
+;; My Emacs configuration file
 
 ;;; Code:
 
@@ -152,11 +152,6 @@
 
 (when (not package-archive-contents)
   (package-refresh-contents))
-
-
-(let ((default-directory (convert-standard-filename (concat user-emacs-directory "modules"))))
-  (add-to-list 'load-path default-directory)
-  (normal-top-level-add-subdirs-to-load-path))
 
 
 ;; Load use-package (install if needed)
@@ -392,6 +387,14 @@
   ("M-y" . helm-show-kill-ring)
   :config
   (helm-mode 1))
+
+
+(use-package helm-tramp
+  :ensure t
+  :config
+  (setq tramp-default-method "ssh")
+  (defalias 'exit-tramp 'tramp-cleanup-all-buffers)
+  (define-key global-map (kbd "C-c s") 'helm-tramp))
 
 
 (use-package helm-ag
