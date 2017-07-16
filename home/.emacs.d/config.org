@@ -697,7 +697,7 @@ Kill menu:
 Use ido by default everywhere:
 
 #+BEGIN_SRC emacs-lisp
-  (use-package ido-ubiquitous
+  (use-package ido-completing-read+
     :ensure t
     :init
     (setq ido-enable-prefix nil
@@ -710,8 +710,7 @@ Use ido by default everywhere:
           ido-max-prospects 10)
     :config
     (ido-mode t)
-    (ido-everywhere 1)
-    (ido-ubiquitous t))
+    (ido-everywhere 1))
 #+END_SRC
 
 Use ido in builtin M-x:
