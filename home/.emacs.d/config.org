@@ -864,20 +864,21 @@ Basic maggit setup:
 [C-:] Show known repos
 
 #+BEGIN_SRC emacs-lisp
-(use-package magit
-  :ensure t
-  :bind
-  ("C-." . magit-status)
-  ("C-:" . magit-list-repositories)
-  :init
-  (setq magit-repository-directories `(("~/ml/" . 1)))
-  (setq magit-completing-read-function 'magit-ido-completing-read)
-  (setq magit-repolist-columns
-        '(("⬇"      1 magit-repolist-column-unpulled-from-upstream   ())
-          ("⬆"      1 magit-repolist-column-unpushed-to-upstream     ())
-          ("*"        1 magit-repolist-column-dirty                  ())
-          ("Branch"  13 magit-repolist-column-branch                 ())
-          ("Name"    31 magit-repolist-column-ident                  ()))))
+  (use-package magit
+    :ensure t
+    :bind
+    ("C-." . magit-status)
+    ("C-:" . magit-list-repositories)
+    :init
+    (setq magit-repository-directories `(("~/ml/" . 1)
+                                         ("~/.homesick/repos/dotfiles/" . 0)))
+    (setq magit-completing-read-function 'magit-ido-completing-read)
+    (setq magit-repolist-columns
+          '(("⬇"      1 magit-repolist-column-unpulled-from-upstream   ())
+            ("⬆"      1 magit-repolist-column-unpushed-to-upstream     ())
+            ("*"        1 magit-repolist-column-dirty                  ())
+            ("Branch"  13 magit-repolist-column-branch                 ())
+            ("Name"    31 magit-repolist-column-ident                  ()))))
 #+END_SRC
 
 ** Project management
