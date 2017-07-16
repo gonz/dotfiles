@@ -1,3 +1,15 @@
 .DS_Store
 *~
 *.swp
+
+# Emacs: Ignore files created automatically:
+
+# config.org el version
+/home/.emacs.d/config.el
+# Customize file
+/home/.emacs.d/custom.el
+# Packages
+/home/.emacs.d/elpa/
+# Other
+/home/.emacs.d/network-security.data
+/home/.emacs.d/projectile-bookmarks.eld
