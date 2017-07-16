@@ -5,7 +5,13 @@
 ;; Load package
 (require 'package)
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                         ("gnu" . "http://elpa.gnu.org/packages/")
                          ("elpy" . "https://jorgenschaefer.github.io/packages/")))
+; Added in emacs 25.1
+(setq package-archive-priorities
+      '(("melpa" . 20)
+	("elpy" . 10)
+	("gnu" . 0)))
 (package-initialize)
 
 
