@@ -1,0 +1,1028 @@
+#+OPTIONS: H:3 num:nil toc:t \n:nil @:t ::t |:t ^:nil -:t f:t *:t <:t
+#+OPTIONS: TeX:t LaTeX:t skip:nil d:nil todo:t pri:nil tags:not-in-toc
+#+OPTIONS: author:nil email:nil creator:nil timestamp:nil
+#+TITLE: Emacs init file written in org-mode
+#+STARTUP: indent
+#+LANGUAGE: en
+#+TAGS: REVISIT(R)
+
+* General Emacs setup
+
+** Customize
+
+Save customizations to custom.el and not my init.el file:
+
+#+BEGIN_SRC emacs-lisp
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(load custom-file 'noerror)
+#+END_SRC
+
+** Make emacs find my binaries
+
+Manually set PATH environment varable and exec-path to my list of bin directories:
+
+#+BEGIN_SRC emacs-lisp
+(defvar my-paths '("/usr/local/opt/coreutils/libexec/gnubin"
+                   "/usr/local/bin"
+                   "/usr/bin"
+                   "/bin"
+                   "/usr/sbin"
+                   "/sbin"
+                   "~/Bin"
+                   "~/node_modules/.bin"))
+(setenv "PATH" (mapconcat 'identity my-paths ":") )
+(setq exec-path (append my-paths (list "." exec-directory)))
+#+END_SRC
+
+** Autosave/backups
+
+Disable autosave:
+
+#+BEGIN_SRC emacs-lisp
+(setq auto-save-default nil)
+#+END_SRC
+
+Dont create backup files:
+
+#+BEGIN_SRC emacs-lisp
+(setq make-backup-files nil)
+#+END_SRC
+
+** Opening files
+
+Don't ask for confirmation when following symlinks that point to versioned
+files, always follow:
+
+#+BEGIN_SRC emacs-lisp
+(setq vc-follow-symlinks t)
+#+END_SRC
+
+Encodig utf-8 is a safe file-local variable value:
+
+#+BEGIN_SRC emacs-lisp
+(setq safe-local-variable-values (quote ((encoding . utf-8))))
+#+END_SRC
+
+Use dired-x:
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'dired-load-hook
+            (function (lambda () (load "dired-x"))))
+#+END_SRC
+
+Opening remote files:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-tramp
+    :ensure t
+    :config
+    (setq tramp-default-method "ssh")
+    (defalias 'exit-tramp 'tramp-cleanup-all-buffers)
+    (define-key global-map (kbd "C-c s") 'helm-tramp))
+#+END_SRC
+
+** Server
+
+Enable server mode:
+
+#+BEGIN_SRC emacs-lisp
+(use-package server
+  :ensure t
+  :init
+  (server-mode 1)
+  :config
+  (unless (server-running-p)
+    (server-start)))
+#+END_SRC
+
+** Spell
+
+Configure ispell:
+
+#+BEGIN_SRC emacs-lisp
+  (setq ispell-program-name "/usr/local/bin/ispell")
+#+END_SRC
+
+** Hydra
+
+#+BEGIN_SRC emacs-lisp
+  (use-package hydra
+    :ensure t)
+#+END_SRC
+
+
+* Global look and Feel
+
+** Statrup
+
+Don't show startup splash screen:
+
+#+BEGIN_SRC emacs-lisp
+  (setq inhibit-splash-screen t)
+#+END_SRC
+
+Scratch buffer should start empty:
+
+#+BEGIN_SRC emacs-lisp
+  (setq initial-scratch-message "")
+#+END_SRC
+
+** Menubar/toolbar
+
+Hide the menubar and toolbar:
+
+#+BEGIN_SRC emacs-lisp
+  (tool-bar-mode -1)
+  (menu-bar-mode 0)
+#+END_SRC
+
+** Theme
+
+Load Monokai theme as the main theme:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package monokai-theme
+    :ensure t
+    :config
+    (load-theme 'monokai t)
+    (if window-system
+        (add-to-list 'default-frame-alist '(fullscreen . maximized))))
+#+END_SRC
+
+Set font size:
+
+#+BEGIN_SRC emacs-lisp
+  (set-frame-font "Source Code Pro 14" nil t)
+#+END_SRC
+
+An hydra for testing fonts:
+
+#+BEGIN_SRC emacs-lisp
+  (defhydra hydra-font (:color amaranth)
+    "Select font"
+    ("1" (set-frame-font "Menlo 14" nil t) "Menlo")
+    ("2" (set-frame-font "Monaco 14" nil t) "Monaco")
+    ("3" (set-frame-font "Andale Mono 14" nil t) "Andale Mono")
+    ("4" (set-frame-font "Fira Sans 14" nil t) "Fira Sans")
+    ("5" (set-frame-font "Source Code Pro 14" nil t) "Source Code Pro")
+    ("6" (set-frame-font "Open Sans 14" nil t) "Source Code Pro")
+    ("q" nil "cancel"))
+#+END_SRC
+
+** Frame and buffers name
+
+Choose a better frame name:
+
+#+BEGIN_SRC emacs-lisp
+  (setq frame-title-format
+    '("Emacs - " (buffer-file-name "%f"
+      (dired-directory dired-directory "%b"))))
+#+END_SRC
+
+Make buffer names unique:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package uniquify
+    :config
+    (setq uniquify-buffer-name-style 'forward))
+#+END_SRC
+
+** Scroll
+
+Hide scroll bars:
+
+#+BEGIN_SRC emacs-lisp
+  (scroll-bar-mode -1)
+#+END_SRC
+
+Keyboard scroll scrolls five lines at a time:
+
+#+BEGIN_SRC emacs-lisp
+  (setq scroll-step 5)
+#+END_SRC
+
+Mouse wheel follows the pointer and scrolls one line at a time with progressive speed:
+
+#+BEGIN_SRC emacs-lisp
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+(setq mouse-wheel-progressive-speed 1)
+(setq mouse-wheel-follow-mouse 't)
+#+END_SRC
+
+** Keyboard
+
+AltGr and Meta (right left Alt keys) should be treated different, this
+is important for some keyboard layouts.
+
+#+BEGIN_SRC emacs-lisp
+  (setq ns-right-alternate-modifier nil)
+#+END_SRC
+
+** Disabled commands
+
+Enable narrowing region, disabled by default, narrowing means focusing in
+on some portion of the buffer, making the rest temporarily inaccessible:
+
+#+BEGIN_SRC emacs-lisp
+  (put 'narrow-to-region 'disabled nil)
+#+END_SRC
+
+Enable change the case for the region:
+
+#+BEGIN_SRC emacs-lisp
+  (put 'downcase-region 'disabled nil)
+  (put 'upcase-region 'disabled nil)
+#+END_SRC
+
+Enable horizontall scroll, shifting all the lines sideways within a window:
+
+#+BEGIN_SRC emacs-lisp
+  (put 'scroll-left 'disabled nil)
+#+END_SRC
+
+Enable setting the current horizontal position as a goal for C-n and C-p.
+Those commands will move to this position in the line moved to rather than
+trying to keep the same horizontal position.
+
+#+BEGIN_SRC emacs-lisp
+  (put 'set-goal-column 'disabled nil)
+#+END_SRC
+
+** Point/Cursor
+
+Show cursor as a bar.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default cursor-type 'bar)
+#+END_SRC
+
+Highlight the current line:
+
+#+BEGIN_SRC emacs-lisp
+  (global-hl-line-mode)
+#+END_SRC
+
+Highlight matching parentheses, if both not visible highlight the entire expression:
+
+#+BEGIN_SRC emacs-lisp
+  (show-paren-mode 1)
+  (setq show-paren-style 'mixed)
+#+END_SRC
+
+Config help-at-pt:
+
+#+BEGIN_SRC emacs-lisp
+  (setq help-at-pt-timer-delay 0.3)
+  (help-at-pt-cancel-timer)
+  (help-at-pt-set-timer)
+#+END_SRC
+
+** Zoom
+
+#+BEGIN_SRC emacs-lisp
+  (defhydra hydra-zoom (:color amaranth)
+    "zoom"
+    ("-" text-scale-decrease "Smaller")
+    ("+" text-scale-increase "Bigger")
+    ("q" nil "cancel"))
+#+END_SRC
+
+** Modeline
+
+Show column number in the modeline:
+
+#+BEGIN_SRC emacs-lisp
+  (setq column-number-mode  t)
+#+END_SRC
+
+use powerline package for a nicer modeline:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package powerline
+    :ensure t)
+#+END_SRC
+
+** Minibuffer
+
+A single letter is enough for yes/no questions:
+
+#+BEGIN_SRC emacs-lisp
+(fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
+** Fill column indicator
+
+Show a dashed line on the fill-column column. Enable in python and js modes.
+
+#+BEGIN_SRC emacs-lisp
+(use-package fill-column-indicator
+  :ensure t
+  :init
+  (setq fci-rule-column 100
+        fci-rule-color "#595959"
+        fci-rule-width 1
+        fci-rule-use-dashes t
+        fci-dash-pattern 0.4)
+  :config
+  (add-hook 'python-mode-hook 'fci-mode)
+  (add-hook 'js-mode-hook 'fci-mode))
+#+END_SRC
+
+
+* Window management
+** Layout
+
+Enable winner-mode for layout undo/redo:
+
+#+BEGIN_SRC emacs-lisp
+ (winner-mode)
+#+END_SRC
+
+** Moving and swapping windows
+
+Install windmove:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package windmove
+    :ensure t)
+#+END_SRC
+
+Install and configure ace-window:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package ace-window
+    :ensure t
+    :bind
+    ("C-x o" . ace-window)
+    :config
+    (set-face-attribute 'aw-leading-char-face nil :foreground "deep sky blue" :weight 'bold :height 4.0)
+    (set-face-attribute 'aw-mode-line-face nil :inherit 'mode-line-buffer-id :foreground "lawn green")
+    (setq aw-keys   '(?a ?s ?d ?f ?g ?1 ?2 ?3 ?4 ?5 ?6)
+          aw-dispatch-always t
+          aw-dispatch-alist
+          '((?k aw-delete-window "Delete Window")
+            (?m aw-swap-window "Swap Window")
+            (?h aw-split-window-vert "Split Vertically")
+            (?v aw-split-window-horz "Split Horzontally")
+            (?o delete-other-windows "Delete other windows")))
+    )
+#+END_SRC
+
+** Menu
+
+#+BEGIN_SRC emacs-lisp
+    (defhydra hydra-windows (:color amaranth :hint nil)
+     "
+Movement^^      ^Split^       ^Delete^    ^History^
+---------------------------------------------------
+_h_ ←   _l_ →     _V_ertical    _K_ill      _u_ndo
+_j_ ↓   _k_ ↑     _H_orizontal  _O_nly      _r_edo"
+     ; Movement
+     ("h" windmove-left)
+     ("j" windmove-down)
+     ("k" windmove-up)
+     ("l" windmove-right)
+     ; Split
+     ("V" split-window-right)
+     ("H" split-window-below)
+     ; Delete
+     ("K" delete-window)
+     ("O" delete-other-windows)
+     ; History
+     ("u" winner-undo)
+     ("r" winner-redo)
+     ("q" nil))
+#+END_SRC
+
+
+* Buffer management
+** ibuffer
+
+#+BEGIN_SRC emacs-lisp
+(use-package ibuffer-vc
+  :ensure t
+  :bind
+  ("C-x C-b" . ibuffer)
+  :config
+  (setq ibuffer-saved-filter-groups
+        '(("default"
+           ("Python" (mode . python-mode))
+           ("Magit" (name . "\*magit"))
+           ("emacs-config" (filename . ".emacs.d"))
+           ("Org" (or (mode . org-mode)
+                      (filename . "OrgMode")))
+           ("Help" (or (name . "\*Help\*")
+                       (name . "\*Apropos\*")
+                       (name . "\*info\*"))))
+          (ibuffer-vc-generate-filter-groups-by-vc-root)))
+  (add-hook 'ibuffer-mode-hook
+            '(lambda ()
+               (ibuffer-switch-to-saved-filter-groups "default"))))
+#+END_SRC
+
+** Buffers menu
+
+#+BEGIN_SRC emacs-lisp
+  (defhydra hydra-buffers (:color amaranth)
+    "Buffers menu"
+    ("b" helm-buffers-list "Buffer list")
+    ("q" nil "cancel"))
+#+END_SRC
+
+
+* Editing and moving around
+
+Always use spaces when indenting (unless overridden for buffer)
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default indent-tabs-mode nil)
+#+END_SRC
+
+** On save
+
+Delete trailing whitespaces and add final new line after saving:
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'before-save-hook 'delete-trailing-whitespace)
+  (setq require-final-newline t)
+#+END_SRC
+
+       ;; Add final newline after save
+
+** Selection
+
+Region is like a tipical selection, type and region is replaced:
+
+#+BEGIN_SRC emacs-lisp
+  (pending-delete-mode t)
+#+END_SRC
+
+Incremental region expand:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package expand-region
+    :ensure t
+    :bind
+    ("M-RET" . er/expand-region))
+#+END_SRC
+
+Hide regions:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package hide-region
+    :ensure t
+    :bind
+    ("C-c h r" . hide-region-hide)
+    ("C-c h u" . hide-region-unhide))
+#+END_SRC
+
+** Jumping in the current line
+
+[C-a] Move and toggle with succesive calls point to the first non-whitespace character
+on this line and to the beginning of the line (from prelude):
+
+#+BEGIN_SRC emacs-lisp
+(defun smarter-move-beginning-of-line (arg)
+  "Move point back to indentation of beginning of line.
+
+Move point to the first non-whitespace character on this line.
+If point is already there, move to the beginning of the line.
+Effectively toggle between the first non-whitespace character and
+the beginning of the line.
+
+If ARG is not nil or 1, move forward ARG - 1 lines first.  If
+point reaches the beginning or end of the buffer, stop there."
+  (interactive "^p")
+  (setq arg (or arg 1))
+
+  ;; Move lines first
+  (when (/= arg 1)
+    (let ((line-move-visual nil))
+      (forward-line (1- arg))))
+
+  (let ((orig-point (point)))
+    (back-to-indentation)
+    (when (= orig-point (point))
+      (move-beginning-of-line 1))))
+(global-set-key [remap move-beginning-of-line]
+                'smarter-move-beginning-of-line)
+#+END_SRC
+
+Define better word boundaries:
+
+#+BEGIN_SRC emacs-lisp
+(use-package syntax-subword
+  :ensure t
+  :config
+  (global-syntax-subword-mode))
+#+END_SRC
+
+** Jumping in a buffer
+
+ [M-p] [M-n] Jumping to prev/next paragraph
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "M-p") 'backward-paragraph)
+(global-set-key (kbd "M-n") 'forward-paragraph)
+#+END_SRC
+
+[C-c SPC] Jump to a character anywere in the visible portion of the buffer:
+
+#+BEGIN_SRC emacs-lisp
+(use-package ace-jump-mode
+  :ensure t)
+#+END_SRC
+
+[M-j] Jump to symbol (uses ido, taken from prelude):
+
+#+BEGIN_SRC emacs-lisp
+(defun goto-symbol (&optional symbol-list)
+  "Refresh imenu and jump to a place in the buffer using Ido."
+  (interactive)
+  (unless (featurep 'imenu)
+    (require 'imenu nil t))
+  (cond
+   ((not symbol-list)
+    (let ((ido-mode ido-mode)
+          (ido-enable-flex-matching
+           (if (boundp 'ido-enable-flex-matching)
+               ido-enable-flex-matching t))
+          name-and-pos symbol-names position)
+      (unless ido-mode
+        (ido-mode 1)
+        (setq ido-enable-flex-matching t))
+      (while (progn
+               (imenu--cleanup)
+               (setq imenu--index-alist nil)
+               (goto-symbol (imenu--make-index-alist))
+               (setq selected-symbol
+                     (ido-completing-read "Symbol? " symbol-names))
+               (string= (car imenu--rescan-item) selected-symbol)))
+      (unless (and (boundp 'mark-active) mark-active)
+        (push-mark nil t nil))
+      (setq position (cdr (assoc selected-symbol name-and-pos)))
+      (cond
+       ((overlayp position)
+        (goto-char (overlay-start position)))
+       (t
+        (goto-char position)))
+      (recenter)))
+   ((listp symbol-list)
+    (dolist (symbol symbol-list)
+      (let (name position)
+        (cond
+         ((and (listp symbol) (imenu--subalist-p symbol))
+          (goto-symbol symbol))
+         ((listp symbol)
+          (setq name (car symbol))
+          (setq position (cdr symbol)))
+         ((stringp symbol)
+          (setq name symbol)
+          (setq position
+                (get-text-property 1 'org-imenu-marker symbol))))
+        (unless (or (null position) (null name)
+                    (string= (car imenu--rescan-item) name))
+          (add-to-list 'symbol-names (substring-no-properties name))
+          (add-to-list 'name-and-pos (cons (substring-no-properties name) position))))))))
+
+(global-set-key (kbd "M-j") 'goto-symbol)
+#+END_SRC
+
+Jump menu:
+
+#+BEGIN_SRC emacs-lisp
+  (defhydra hydra-jump (:exit nil)
+    "Jump menu"
+    ("a" move-beginning-of-line "line start")
+    ("e" move-end-of-line "line end")
+    ("c" ace-jump-word-mode "character" :exit t)
+    ("w" ace-jump-word-mode "word" :exit t)
+    ("l" ace-jump-line-mode "line" :exit t)
+    ("q" nil "cancel"))
+#+END_SRC
+
+** Killing text
+
+Kill the characters from the cursor to the beginning of line:
+
+#+BEGIN_SRC emacs-lisp
+(defun backward-kill-line (arg)
+  "Kill chars backward until start of line."
+  (interactive "p")
+  (kill-line 0))
+
+#+END_SRC
+
+[C-S-k] Kill the current line:
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-S-k") 'kill-whole-line)
+#+END_SRC
+
+[M-z] Kill up to char (multiline):
+
+#+BEGIN_SRC emacs-lisp
+(autoload 'zap-up-to-char "misc"
+    'interactive)
+#+END_SRC
+
+Kill menu:
+
+#+BEGIN_SRC emacs-lisp
+  (defhydra hydra-kill (:color amaranth)
+    "Kill menu"
+    ("a" backward-kill-line "line start")
+    ("e" kill-line "line end")
+    ("l" kill-whole-line "whole line")
+    ("c" zap-up-to-char "char")
+    ("q" nil "cancel"))
+#+END_SRC
+
+** Joining lines
+
+[C-S-J] Join the current line with the line beneath it or join all region lines.
+
+#+BEGIN_SRC emacs-lisp
+(defun smart-join-line ()
+
+  (interactive)
+  (if (use-region-p)
+      (save-excursion
+	(let ((start-line (line-number-at-pos (region-beginning)))
+	      (current-line (line-number-at-pos (region-end))))
+	  (goto-char (region-end))
+	  (while (> current-line start-line)
+	    (join-line)
+	    (setq current-line (line-number-at-pos)))))
+    (delete-indentation 1)))
+
+(global-set-key (kbd "C-S-j") 'smart-join-line)
+#+END_SRC
+
+** Basic complettion/expand
+
+[M-SPC] Expand word from visible, buffer, other buffers.
+[C-M-SPC] Expand word from visible, buffer, other buffers.
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "M-SPC") (make-hippie-expand-function
+                               '(try-expand-dabbrev-visible
+                                 try-expand-dabbrev
+                                 try-expand-dabbrev-all-buffers) t))
+(global-set-key (kbd "C-M-SPC") (make-hippie-expand-function
+                               '(try-expand-line
+				     try-expand-line-all-buffers
+                                 try-complete-file-name-partially
+                                 try-complete-file-name) t))
+#+END_SRC
+
+
+* Help
+
+** Help menu
+
+#+BEGIN_SRC emacs-lisp
+  (defhydra hydra-help (:color blue :hint nil)
+    "Help"
+    ("f" describe-function "Function")
+    ("v" describe-variable "Variable"))
+  (global-set-key (kbd "<f1>") 'hydra-help/body)
+#+END_SRC
+
+
+* Menus
+
+** Ido
+
+Use ido by default everywhere:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package ido-ubiquitous
+    :ensure t
+    :init
+    (setq ido-enable-prefix nil
+          ido-enable-flex-matching t
+          ido-auto-merge-work-directories-length nil
+          ido-create-new-buffer 'always
+          ido-use-filename-at-point 'guess
+          ido-use-virtual-buffers t
+          ido-handle-duplicate-virtual-buffers 2
+          ido-max-prospects 10)
+    :config
+    (ido-mode t)
+    (ido-everywhere 1)
+    (ido-ubiquitous t))
+#+END_SRC
+
+Use ido in builtin M-x:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package smex
+    :bind
+    ("M-x" . smex)
+    :config
+    (smex-initialize))
+#+END_SRC
+
+** Helm
+
+Enable helm and bind it to override some common commands:
+[M-x] M-x by helm
+[C-x b] Buffer list by helm
+[M-y] Show kill ring
+
+#+BEGIN_SRC emacs-lisp
+  (use-package helm
+    :ensure t
+    :bind
+    ("M-x" . helm-M-x)
+    ("C-x b" . helm-buffers-list)
+    ("M-y" . helm-show-kill-ring)
+    :config
+    (helm-mode 1))
+#+END_SRC
+
+[C-x f] Find files in known projects:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-projectile
+    :ensure t
+    :bind
+    ("C-x f" . helm-projectile-find-file-in-known-projects))
+#+END_SRC
+
+** Super menu
+
+#+BEGIN_SRC emacs-lisp
+  (defhydra hydra-super-menu (:exit t)
+    "Super menu"
+    ("j" hydra-jump/body "Jump")
+    ("k" hydra-kill/body "Kill")
+    ("w" hydra-windows/body "Windows")
+    ("b" hydra-buffers/body "Buffers")
+    ("z" hydra-zoom/body "Zoom")
+    ("q" nil "cancel"))
+
+  (global-set-key (kbd "C-ñ") 'hydra-super-menu/body)
+#+END_SRC
+
+
+* Grep
+
+#+BEGIN_SRC emacs-lisp
+  (use-package ag
+    :ensure t
+    :init
+    (setq ag-highlight-search 1))
+
+
+  (use-package wgrep
+    :ensure t)
+
+
+  (use-package wgrep-ag
+    :ensure t
+    :init
+    (defun wgrep-custom-bindings ()
+      (local-set-key (kbd "C-x C-e") 'wgrep-change-to-wgrep-mode))
+    :config
+   (add-hook 'ag-mode-hook 'wgrep-custom-bindings))
+
+
+  (use-package helm-ag
+    :ensure t
+    :bind
+    ("M-s g p" . helm-do-ag-project-root)
+    ("M-s g f" . helm-do-ag-this-file)
+    ("M-s g b" . helm-do-ag-buffers)
+    :config
+    (global-set-key (kbd "C-c g d") '(lambda ()
+     (interactive)
+     (setq current-prefix-arg '(4))
+     (helm-ag))))
+
+
+  (use-package helm-swoop
+    :ensure t
+    :init
+    ;; Save buffer when helm-multi-swoop-edit complete
+    (setq helm-multi-swoop-edit-save t)
+    ;; If this value is t, split window inside the current window
+    (setq helm-swoop-split-with-multiple-windows nil)
+    ;; Split direcion. 'split-window-vertically or 'split-window-horizontally
+    (setq helm-swoop-split-direction 'split-window-vertically)
+    ;; If nil, you can slightly boost invoke speed in exchange for text color
+    (setq helm-swoop-speed-or-color nil)
+    ;; ;; Go to the opposite side of line from the end or beginning of line
+    (setq helm-swoop-move-to-line-cycle t)
+    ;; Optional face for line numbers
+    ;; Face name is `helm-swoop-line-number-face`
+    (setq helm-swoop-use-line-number-face nil)
+    ;; If you prefer fuzzy matching
+    (setq helm-swoop-use-fuzzy-match t)
+    :config
+    (global-set-key (kbd "M-i") 'helm-swoop)
+    (global-set-key (kbd "M-I") 'helm-swoop-back-to-last-point)
+    (global-set-key (kbd "C-c M-i") 'helm-multi-swoop)
+    (global-set-key (kbd "C-x M-i") 'helm-multi-swoop-all)
+
+    ;; When doing isearch, hand the word over to helm-swoop
+    (define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
+    ;; From helm-swoop to helm-multi-swoop-all
+    (define-key helm-swoop-map (kbd "M-i") 'helm-multi-swoop-all-from-helm-swoop)
+    ;; When doing evil-search, hand the word over to helm-swoop
+    ;; (define-key evil-motion-state-map (kbd "M-i") 'helm-swoop-from-evil-search)
+
+    ;; Instead of helm-multi-swoop-all, you can also use helm-multi-swoop-current-mode
+    (define-key helm-swoop-map (kbd "M-m") 'helm-multi-swoop-current-mode-from-helm-swoop)
+
+    ;; Move up and down like isearch
+    (define-key helm-swoop-map (kbd "C-r") 'helm-previous-line)
+    (define-key helm-swoop-map (kbd "C-s") 'helm-next-line)
+    (define-key helm-multi-swoop-map (kbd "C-r") 'helm-previous-line)
+    (define-key helm-multi-swoop-map (kbd "C-s") 'helm-next-line))
+
+
+  ;; less css
+  (add-to-list 'auto-mode-alist '("\\.less$" . css-mode))
+  ;; Ruby
+
+  ;; jinja2
+  (add-to-list 'auto-mode-alist '("\\.j2$" . jinja2-mode))
+  ;; fish
+  (add-to-list 'auto-mode-alist '("\\.fish$" . conf-mode))
+#+END_SRC
+
+
+* Coding: General
+
+** Code versioning
+
+Basic maggit setup:
+
+[C-.] Show magit-status for current file's repo
+[C-:] Show known repos
+
+#+BEGIN_SRC emacs-lisp
+(use-package magit
+  :ensure t
+  :bind
+  ("C-." . magit-status)
+  ("C-:" . magit-list-repositories)
+  :init
+  (setq magit-repository-directories `(("~/ml/" . 1)))
+  (setq magit-completing-read-function 'magit-ido-completing-read)
+  (setq magit-repolist-columns
+        '(("⬇"      1 magit-repolist-column-unpulled-from-upstream   ())
+          ("⬆"      1 magit-repolist-column-unpushed-to-upstream     ())
+          ("*"        1 magit-repolist-column-dirty                  ())
+          ("Branch"  13 magit-repolist-column-branch                 ())
+          ("Name"    31 magit-repolist-column-ident                  ()))))
+#+END_SRC
+
+** Project management
+
+#+BEGIN_SRC emacs-lisp
+(use-package projectile
+  :ensure t
+  :config
+  (when (require 'magit nil t)
+    (mapc #'projectile-add-known-project
+          (mapcar #'file-name-as-directory (magit-list-repos)))
+    ;; Write to persistent `projectile-known-projects-file'
+    (projectile-save-known-projects)))
+#+END_SRC
+
+** Rainbow
+
+Show actual color as background when something like #ffa6a6 appears in buffer:
+
+#+BEGIN_SRC emacs-lisp
+(use-package rainbow-mode
+  :ensure t)
+#+END_SRC
+
+
+* Coding: Languages
+** Python
+
+Install and configure elpy:
+
+#+BEGIN_SRC emacs-lisp
+(use-package elpy
+  :ensure t
+  :init
+  (elpy-enable)
+  :config
+  (setq elpy-modules
+        (quote
+         (elpy-module-company elpy-module-eldoc elpy-module-flymake elpy-module-pyvenv elpy-module-yasnippet elpy-module-django elpy-module-sane-defaults))))
+#+END_SRC
+
+** Javascript
+
+Install and configure js2-mode:
+
+#+BEGIN_SRC emacs-lisp
+(use-package js2-mode
+  :ensure t
+  :mode
+  ("\\.js\\'" . js2-mode)
+  ("\\.jsx\\'" . js2-jsx-mode)
+  :config
+  ;; Disable parse errors and strict warnings use flycheck. Highlight most ECMA built-ins
+  (setq js2-mode-show-parse-errors nil
+        js2-mode-show-strict-warnings nil
+        js2-highlight-level 3))
+#+END_SRC
+
+** HTML
+
+#+BEGIN_SRC emacs-lisp
+(use-package multi-web-mode
+  :ensure t
+  :init
+  (setq mweb-default-major-mode 'jinja2-mode)
+  (setq mweb-tags '((js2-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>" "</script>")
+                    (css-mode "<style +type=\"text/css\"[^>]*>" "</style>")))
+  (setq mweb-filename-extensions '("htm" "html"))
+  :config
+  (multi-web-global-mode 1))
+#+END_SRC
+
+Close tags:
+
+#+BEGIN_SRC emacs-lisp
+  (defun html-mode-keys ()
+    "Modify keymaps used by `html-mode'."
+    (local-set-key (kbd "C-c -") 'sgml-close-tag))
+
+  (add-hook 'jinja2-mode-hook 'html-mode-keys)
+#+END_SRC
+
+** SASS
+
+Install sass-mode and add automodes:
+
+#+BEGIN_SRC emacs-lisp
+(use-package sass-mode
+  :ensure t
+  :mode
+  ("\\.scss$" . sass-mode))
+#+END_SRC
+
+** JSON
+
+Install json-mode and add automodes:
+
+#+BEGIN_SRC emacs-lisp
+(use-package json-mode
+  :ensure t
+  :mode (("\\.json$" . json-mode)
+         ("\\.eslintrc$" . json-mode)))
+#+END_SRC
+
+** YAML
+
+Install yaml-mode:
+
+#+BEGIN_SRC emacs-lisp
+(use-package yaml-mode
+  :ensure t)
+#+END_SRC
+
+** Markdown
+
+Install markdown-mode and add automodes:
+
+#+BEGIN_SRC emacs-lisp
+(use-package markdown-mode
+  :ensure t
+  :mode
+  ("\\.md$" . markdown-mode)
+  ("\\.markdown$" . markdown-mode)
+  ("\\.js\\'" . js2-mode)
+  ("\\.jsx\\'" . js2-jsx-mode))
+#+END_SRC
+
+** Ruby
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.rake$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("\\.thor$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("\\.gemspec$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("\\.ru$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("Rakefile$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("Thorfile$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("Gemfile$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("Capfile$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("Vagrantfile$" . ruby-mode))
+#+END_SRC
+
+
+* Misc
+#+BEGIN_SRC emacs-lisp
+;  (use-package flycheck
+;    :config
+;    (global-flycheck-mode))
+#+END_SRC
