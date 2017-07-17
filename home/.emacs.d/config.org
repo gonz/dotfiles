@@ -758,7 +758,8 @@ Enable helm and bind it to override some common commands:
   (use-package helm-projectile
     :ensure t
     :bind
-    ("C-x f" . helm-projectile-find-file-in-known-projects))
+    ("C-x f" . helm-projectile-switch-project)
+    ("C-x F" . helm-projectile-find-file-in-known-projects))
 #+END_SRC
 
 ** Super menu
