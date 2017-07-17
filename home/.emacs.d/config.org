@@ -738,7 +738,18 @@ Enable helm and bind it to override some common commands:
     :bind
     ("M-x" . helm-M-x)
     ("C-x b" . helm-buffers-list)
-    ("M-y" . helm-show-kill-ring))
+    ("M-y" . helm-show-kill-ring)
+    :config
+    ;; Show input above the buffer and not in minibuffer
+    (setq helm-echo-input-in-header-line t)
+    (defun helm-hide-minibuffer-maybe ()
+      (when (with-helm-buffer helm-echo-input-in-header-line)
+        (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
+          (overlay-put ov 'window (selected-window))
+          (overlay-put ov 'face (let ((bg-color (face-background 'default nil)))
+                                  `(:background ,bg-color :foreground ,bg-color)))
+          (setq-local cursor-type nil))))
+    (add-hook 'helm-minibuffer-set-up-hook 'helm-hide-minibuffer-maybe))
 #+END_SRC
 
 [C-x f] Find files in known projects:
