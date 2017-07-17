@@ -42,6 +42,8 @@
   (setq org-src-fontify-natively t)
   (setq org-src-tab-acts-natively t)
 
+  (setq org-confirm-babel-evaluate nil)
+
   (setq org-todo-keywords '((sequence "NEXT(n)" "TODO(t)" "SOMEDAY(s)" "|" "DONE(d)" "WONTDO(w)")))
 
   (setq org-default-notes-file "~/todo.org")
