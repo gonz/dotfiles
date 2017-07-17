@@ -16,7 +16,11 @@ Save customizations to custom.el and not my init.el file:
 (load custom-file 'noerror)
 #+END_SRC
 
-** Make emacs find my modules/binaries
+** Maketes
+        '(("w" "Work task" entry (file+headline org-default-notes-file "Work")
+           "** TODO %?")
+          ("t" "Todo" entry (file+headline org-default-notes-file "Tasks")
+           "** TODO %?"))) emacs find my modules/binaries
 
 #+BEGIN_SRC emacs-lisp
   (setq load-path (append (list (expand-file-name "~/.emacs.d/modules")) load-path))
@@ -784,7 +788,7 @@ Enable helm and bind it to override some common commands:
 
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
-    :defer 3
+    :defer t
     :ensure t
     :config
     (when (require 'magit nil t)
@@ -929,7 +933,7 @@ Install and configure elpy:
 #+BEGIN_SRC emacs-lisp
   (use-package elpy
     :ensure t
-    :defer 3
+    :defer t
     :init
     (elpy-enable)
     :config
