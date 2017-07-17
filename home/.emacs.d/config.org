@@ -16,9 +16,15 @@ Save customizations to custom.el and not my init.el file:
 (load custom-file 'noerror)
 #+END_SRC
 
-** Make emacs find my binaries
+** Make emacs find my modules/binaries
 
-Manually set PATH environment varable and exec-path to my list of bin directories:
+#+BEGIN_SRC emacs-lisp
+  (setq load-path (append (list (expand-file-name "~/.emacs.d/modules")) load-path))
+#+END_SRC
+
+#+RESULTS:
+
+Manually set PATH environment varable and exec-path to my list of bin di/home/gonz/.emacs.drec/home/gonz/.emacs.dtories:
 
 #+BEGIN_SRC emacs-lisp
 (defvar my-paths '("/usr/local/opt/coreutils/libexec/gnubin"
@@ -102,7 +108,6 @@ Configure ispell:
 #+END_SRC
 
 ** Hydra
-DEADLINE: <2017-07-18 Tue>
 
 #+BEGIN_SRC emacs-lisp
   (use-package hydra
@@ -116,6 +121,17 @@ Don't show startup splash screen:
 
 #+BEGIN_SRC emacs-lisp
   (setq inhibit-splash-screen t)
+
+  (use-package dashboard
+    :ensure t
+    :diminish dashboard-mode
+    :config
+    (setq dashboard-banner-logo-title "")
+    (setq dashboard-startup-banner "~/.emacs.d/spalsh.png")
+    (setq dashboard-items '((bookmarks . 10)
+                            (projects . 10)
+                            (recents  . 10)))
+    (dashboard-setup-startup-hook))
 #+END_SRC
 
 Scratch buffer should start empty:
@@ -126,11 +142,12 @@ Scratch buffer should start empty:
 
 ** Menubar/toolbar
 
-Hide the menubar and toolbar:
+Never show the toolbar, show menubar only if is GUI:
 
 #+BEGIN_SRC emacs-lisp
   (tool-bar-mode -1)
-  (menu-bar-mode 0)
+  (unless window-system
+    (menu-bar-mode 0))
 #+END_SRC
 
 ** Theme
@@ -143,7 +160,8 @@ Load Monokai theme as the main theme:
     :config
     (load-theme 'monokai t)
     (if window-system
-        (add-to-list 'default-frame-alist '(fullscreen . maximized))))
+        (add-to-list 'default-frame-alist '(fullscreen . maximized)))
+)
 #+END_SRC
 
 Set font size:
@@ -585,9 +603,49 @@ Jump menu:
   (defhydra hydra-jump (:exit t)
     "Jump menu"
     ("c" ace-jump-char-mode "character")
+    ("j" ace-jump-char-mode "character")
     ("w" ace-jump-word-mode "word")
     ("l" ace-jump-line-mode "line")
     ("q" nil "cancel"))
+#+END_SRC
+
+** Bookmarks
+
+Bultin bookmarks menu:
+
+#+BEGIN_SRC emacs-lisp
+    (defhydra hydra-bookmarks (:exit t)
+      "Bookmarks"
+      ("m" bookmark-set "Set")
+      ("b" helm-bookmarks "Jump")
+      ("l" bookmark-bmenu-list "List")
+      ("q" nil "Quit"))
+#+END_SRC
+
+Breadcrumbs setup:
+
+#+BEGIN_SRC emacs-lisp
+     (require 'breadcrumb)
+#+END_SRC
+
+Breadcrumbs menu:
+
+#+BEGIN_SRC emacs-lisp
+     (defhydra hydra-breadcrumbs (:exit t)
+       "
+     Breadcrumb bookmarks:
+       _<up>_:   prev   _S-<up>_:   local prev
+       _<down>_: next   _S-<down>_: local next
+       _s_: set  _c_: clear  _l_: list  _q_: quit
+     "
+       ("<down>" bc-next nil :exit nil)
+       ("<up>" bc-previous nil :exit nil)
+       ("S-<down>" bc-local-next nil :exit nil)
+       ("S-<up>" bc-local-previous nil :exit nil)
+       ("l" bc-list nil)
+       ("s" bc-set nil)
+       ("c" bc-clear nil)
+       ("q" nil nil))
 #+END_SRC
 
 ** Killing text
@@ -606,25 +664,6 @@ Kill the characters from the cursor to the beginning of line:
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-S-k") 'kill-whole-line)
-#+END_SRC
-
-[M-z] Kill up to char (multiline):
-
-#+BEGIN_SRC emacs-lisp
-(autoload 'zap-up-to-char "misc"
-    'interactive)
-#+END_SRC
-
-Kill menu:
-
-#+BEGIN_SRC emacs-lisp
-  (defhydra hydra-kill (:color amaranth)
-    "Kill menu"
-    ("a" backward-kill-line "line start")
-    ("e" kill-line "line end")
-    ("l" kill-whole-line "whole line")
-    ("c" zap-up-to-char "char")
-    ("q" nil "cancel"))
 #+END_SRC
 
 ** Joining lines
@@ -717,14 +756,17 @@ Enable helm and bind it to override some common commands:
   (defhydra hydra-super-menu (:exit t)
     "Super menu"
     ("j" hydra-jump/body "Jump")
-    ("k" hydra-kill/body "Kill")
     ("w" hydra-windows/body "Windows")
     ("b" hydra-buffers/body "Buffers")
+    ("b" hydra-bookmarks/body "Bookmarks")
+    ("m" hydra-breadcrumbs/body "Marks/Breadcrumbs")
     ("z" hydra-zoom/body "Zoom")
     ("q" nil "cancel"))
 
+  (global-set-key (kbd "C-;") 'hydra-super-menu/body)
   (global-set-key (kbd "C-ñ") 'hydra-super-menu/body)
 #+END_SRC
+
 * Coding: General
 ** Project management
 
