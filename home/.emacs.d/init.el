@@ -33,15 +33,26 @@
   :diminish org-indent-mode
   :init
   (org-babel-load-file "~/.emacs.d/config.org")
+  :bind
+  ("C-c l" . org-store-link)
+  ("C-c c" . org-capture)
   :config
-  (setq org-todo-keywords '((sequence "TODO(t)" "OPT(o)" "|" "DONE(d)")))
   (setq org-hide-leading-stars t)
   (setq org-ellipsis " ↓")
   (setq org-src-fontify-natively t)
   (setq org-src-tab-acts-natively t)
+
+  (setq org-todo-keywords '((sequence "NEXT(n)" "TODO(t)" "SOMEDAY(s)" "|" "DONE(d)" "WONTDO(w)")))
+
+  (setq org-default-notes-file "~/todo.org")
+  (setq org-capture-templates
+        '(("w" "Work task" entry (file+headline org-default-notes-file "Work")
+           "** TODO %?")
+          ("t" "Todo" entry (file+headline org-default-notes-file "Tasks")
+           "** TODO %?")))
+
   (add-hook 'org-mode-hook #'org-indent-mode)
-  :bind
-  (("C-c l" . org-store-link)))
+  )
 
 (provide 'init)
 ;;; init.el ends here
