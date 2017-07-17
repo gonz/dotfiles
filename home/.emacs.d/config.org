@@ -17,11 +17,7 @@ Save customizations to custom.el and not my init.el file:
 (load custom-file 'noerror)
 #+END_SRC
 
-** Maketes
-        '(("w" "Work task" entry (file+headline org-default-notes-file "Work")
-           "** TODO %?")
-          ("t" "Todo" entry (file+headline org-default-notes-file "Tasks")
-           "** TODO %?"))) emacs find my modules/binaries
+** Make emacs find my modules/binaries
 
 #+BEGIN_SRC emacs-lisp
   (setq load-path (append (list (expand-file-name "~/.emacs.d/modules")) load-path))
