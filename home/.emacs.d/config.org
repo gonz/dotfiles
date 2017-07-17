@@ -770,7 +770,7 @@ Enable helm and bind it to override some common commands:
     ("j" hydra-jump/body "Jump")
     ("w" hydra-windows/body "Windows")
     ("b" hydra-buffers/body "Buffers")
-    ("b" hydra-bookmarks/body "Bookmarks")
+    ("r" hydra-bookmarks/body "Bookmarks")
     ("m" hydra-breadcrumbs/body "Marks/Breadcrumbs")
     ("z" hydra-zoom/body "Zoom")
     ("q" nil "cancel"))
