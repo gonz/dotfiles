@@ -23,8 +23,6 @@ Save customizations to custom.el and not my init.el file:
   (setq load-path (append (list (expand-file-name "~/.emacs.d/modules")) load-path))
 #+END_SRC
 
-#+RESULTS:
-
 Manually set PATH environment varable and exec-path to my list of bin di/home/gonz/.emacs.drec/home/gonz/.emacs.dtories:
 
 #+BEGIN_SRC emacs-lisp
