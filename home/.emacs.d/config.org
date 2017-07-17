@@ -1,9 +1,113 @@
+#+TITLE: Emacs init file written in org-mode
+#+LANGUAGE: en
+#+STARTUP: indent
 #+OPTIONS: H:3 num:nil toc:t \n:nil @:t ::t |:t ^:nil -:t f:t *:t <:t
 #+OPTIONS: TeX:t LaTeX:t skip:nil d:nil todo:t pri:nil tags:not-in-toc
 #+OPTIONS: author:nil email:nil creator:nil timestamp:nil
-#+TITLE: Emacs init file written in org-mode
-#+STARTUP: indent
-#+LANGUAGE: en
+
+
+* General Emacs setup
+** Customize
+
+Save customizations to custom.el and not my init.el file:
+
+#+BEGIN_SRC emacs-lisp
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(load custom-file 'noerror)
+#+END_SRC
+
+** Make emacs find my binaries
+
+Manually set PATH environment varable and exec-path to my list of bin directories:
+
+#+BEGIN_SRC emacs-lisp
+(defvar my-paths '("/usr/local/opt/coreutils/libexec/gnubin"
+                   "/usr/local/bin"
+                   "/usr/bin"
+                   "/bin"
+                   "/usr/sbin"
+                   "/sbin"
+                   "~/Bin"
+                   "~/node_modules/.bin"))
+(setenv "PATH" (mapconcat 'identity my-paths ":") )
+(setq exec-path (append my-paths (list "." exec-directory)))
+#+END_SRC
+
+** Autosave/backups
+
+Disable autosave:
+
+#+BEGIN_SRC emacs-lisp
+(setq auto-save-default nil)
+#+END_SRC
+
+Dont create backup files:
+
+#+BEGIN_SRC emacs-lisp
+(setq make-backup-files nil)
+#+END_SRC
+
+** Opening files
+
+Don't ask for confirmation when following symlinks that point to versioned
+files, always follow:
+
+#+BEGIN_SRC emacs-lisp
+(setq vc-follow-symlinks t)
+#+END_SRC
+
+Encodig utf-8 is a safe file-local variable value:
+
+#+BEGIN_SRC emacs-lisp
+(setq safe-local-variable-values (quote ((encoding . utf-8))))
+#+END_SRC
+
+Use dired-x:
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'dired-load-hook
+            (function (lambda () (load "dired-x"))))
+#+END_SRC
+
+Opening remote files:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-tramp
+    :ensure t
+    :config
+    (setq tramp-default-method "ssh")
+    (defalias 'exit-tramp 'tramp-cleanup-all-buffers)
+    (define-key global-map (kbd "C-c s") 'helm-tramp))
+#+END_SRC
+
+** Server
+
+Enable server mode:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package server
+    :ensure t
+    :config
+    (unless (server-running-p)
+      (server-mode 1)
+      (server-start)))
+#+END_SRC
+
+** Spell
+
+Configure ispell:
+
+#+BEGIN_SRC emacs-lisp
+  (setq ispell-program-name "/usr/local/bin/ispell")
+#+END_SRC
+
+** Hydra
+DEADLINE: <2017-07-18 Tue>
+
+#+BEGIN_SRC emacs-lisp
+  (use-package hydra
+    :ensure t)
+#+END_SRC
 
 * Global look and Feel
 ** Statrup
@@ -310,14 +414,7 @@ _j_ ↓   _k_ ↑     _H_orizontal  _O_nly      _r_edo"
     ("q" nil "cancel"))
 #+END_SRC
 * Editing and moving around
-
-Always use spaces when indenting (unless overridden for buffer)
-
-#+BEGIN_SRC emacs-lisp
-  (setq-default indent-tabs-mode nil)
-#+END_SRC
-
-** On save
+** Character cleanup
 
 Delete trailing whitespaces and add final new line after saving:
 
@@ -326,7 +423,12 @@ Delete trailing whitespaces and add final new line after saving:
   (setq require-final-newline t)
 #+END_SRC
 
-       ;; Add final newline after save
+
+Always use spaces when indenting (unless overridden for buffer)
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default indent-tabs-mode nil)
+#+END_SRC
 
 ** Selection
 
@@ -353,6 +455,16 @@ Hide regions:
     :bind
     ("C-c h r" . hide-region-hide)
     ("C-c h u" . hide-region-unhide))
+#+END_SRC
+
+** Search
+
+#+BEGIN_SRC emacs-lisp
+  (use-package swiper
+    :ensure t
+    :bind
+    ("C-s" . swiper)
+    ("C-S-s" . swiper-all))
 #+END_SRC
 
 ** Jumping in the current line
@@ -408,8 +520,10 @@ Define better word boundaries:
 [C-c SPC] Jump to a character anywere in the visible portion of the buffer:
 
 #+BEGIN_SRC emacs-lisp
-(use-package ace-jump-mode
-  :ensure t)
+  (use-package ace-jump-mode
+    :ensure t
+    :bind
+    ("M-j" . ace-jump-char-mode))
 #+END_SRC
 
 [M-j] Jump to symbol (uses ido, taken from prelude):
@@ -463,8 +577,6 @@ Define better word boundaries:
                     (string= (car imenu--rescan-item) name))
           (add-to-list 'symbol-names (substring-no-properties name))
           (add-to-list 'name-and-pos (cons (substring-no-properties name) position))))))))
-
-(global-set-key (kbd "M-j") 'goto-symbol)
 #+END_SRC
 
 Jump menu:
@@ -574,16 +686,6 @@ Use ido by default everywhere:
     (ido-everywhere 1))
 #+END_SRC
 
-Use ido in builtin M-x:
-
-#+BEGIN_SRC emacs-lisp
-  (use-package smex
-    :bind
-    ("M-x" . smex)
-    :config
-    (smex-initialize))
-#+END_SRC
-
 ** Helm
 
 Enable helm and bind it to override some common commands:
@@ -597,9 +699,7 @@ Enable helm and bind it to override some common commands:
     :bind
     ("M-x" . helm-M-x)
     ("C-x b" . helm-buffers-list)
-    ("M-y" . helm-show-kill-ring)
-    :config
-    (helm-mode 1))
+    ("M-y" . helm-show-kill-ring))
 #+END_SRC
 
 [C-x f] Find files in known projects:
@@ -629,14 +729,15 @@ Enable helm and bind it to override some common commands:
 ** Project management
 
 #+BEGIN_SRC emacs-lisp
-(use-package projectile
-  :ensure t
-  :config
-  (when (require 'magit nil t)
-    (mapc #'projectile-add-known-project
-          (mapcar #'file-name-as-directory (magit-list-repos)))
-    ;; Write to persistent `projectile-known-projects-file'
-    (projectile-save-known-projects)))
+  (use-package projectile
+    :defer 3
+    :ensure t
+    :config
+    (when (require 'magit nil t)
+      (mapc #'projectile-add-known-project
+            (mapcar #'file-name-as-directory (magit-list-repos)))
+      ;; Write to persistent `projectile-known-projects-file'
+      (projectile-save-known-projects)))
 #+END_SRC
 ** Code versioning
 
@@ -772,14 +873,15 @@ Basic maggit setup:
 Install and configure elpy:
 
 #+BEGIN_SRC emacs-lisp
-(use-package elpy
-  :ensure t
-  :init
-  (elpy-enable)
-  :config
-  (setq elpy-modules
-        (quote
-         (elpy-module-company elpy-module-eldoc elpy-module-flymake elpy-module-pyvenv elpy-module-yasnippet elpy-module-django elpy-module-sane-defaults))))
+  (use-package elpy
+    :ensure t
+    :defer 3
+    :init
+    (elpy-enable)
+    :config
+    (setq elpy-modules
+          (quote
+           (elpy-module-company elpy-module-eldoc elpy-module-flymake elpy-module-pyvenv elpy-module-yasnippet elpy-module-django elpy-module-sane-defaults))))
 #+END_SRC
 
 ** Javascript
@@ -880,106 +982,4 @@ Install markdown-mode and add automodes:
 (add-to-list 'auto-mode-alist '("Gemfile$" . ruby-mode))
 (add-to-list 'auto-mode-alist '("Capfile$" . ruby-mode))
 (add-to-list 'auto-mode-alist '("Vagrantfile$" . ruby-mode))
-#+END_SRC
-* General Emacs setup
-** Customize
-
-Save customizations to custom.el and not my init.el file:
-
-#+BEGIN_SRC emacs-lisp
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-(load custom-file 'noerror)
-#+END_SRC
-
-** Make emacs find my binaries
-
-Manually set PATH environment varable and exec-path to my list of bin directories:
-
-#+BEGIN_SRC emacs-lisp
-(defvar my-paths '("/usr/local/opt/coreutils/libexec/gnubin"
-                   "/usr/local/bin"
-                   "/usr/bin"
-                   "/bin"
-                   "/usr/sbin"
-                   "/sbin"
-                   "~/Bin"
-                   "~/node_modules/.bin"))
-(setenv "PATH" (mapconcat 'identity my-paths ":") )
-(setq exec-path (append my-paths (list "." exec-directory)))
-#+END_SRC
-
-** Autosave/backups
-
-Disable autosave:
-
-#+BEGIN_SRC emacs-lisp
-(setq auto-save-default nil)
-#+END_SRC
-
-Dont create backup files:
-
-#+BEGIN_SRC emacs-lisp
-(setq make-backup-files nil)
-#+END_SRC
-
-** Opening files
-
-Don't ask for confirmation when following symlinks that point to versioned
-files, always follow:
-
-#+BEGIN_SRC emacs-lisp
-(setq vc-follow-symlinks t)
-#+END_SRC
-
-Encodig utf-8 is a safe file-local variable value:
-
-#+BEGIN_SRC emacs-lisp
-(setq safe-local-variable-values (quote ((encoding . utf-8))))
-#+END_SRC
-
-Use dired-x:
-
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'dired-load-hook
-            (function (lambda () (load "dired-x"))))
-#+END_SRC
-
-Opening remote files:
-
-#+BEGIN_SRC emacs-lisp
-  (use-package helm-tramp
-    :ensure t
-    :config
-    (setq tramp-default-method "ssh")
-    (defalias 'exit-tramp 'tramp-cleanup-all-buffers)
-    (define-key global-map (kbd "C-c s") 'helm-tramp))
-#+END_SRC
-
-** Server
-
-Enable server mode:
-
-#+BEGIN_SRC emacs-lisp
-(use-package server
-  :ensure t
-  :init
-  (server-mode 1)
-  :config
-  (unless (server-running-p)
-    (server-start)))
-#+END_SRC
-
-** Spell
-
-Configure ispell:
-
-#+BEGIN_SRC emacs-lisp
-  (setq ispell-program-name "/usr/local/bin/ispell")
-#+END_SRC
-
-** Hydra
-
-#+BEGIN_SRC emacs-lisp
-  (use-package hydra
-    :ensure t)
 #+END_SRC

@@ -33,7 +33,6 @@
   :diminish org-indent-mode
   :init
   (org-babel-load-file "~/.emacs.d/config.org")
-  (message "org-babel is done")
   :config
   (setq org-todo-keywords '((sequence "TODO(t)" "OPT(o)" "|" "DONE(d)")))
   (setq org-hide-leading-stars t)
@@ -43,7 +42,6 @@
   (add-hook 'org-mode-hook #'org-indent-mode)
   :bind
   (("C-c l" . org-store-link)))
-
 
 (provide 'init)
 ;;; init.el ends here
