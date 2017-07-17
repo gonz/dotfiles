@@ -624,27 +624,39 @@ Bultin bookmarks menu:
 Breadcrumbs setup:
 
 #+BEGIN_SRC emacs-lisp
-     (require 'breadcrumb)
+  (require 'breadcrumb)
+#+END_SRC
+
+Breadcrumbs bindings:
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "<f5>") 'bc-previous)
+  (global-set-key (kbd "<f6>") 'bc-next)
+  (global-set-key (kbd "<C-f5>") 'bc-local-previous)
+  (global-set-key (kbd "<C-f6>") 'bc-local-next)
+  (global-set-key (kbd "<f7>") 'bc-set)
+  (global-set-key (kbd "C-<f7>") 'bc-clear)
+  (global-set-key (kbd "<f8>") 'bc-list)
 #+END_SRC
 
 Breadcrumbs menu:
 
 #+BEGIN_SRC emacs-lisp
-     (defhydra hydra-breadcrumbs (:exit t)
-       "
-     Breadcrumb bookmarks:
-       _<up>_:   prev   _S-<up>_:   local prev
-       _<down>_: next   _S-<down>_: local next
-       _s_: set  _c_: clear  _l_: list  _q_: quit
-     "
-       ("<down>" bc-next nil :exit nil)
-       ("<up>" bc-previous nil :exit nil)
-       ("S-<down>" bc-local-next nil :exit nil)
-       ("S-<up>" bc-local-previous nil :exit nil)
-       ("l" bc-list nil)
-       ("s" bc-set nil)
-       ("c" bc-clear nil)
-       ("q" nil nil))
+  (defhydra hydra-breadcrumbs (:exit t)
+    "
+  Breadcrumb bookmarks:
+    _<up>_:   prev   _S-<up>_:   local prev
+    _<down>_: next   _S-<down>_: local next
+    _s_: set  _c_: clear  _l_: list  _q_: quit
+  "
+    ("<down>" bc-next nil :exit nil)
+    ("<up>" bc-previous nil :exit nil)
+    ("S-<down>" bc-local-next nil :exit nil)
+    ("S-<up>" bc-local-previous nil :exit nil)
+    ("l" bc-list nil)
+    ("s" bc-set nil)
+    ("c" bc-clear nil)
+    ("q" nil nil))
 #+END_SRC
 
 ** Killing text
@@ -917,9 +929,11 @@ Basic maggit setup:
   (defhydra hydra-help (:color blue :hint nil)
     "Help"
     ("f" describe-function "Function")
-    ("v" describe-variable "Variable"))
+    ("v" describe-variable "Variable")
+    ("m" describe-mode "Modes"))
   (global-set-key (kbd "<f1>") 'hydra-help/body)
 #+END_SRC
+
 * Coding: Languages
 ** Python
 
