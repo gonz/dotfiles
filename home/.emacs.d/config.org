@@ -850,6 +850,17 @@ Very handy open-any-file in specific or all know repos:
             ("Name"    31 magit-repolist-column-ident                  ()))))
 #+END_SRC
 
+** Highlight symbols
+*** Highligh symbol at point
+
+#+BEGIN_SRC emacs-lisp
+  (use-package auto-highlight-symbol
+    :init (add-hook 'prog-mode-hook 'highlight-symbol-mode)
+    :bind (:map auto-highlight-symbol-mode-map
+                ("M-p" . ahs-backward)
+                ("M-n" . ahs-forward)))
+#+END_SRC
+
 ** Syntax checkers
 *** Setup Flycheck
 #+BEGIN_SRC emacs-lisp
