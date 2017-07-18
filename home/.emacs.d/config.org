@@ -196,6 +196,7 @@ Load Monokai theme as the main theme:
     ("4" (set-frame-font "Fira Sans 14" nil t) "Fira Sans")
     ("5" (set-frame-font "Source Code Pro 14" nil t) "Source Code Pro")
     ("6" (set-frame-font "Open Sans 14" nil t) "Source Code Pro")
+    ("7" (set-frame-font "Office Code Pro 14" nil t) "Source Code Pro")
     ("q" nil "cancel"))
 #+END_SRC
 
