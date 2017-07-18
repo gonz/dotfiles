@@ -854,11 +854,14 @@ Very handy open-any-file in specific or all know repos:
 *** Highligh symbol at point
 
 #+BEGIN_SRC emacs-lisp
+  (require 'auto-highlight-symbol)
   (use-package auto-highlight-symbol
-    :init (add-hook 'prog-mode-hook 'highlight-symbol-mode)
-    :bind (:map auto-highlight-symbol-mode-map
-                ("M-p" . ahs-backward)
-                ("M-n" . ahs-forward)))
+    :bind
+    (:map auto-highlight-symbol-mode-map
+          ("M-p" . ahs-backward)
+          ("M-n" . ahs-forward))
+    :init
+    (add-hook 'prog-mode-hook 'auto-highlight-symbol-mode))
 #+END_SRC
 
 ** Syntax checkers
@@ -987,13 +990,19 @@ Install and configure elpy:
 #+BEGIN_SRC emacs-lisp
   (use-package elpy
     :ensure t
-    :defer t
+    ;:defer t
     :init
     (elpy-enable)
     :config
+    (defalias 'workon 'pyvenv-workon)
     (setq elpy-modules
-          (quote
-           (elpy-module-company elpy-module-eldoc elpy-module-flymake elpy-module-pyvenv elpy-module-yasnippet elpy-module-django elpy-module-sane-defaults))))
+          '(elpy-module-company
+            elpy-module-eldoc
+            elpy-module-flymake
+            elpy-module-pyvenv
+            elpy-module-yasnippet
+            elpy-module-django
+            elpy-module-sane-defaults)))
 #+END_SRC
 
 ** Javascript
