@@ -77,20 +77,20 @@ Save customizations to custom.el and not my init.el file:
 (setq vc-follow-symlinks t)
 #+END_SRC
 
-*** Encodig utf-8 is a safe file-local variable value:
+*** Encodig utf-8 is a safe file-local variable value
 
 #+BEGIN_SRC emacs-lisp
 (setq safe-local-variable-values (quote ((encoding . utf-8))))
 #+END_SRC
 
-*** Always use dired-x:
+*** Always use dired-x
 
 #+BEGIN_SRC emacs-lisp
   (add-hook 'dired-load-hook
             (function (lambda () (load "dired-x"))))
 #+END_SRC
 
-*** Opening remote files:
+*** Opening remote files
 
 #+BEGIN_SRC emacs-lisp
   (use-package helm-tramp
@@ -1086,13 +1086,13 @@ Install sass-mode and add automodes:
 *** Automodes
 
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'auto-mode-alist '("\\.rake$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("\\.thor$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("\\.gemspec$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("\\.ru$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("Rakefile$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("Thorfile$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("Gemfile$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("Capfile$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("Vagrantfile$" . ruby-mode))
+  (add-to-list 'auto-mode-alist '("\\.rake$" . ruby-mode))
+  (add-to-list 'auto-mode-alist '("\\.thor$" . ruby-mode))
+  (add-to-list 'auto-mode-alist '("\\.gemspec$" . ruby-mode))
+  (add-to-list 'auto-mode-alist '("\\.ru$" . ruby-mode))
+  (add-to-list 'auto-mode-alist '("Rakefile$" . ruby-mode))
+  (add-to-list 'auto-mode-alist '("Thorfile$" . ruby-mode))
+  (add-to-list 'auto-mode-alist '("Gemfile$" . ruby-mode))
+  (add-to-list 'auto-mode-alist '("Capfile$" . ruby-mode))
+  (add-to-list 'auto-mode-alist '("Vagrantfile$" . ruby-mode))
 #+END_SRC
