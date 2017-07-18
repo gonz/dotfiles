@@ -9,21 +9,30 @@
 
 * General Emacs setup
 ** Customize
+*** Set custom-file
 
 Save customizations to custom.el and not my init.el file:
 
 #+BEGIN_SRC emacs-lisp
+  (defhydra hydra-nano (:exit t)
+    "Panic help"
+    ("o" ido-find-file "Open file")
+    ("s" save-buffer "Save file")
+    ("m" save-buffers-kill-terminal "Quit"))
+  (global-set-key (kbd "<f1>") 'hydra-nano/body)
+#+END_SRCacs-lisp
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file 'noerror)
 #+END_SRC
 
 ** Make emacs find my modules/binaries
+*** Add my local modules dir to load-path
 
 #+BEGIN_SRC emacs-lisp
   (setq load-path (append (list (expand-file-name "~/.emacs.d/modules")) load-path))
 #+END_SRC
 
-Manually set PATH environment varable and exec-path to my list of bin di/home/gonz/.emacs.drec/home/gonz/.emacs.dtories:
+*** Set bin path dirs variable
 
 #+BEGIN_SRC emacs-lisp
 (defvar my-paths '("/usr/local/opt/coreutils/libexec/gnubin"
@@ -34,47 +43,54 @@ Manually set PATH environment varable and exec-path to my list of bin di/home/go
                    "/sbin"
                    "~/Bin"
                    "~/node_modules/.bin"))
+#+END_SRC
+
+*** Set PATH envar
+
+#+BEGIN_SRC emacs-lisp
 (setenv "PATH" (mapconcat 'identity my-paths ":") )
+#+END_SRC
+
+*** Set exec-path
+
+#+BEGIN_SRC emacs-lisp
 (setq exec-path (append my-paths (list "." exec-directory)))
 #+END_SRC
 
 ** Autosave/backups
-
-Disable autosave:
+*** Disable autosave
 
 #+BEGIN_SRC emacs-lisp
 (setq auto-save-default nil)
 #+END_SRC
 
-Dont create backup files:
+*** Dont create backup files
 
 #+BEGIN_SRC emacs-lisp
 (setq make-backup-files nil)
 #+END_SRC
 
 ** Opening files
-
-Don't ask for confirmation when following symlinks that point to versioned
-files, always follow:
+*** Follow symlinks that point to versioned files
 
 #+BEGIN_SRC emacs-lisp
 (setq vc-follow-symlinks t)
 #+END_SRC
 
-Encodig utf-8 is a safe file-local variable value:
+*** Encodig utf-8 is a safe file-local variable value:
 
 #+BEGIN_SRC emacs-lisp
 (setq safe-local-variable-values (quote ((encoding . utf-8))))
 #+END_SRC
 
-Use dired-x:
+*** Always use dired-x:
 
 #+BEGIN_SRC emacs-lisp
   (add-hook 'dired-load-hook
             (function (lambda () (load "dired-x"))))
 #+END_SRC
 
-Opening remote files:
+*** Opening remote files:
 
 #+BEGIN_SRC emacs-lisp
   (use-package helm-tramp
@@ -84,10 +100,8 @@ Opening remote files:
     (defalias 'exit-tramp 'tramp-cleanup-all-buffers)
     (define-key global-map (kbd "C-c s") 'helm-tramp))
 #+END_SRC
-
 ** Server
-
-Enable server mode:
+*** Start server mode
 
 #+BEGIN_SRC emacs-lisp
   (use-package server
@@ -97,16 +111,14 @@ Enable server mode:
       (server-mode 1)
       (server-start)))
 #+END_SRC
-
-** Spell
-
-Configure ispell:
+** Spelling
+*** Configure ispell bin
 
 #+BEGIN_SRC emacs-lisp
   (setq ispell-program-name "/usr/local/bin/ispell")
 #+END_SRC
-
 ** Hydra
+*** Install hydra
 
 #+BEGIN_SRC emacs-lisp
   (use-package hydra
@@ -115,8 +127,7 @@ Configure ispell:
 
 * Global look and Feel
 ** Statrup
-
-Don't show startup splash screen:
+*** Setup dashboard as default buffer
 
 #+BEGIN_SRC emacs-lisp
   (setq inhibit-splash-screen t)
@@ -125,7 +136,7 @@ Don't show startup splash screen:
     :ensure t
     :diminish dashboard-mode
     :config
-    (setq dashboard-banner-logo-title "")
+    (setq dashboard-banner-logo-title "Design like barktók, code like coltrane, langs and libs like instruments, pursue harmony. -- Rich Hickey")
     (setq dashboard-startup-banner "~/.emacs.d/spalsh.png")
     (setq dashboard-items '((bookmarks . 10)
                             (projects . 10)
@@ -133,23 +144,28 @@ Don't show startup splash screen:
     (dashboard-setup-startup-hook))
 #+END_SRC
 
-Scratch buffer should start empty:
+*** Scratch buffer should always start emptyy
 
 #+BEGIN_SRC emacs-lisp
   (setq initial-scratch-message "")
 #+END_SRC
 
 ** Menubar/toolbar
-
-Never show the toolbar, show menubar only if is GUI:
+*** Never show the toolbar
 
 #+BEGIN_SRC emacs-lisp
   (tool-bar-mode -1)
+#+END_SRC
+
+*** Only show menubar if in GUI:
+
+#+BEGIN_SRC emacs-lisp
   (unless window-system
     (menu-bar-mode 0))
 #+END_SRC
 
 ** Theme
+*** Set main theme
 
 Load Monokai theme as the main theme:
 
@@ -163,13 +179,13 @@ Load Monokai theme as the main theme:
 )
 #+END_SRC
 
-Set font size:
+*** Set frame font size
 
 #+BEGIN_SRC emacs-lisp
   (set-frame-font "Source Code Pro 14" nil t)
 #+END_SRC
 
-An hydra for testing fonts:
+*** Hydra for testing fonts
 
 #+BEGIN_SRC emacs-lisp
   (defhydra hydra-font (:color amaranth)
@@ -184,8 +200,7 @@ An hydra for testing fonts:
 #+END_SRC
 
 ** Frame and buffers name
-
-Choose a better frame name:
+*** Choose a more descriptive frame name
 
 #+BEGIN_SRC emacs-lisp
   (setq frame-title-format
@@ -193,7 +208,7 @@ Choose a better frame name:
       (dired-directory dired-directory "%b"))))
 #+END_SRC
 
-Make buffer names unique:
+*** Make buffer names unique
 
 #+BEGIN_SRC emacs-lisp
   (use-package uniquify
@@ -202,18 +217,21 @@ Make buffer names unique:
 #+END_SRC
 
 ** Scroll
-
-Hide scroll bars:
+*** Hide scroll bars
 
 #+BEGIN_SRC emacs-lisp
   (scroll-bar-mode -1)
 #+END_SRC
 
-Keyboard scroll scrolls five lines at a time:
+*** Keyboard scroll settings
+
+ Keyboard scroll scrolls five lines at a time:
 
 #+BEGIN_SRC emacs-lisp
   (setq scroll-step 5)
 #+END_SRC
+
+*** Mouse wheel scroll
 
 Mouse wheel follows the pointer and scrolls one line at a time with progressive speed:
 
@@ -225,8 +243,10 @@ Mouse wheel follows the pointer and scrolls one line at a time with progressive 
 
 ** Keyboard
 
-AltGr and Meta (right left Alt keys) should be treated different, this
-is important for some keyboard layouts.
+*** AltGr and Meta
+
+AltGr and Meta (right left Alt keys) should be treated different, this is important for
+my keyboard layouts
 
 #+BEGIN_SRC emacs-lisp
   (setq ns-right-alternate-modifier nil)
@@ -234,25 +254,29 @@ is important for some keyboard layouts.
 
 ** Disabled commands
 
-Enable narrowing region, disabled by default, narrowing means focusing in
-on some portion of the buffer, making the rest temporarily inaccessible:
+*** Enable narrowing region
+
+Disabled by default, narrowing means focusing in on some portion of the buffer, making the
+rest temporarily inaccessible:
 
 #+BEGIN_SRC emacs-lisp
   (put 'narrow-to-region 'disabled nil)
 #+END_SRC
 
-Enable change the case for the region:
+*** Enable change the case for the region
 
 #+BEGIN_SRC emacs-lisp
   (put 'downcase-region 'disabled nil)
   (put 'upcase-region 'disabled nil)
 #+END_SRC
 
-Enable horizontall scroll, shifting all the lines sideways within a window:
+*** Enable horizontall scroll, shifting all the lines sideways within a window
 
 #+BEGIN_SRC emacs-lisp
   (put 'scroll-left 'disabled nil)
 #+END_SRC
+
+*** Set goal-column
 
 Enable setting the current horizontal position as a goal for C-n and C-p.
 Those commands will move to this position in the line moved to rather than
@@ -264,26 +288,26 @@ trying to keep the same horizontal position.
 
 ** Point/Cursor
 
-Show cursor as a bar.
+*** Show cursor as a bar
 
 #+BEGIN_SRC emacs-lisp
   (setq-default cursor-type 'bar)
 #+END_SRC
 
-Highlight the current line:
+*** Highlight the current line:
 
 #+BEGIN_SRC emacs-lisp
   (global-hl-line-mode)
 #+END_SRC
 
-Highlight matching parentheses, if both not visible highlight the entire expression:
+*** Highlight matching parentheses, if both not visible highlight the entire expression
 
 #+BEGIN_SRC emacs-lisp
   (show-paren-mode 1)
   (setq show-paren-style 'mixed)
 #+END_SRC
 
-Config help-at-pt:
+*** Config help-at-pt:
 
 #+BEGIN_SRC emacs-lisp
   (setq help-at-pt-timer-delay 0.3)
@@ -292,6 +316,7 @@ Config help-at-pt:
 #+END_SRC
 
 ** Zoom
+*** Hydra: zooming a buffer
 
 #+BEGIN_SRC emacs-lisp
   (defhydra hydra-zoom (:color amaranth)
@@ -302,23 +327,21 @@ Config help-at-pt:
 #+END_SRC
 
 ** Modeline
-
-Show column number in the modeline:
+*** Show column number in the modeline:
 
 #+BEGIN_SRC emacs-lisp
   (setq column-number-mode  t)
 #+END_SRC
 
 ** Minibuffer
-
-A single letter is enough for yes/no questions:
+*** A single letter is enough for yes/no questions:
 
 #+BEGIN_SRC emacs-lisp
 (fset 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 
 ** Fill column indicator
-
+*** Show column inicator in some modes
 Show a dashed line on the fill-column column. Enable in python and js modes.
 
 #+BEGIN_SRC emacs-lisp
@@ -336,15 +359,14 @@ Show a dashed line on the fill-column column. Enable in python and js modes.
 #+END_SRC
 * Window and Buffer management
 ** Moving and swapping windows
-
-Install windmove:
+*** Install windmove
 
 #+BEGIN_SRC emacs-lisp
   (use-package windmove
     :ensure t)
 #+END_SRC
 
-Install and configure ace-window:
+*** Install and configure ace-window
 
 #+BEGIN_SRC emacs-lisp
   (use-package ace-window
@@ -364,15 +386,14 @@ Install and configure ace-window:
             (?o delete-other-windows "Delete other windows")))
     )
 #+END_SRC
-** Window layout history
 
-Enable winner-mode for layout undo/redo:
+*** Enable winner-mode for layout undo/redo
 
 #+BEGIN_SRC emacs-lisp
  (winner-mode)
 #+END_SRC
 
-** Windows menu
+*** Hydra: Windows
 
 #+BEGIN_SRC emacs-lisp
     (defhydra hydra-windows (:color amaranth :hint nil)
@@ -398,7 +419,8 @@ _j_ ↓   _k_ ↑     _H_orizontal  _O_nly      _r_edo"
      ("q" nil))
 #+END_SRC
 
-** ibuffer
+** Buffers
+*** Basic ibuffer setup
 
 #+BEGIN_SRC emacs-lisp
 (use-package ibuffer-vc
@@ -422,7 +444,7 @@ _j_ ↓   _k_ ↑     _H_orizontal  _O_nly      _r_edo"
                (ibuffer-switch-to-saved-filter-groups "default"))))
 #+END_SRC
 
-** Buffers menu
+*** Hydra: Buffers
 
 #+BEGIN_SRC emacs-lisp
   (defhydra hydra-buffers (:color amaranth)
@@ -432,22 +454,21 @@ _j_ ↓   _k_ ↑     _H_orizontal  _O_nly      _r_edo"
 #+END_SRC
 * Editing and moving around
 ** Character cleanup
-
-Delete trailing whitespaces and add final new line after saving:
+*** Delete trailing whitespaces and add final new line after saving
 
 #+BEGIN_SRC emacs-lisp
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
   (setq require-final-newline t)
 #+END_SRC
 
-
-Always use spaces when indenting (unless overridden for buffer)
+*** Always use spaces when indenting (unless overridden for buffer)
 
 #+BEGIN_SRC emacs-lisp
   (setq-default indent-tabs-mode nil)
 #+END_SRC
 
 ** Selection
+*** General behaviour
 
 Region is like a tipical selection, type and region is replaced:
 
@@ -455,7 +476,7 @@ Region is like a tipical selection, type and region is replaced:
   (pending-delete-mode t)
 #+END_SRC
 
-Incremental region expand:
+*** Incremental region expand
 
 #+BEGIN_SRC emacs-lisp
   (use-package expand-region
@@ -464,7 +485,7 @@ Incremental region expand:
     ("M-RET" . er/expand-region))
 #+END_SRC
 
-Hide regions:
+*** Hide regions
 
 #+BEGIN_SRC emacs-lisp
   (use-package hide-region
@@ -475,7 +496,7 @@ Hide regions:
 #+END_SRC
 
 ** Search
-
+*** Set swiper alternative search implementation as default
 #+BEGIN_SRC emacs-lisp
   (use-package swiper
     :ensure t
@@ -485,6 +506,7 @@ Hide regions:
 #+END_SRC
 
 ** Jumping in the current line
+*** Smarter C-a (jump to beginning of line)
 
 [C-a] Move and toggle with succesive calls point to the first non-whitespace character
 on this line and to the beginning of the line (from prelude):
@@ -516,7 +538,7 @@ point reaches the beginning or end of the buffer, stop there."
                 'smarter-move-beginning-of-line)
 #+END_SRC
 
-Define better word boundaries:
+*** Define better word boundaries
 
 #+BEGIN_SRC emacs-lisp
 (use-package syntax-subword
@@ -526,15 +548,14 @@ Define better word boundaries:
 #+END_SRC
 
 ** Jumping in a buffer
-
- [M-p] [M-n] Jumping to prev/next paragraph
+*** Jumping to prev/next paragraph
 
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "M-p") 'backward-paragraph)
 (global-set-key (kbd "M-n") 'forward-paragraph)
 #+END_SRC
 
-[C-c SPC] Jump to a character anywere in the visible portion of the buffer:
+*** Jump to a character anywere in the visible portion of the buffer:
 
 #+BEGIN_SRC emacs-lisp
   (use-package ace-jump-mode
@@ -543,7 +564,7 @@ Define better word boundaries:
     ("M-j" . ace-jump-char-mode))
 #+END_SRC
 
-[M-j] Jump to symbol (uses ido, taken from prelude):
+*** Jump to symbol (function, uses ido, taken from prelude)
 
 #+BEGIN_SRC emacs-lisp
 (defun goto-symbol (&optional symbol-list)
@@ -609,25 +630,24 @@ Jump menu:
 #+END_SRC
 
 ** Bookmarks
-
-Bultin bookmarks menu:
+*** Hydra: Bultin bookmarks
 
 #+BEGIN_SRC emacs-lisp
-    (defhydra hydra-bookmarks (:exit t)
-      "Bookmarks"
-      ("m" bookmark-set "Set")
-      ("b" helm-bookmarks "Jump")
-      ("l" bookmark-bmenu-list "List")
-      ("q" nil "Quit"))
+  (defhydra hydra-bookmarks (:exit t)
+    "Bookmarks"
+    ("m" bookmark-set "Set")
+    ("b" helm-bookmarks "Jump")
+    ("l" bookmark-bmenu-list "List")
+    ("q" nil "Quit"))
 #+END_SRC
 
-Breadcrumbs setup:
+*** Breadcrumbs module setup
 
 #+BEGIN_SRC emacs-lisp
   (require 'breadcrumb)
 #+END_SRC
 
-Breadcrumbs bindings:
+*** Breadcrumbs bindings:
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "<f5>") 'bc-previous)
@@ -639,7 +659,7 @@ Breadcrumbs bindings:
   (global-set-key (kbd "<f8>") 'bc-list)
 #+END_SRC
 
-Breadcrumbs menu:
+*** Hydra: Breadcrumbs
 
 #+BEGIN_SRC emacs-lisp
   (defhydra hydra-breadcrumbs (:exit t)
@@ -660,8 +680,7 @@ Breadcrumbs menu:
 #+END_SRC
 
 ** Killing text
-
-Kill the characters from the cursor to the beginning of line:
+*** Kill the characters from the cursor to the beginning of line
 
 #+BEGIN_SRC emacs-lisp
 (defun backward-kill-line (arg)
@@ -671,15 +690,14 @@ Kill the characters from the cursor to the beginning of line:
 
 #+END_SRC
 
-[C-S-k] Kill the current line:
+*** Kill the current line:
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-S-k") 'kill-whole-line)
 #+END_SRC
 
 ** Joining lines
-
-[C-S-J] Join the current line with the line beneath it or join all region lines.
+*** Join the current line with the line beneath it or join all region lines
 
 #+BEGIN_SRC emacs-lisp
 (defun smart-join-line ()
@@ -699,9 +717,10 @@ Kill the characters from the cursor to the beginning of line:
 #+END_SRC
 
 ** Basic complettion/expand
+*** Hippie expand words/lines
 
 [M-SPC] Expand word from visible, buffer, other buffers.
-[C-M-SPC] Expand word from visible, buffer, other buffers.
+[C-M-SPC] Expand line from visible, buffer, other buffers.
 
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "M-SPC") (make-hippie-expand-function
@@ -716,8 +735,7 @@ Kill the characters from the cursor to the beginning of line:
 #+END_SRC
 * Minibuffer
 ** Ido
-
-Use ido by default everywhere:
+*** Use ido by default everywhere
 
 #+BEGIN_SRC emacs-lisp
   (use-package ido-completing-read+
@@ -737,11 +755,9 @@ Use ido by default everywhere:
 #+END_SRC
 
 ** Helm
+*** Enable helm and bind it to override some common ido managed commands
 
-Enable helm and bind it to override some common commands:
-[M-x] M-x by helm
-[C-x b] Buffer list by helm
-[M-y] Show kill ring
+Manage M-x, buffer list and kill ring list with helm:
 
 #+BEGIN_SRC emacs-lisp
   (use-package helm
@@ -763,7 +779,9 @@ Enable helm and bind it to override some common commands:
     (add-hook 'helm-minibuffer-set-up-hook 'helm-hide-minibuffer-maybe))
 #+END_SRC
 
-[C-x f] Find files in known projects:
+*** Find files in known projects
+
+Very handy open-any-file in specific or all know repos:
 
 #+BEGIN_SRC emacs-lisp
   (use-package helm-projectile
@@ -773,7 +791,8 @@ Enable helm and bind it to override some common commands:
     ("C-x F" . helm-projectile-find-file-in-known-projects))
 #+END_SRC
 
-** Super menu
+** Global hydras
+*** Mother hydra
 
 #+BEGIN_SRC emacs-lisp
   (defhydra hydra-super-menu (:exit t)
@@ -792,6 +811,7 @@ Enable helm and bind it to override some common commands:
 
 * Coding: General
 ** Project management
+*** Setup projectile
 
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
@@ -804,9 +824,9 @@ Enable helm and bind it to override some common commands:
       ;; Write to persistent `projectile-known-projects-file'
       (projectile-save-known-projects)))
 #+END_SRC
-** Code versioning
 
-Basic maggit setup:
+** Code versioning
+*** Setup maggit
 
 [C-.] Show magit-status for current file's repo
 [C-:] Show known repos
@@ -829,8 +849,8 @@ Basic maggit setup:
             ("Name"    31 magit-repolist-column-ident                  ()))))
 #+END_SRC
 
-** Flycheck
-
+** Syntax checkers
+*** Setup Flycheck
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
     :config
@@ -923,7 +943,8 @@ Basic maggit setup:
   (add-to-list 'auto-mode-alist '("\\.fish$" . conf-mode))
 #+END_SRC
 * Help
-** Help menu
+** Menus
+*** Hydra: Emacs Help
 
 #+BEGIN_SRC emacs-lisp
   (defhydra hydra-help (:color blue :hint nil)
@@ -931,12 +952,23 @@ Basic maggit setup:
     ("f" describe-function "Function")
     ("v" describe-variable "Variable")
     ("m" describe-mode "Modes"))
-  (global-set-key (kbd "<f1>") 'hydra-help/body)
+  (global-set-key (kbd "S-<f1>") 'hydra-help/body)
+#+END_SRC
+
+*** Hydra: Noob shortcuts
+
+#+BEGIN_SRC emacs-lisp
+  (defhydra hydra-nano (:exit t)
+    "Panic help"
+    ("o" ido-find-file "Open file")
+    ("s" save-buffer "Save file")
+    ("qq" save-buffers-kill-terminal "Quit Emacs"))
+  (global-set-key (kbd "<f1>") 'hydra-nano/body)
 #+END_SRC
 
 * Coding: Languages
 ** Python
-
+*** elpy
 Install and configure elpy:
 
 #+BEGIN_SRC emacs-lisp
@@ -952,6 +984,7 @@ Install and configure elpy:
 #+END_SRC
 
 ** Javascript
+*** js2-mode
 
 Install and configure js2-mode:
 
@@ -969,6 +1002,7 @@ Install and configure js2-mode:
 #+END_SRC
 
 ** HTML
+*** multi-web-mode
 
 #+BEGIN_SRC emacs-lisp
 (use-package multi-web-mode
@@ -982,7 +1016,7 @@ Install and configure js2-mode:
   (multi-web-global-mode 1))
 #+END_SRC
 
-Close tags:
+*** Closing tags
 
 #+BEGIN_SRC emacs-lisp
   (defun html-mode-keys ()
@@ -993,6 +1027,7 @@ Close tags:
 #+END_SRC
 
 ** SASS
+*** sass-mode
 
 Install sass-mode and add automodes:
 
@@ -1004,8 +1039,7 @@ Install sass-mode and add automodes:
 #+END_SRC
 
 ** JSON
-
-Install json-mode and add automodes:
+*** json-mode
 
 #+BEGIN_SRC emacs-lisp
 (use-package json-mode
@@ -1015,8 +1049,7 @@ Install json-mode and add automodes:
 #+END_SRC
 
 ** YAML
-
-Install yaml-mode:
+*** yaml-mode
 
 #+BEGIN_SRC emacs-lisp
 (use-package yaml-mode
@@ -1024,8 +1057,7 @@ Install yaml-mode:
 #+END_SRC
 
 ** Markdown
-
-Install markdown-mode and add automodes:
+*** markdown-mode
 
 #+BEGIN_SRC emacs-lisp
 (use-package markdown-mode
@@ -1038,6 +1070,7 @@ Install markdown-mode and add automodes:
 #+END_SRC
 
 ** Ruby
+*** Automodes
 
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'auto-mode-alist '("\\.rake$" . ruby-mode))
