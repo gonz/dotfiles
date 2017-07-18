@@ -144,7 +144,7 @@ Save customizations to custom.el and not my init.el file:
     (dashboard-setup-startup-hook))
 #+END_SRC
 
-*** Scratch buffer should always start emptyy
+*** Scratch buffer should always start empty
 
 #+BEGIN_SRC emacs-lisp
   (setq initial-scratch-message "")
@@ -157,7 +157,7 @@ Save customizations to custom.el and not my init.el file:
   (tool-bar-mode -1)
 #+END_SRC
 
-*** Only show menubar if in GUI:
+*** Only show menubar if in GUI
 
 #+BEGIN_SRC emacs-lisp
   (unless window-system
@@ -294,7 +294,7 @@ trying to keep the same horizontal position.
   (setq-default cursor-type 'bar)
 #+END_SRC
 
-*** Highlight the current line:
+*** Highlight the current line
 
 #+BEGIN_SRC emacs-lisp
   (global-hl-line-mode)
@@ -307,7 +307,7 @@ trying to keep the same horizontal position.
   (setq show-paren-style 'mixed)
 #+END_SRC
 
-*** Config help-at-pt:
+*** Config help-at-pt
 
 #+BEGIN_SRC emacs-lisp
   (setq help-at-pt-timer-delay 0.3)
@@ -327,14 +327,14 @@ trying to keep the same horizontal position.
 #+END_SRC
 
 ** Modeline
-*** Show column number in the modeline:
+*** Show column number in the modeline
 
 #+BEGIN_SRC emacs-lisp
   (setq column-number-mode  t)
 #+END_SRC
 
 ** Minibuffer
-*** A single letter is enough for yes/no questions:
+*** A single letter is enough for yes/no questions
 
 #+BEGIN_SRC emacs-lisp
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -555,7 +555,7 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "M-n") 'forward-paragraph)
 #+END_SRC
 
-*** Jump to a character anywere in the visible portion of the buffer:
+*** Jump to a character anywere in the visible portion of the buffer
 
 #+BEGIN_SRC emacs-lisp
   (use-package ace-jump-mode
@@ -647,7 +647,7 @@ Jump menu:
   (require 'breadcrumb)
 #+END_SRC
 
-*** Breadcrumbs bindings:
+*** Breadcrumbs bindings
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "<f5>") 'bc-previous)
@@ -690,7 +690,7 @@ Jump menu:
 
 #+END_SRC
 
-*** Kill the current line:
+*** Kill the current line
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-S-k") 'kill-whole-line)
