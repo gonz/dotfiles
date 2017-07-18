@@ -963,7 +963,8 @@ Very handy open-any-file in specific or all know repos:
     "Panic help"
     ("o" ido-find-file "Open file")
     ("s" save-buffer "Save file")
-    ("qq" save-buffers-kill-terminal "Quit Emacs"))
+    ("qq" save-buffers-kill-terminal "Quit Emacs")
+    ("c" cancel "Cancel"))
   (global-set-key (kbd "<f1>") 'hydra-nano/body)
 #+END_SRC
 
