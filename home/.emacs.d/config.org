@@ -542,6 +542,13 @@ point reaches the beginning or end of the buffer, stop there."
 #+END_SRC
 
 ** Jumping in a buffer
+*** Jump to the beginning/end of buffer
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-{") 'beginning-of-buffer)
+(global-set-key (kbd "C-}") 'end-of-buffer)
+#+END_SRC
+
 *** Jumping to prev/next paragraph
 
 #+BEGIN_SRC emacs-lisp
