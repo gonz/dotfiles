@@ -14,15 +14,8 @@
 Save customizations to custom.el and not my init.el file:
 
 #+BEGIN_SRC emacs-lisp
-  (defhydra hydra-nano (:exit t)
-    "Panic help"
-    ("o" ido-find-file "Open file")
-    ("s" save-buffer "Save file")
-    ("m" save-buffers-kill-terminal "Quit"))
-  (global-set-key (kbd "<f1>") 'hydra-nano/body)
-#+END_SRCacs-lisp
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-(load custom-file 'noerror)
+  (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+  (load custom-file 'noerror)
 #+END_SRC
 
 ** Make emacs find my modules/binaries
