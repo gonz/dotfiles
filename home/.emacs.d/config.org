@@ -957,31 +957,6 @@ Very handy open-any-file in specific or all know repos:
   ;; fish
   (add-to-list 'auto-mode-alist '("\\.fish$" . conf-mode))
 #+END_SRC
-* Help
-** Menus
-*** Hydra: Emacs Help
-
-#+BEGIN_SRC emacs-lisp
-  (defhydra hydra-help (:color blue :hint nil)
-    "Help"
-    ("f" describe-function "Function")
-    ("v" describe-variable "Variable")
-    ("m" describe-mode "Modes"))
-  (global-set-key (kbd "S-<f1>") 'hydra-help/body)
-#+END_SRC
-
-*** Hydra: Noob shortcuts
-
-#+BEGIN_SRC emacs-lisp
-  (defhydra hydra-nano (:exit t)
-    "Panic help"
-    ("o" ido-find-file "Open file")
-    ("s" save-buffer "Save file")
-    ("qq" save-buffers-kill-terminal "Quit Emacs")
-    ("c" cancel "Cancel"))
-  (global-set-key (kbd "<f1>") 'hydra-nano/body)
-#+END_SRC
-
 * Coding: Languages
 ** Python
 *** elpy
@@ -1114,4 +1089,28 @@ Install sass-mode and add automodes:
   (add-to-list 'auto-mode-alist '("Gemfile$" . ruby-mode))
   (add-to-list 'auto-mode-alist '("Capfile$" . ruby-mode))
   (add-to-list 'auto-mode-alist '("Vagrantfile$" . ruby-mode))
+#+END_SRC
+* Help
+** Menus
+*** Hydra: Emacs Help
+
+#+BEGIN_SRC emacs-lisp
+  (defhydra hydra-help (:color blue :hint nil)
+    "Help"
+    ("f" describe-function "Function")
+    ("v" describe-variable "Variable")
+    ("m" describe-mode "Modes"))
+  (global-set-key (kbd "S-<f1>") 'hydra-help/body)
+#+END_SRC
+
+*** Hydra: Noob shortcuts
+
+#+BEGIN_SRC emacs-lisp
+  (defhydra hydra-nano (:exit t)
+    "Panic help"
+    ("o" ido-find-file "Open file")
+    ("s" save-buffer "Save file")
+    ("qq" save-buffers-kill-terminal "Quit Emacs")
+    ("c" cancel "Cancel"))
+  (global-set-key (kbd "<f1>") 'hydra-nano/body)
 #+END_SRC
