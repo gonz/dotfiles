@@ -327,6 +327,22 @@ trying to keep the same horizontal position.
   (setq column-number-mode  t)
 #+END_SRC
 
+*** Theme: spaceline
+
+#+BEGIN_SRC emacs-lisp
+  (when (display-graphic-p)
+    (use-package spaceline-all-the-icons
+      :ensure t
+      :config
+      (set-face-background 'spaceline-highlight-face "#319dfb")
+      (setq spaceline-all-the-icons-separator-type 'arrow
+            spaceline-all-the-icons-icon-set-modified 'circle
+            spaceline-all-the-icons-icon-set-bookmark 'bookmark)
+      (spaceline-all-the-icons-theme)
+      (spaceline-toggle-all-the-icons-buffer-position-on)
+      (spaceline-toggle-all-the-icons-narrowed-on)))
+#+END_SRC
+
 ** Minibuffer
 *** A single letter is enough for yes/no questions
 
