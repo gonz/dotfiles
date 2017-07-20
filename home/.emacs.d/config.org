@@ -97,13 +97,15 @@ Save customizations to custom.el and not my init.el file:
 *** Start server mode
 
 #+BEGIN_SRC emacs-lisp
-  (use-package server
-    :ensure t
-    :config
-    (unless (server-running-p)
-      (server-mode 1)
-      (server-start)))
+  (if window-system
+      (use-package server
+        :ensure t
+        :config
+        (unless (server-running-p)
+          (server-mode 1)
+          (server-start))))
 #+END_SRC
+
 ** Spelling
 *** Configure ispell bin
 
@@ -125,16 +127,17 @@ Save customizations to custom.el and not my init.el file:
 #+BEGIN_SRC emacs-lisp
   (setq inhibit-splash-screen t)
 
-  (use-package dashboard
-    :ensure t
-    :diminish dashboard-mode
-    :config
-    (setq dashboard-banner-logo-title "Design like barktók, code like coltrane, langs and libs like instruments, pursue harmony. -- Rich Hickey")
-    (setq dashboard-startup-banner "~/.emacs.d/spalsh.png")
-    (setq dashboard-items '((bookmarks . 10)
-                            (projects . 10)
-                            (recents  . 10)))
-    (dashboard-setup-startup-hook))
+  (if window-system
+      (use-package dashboard
+        :ensure t
+        :diminish dashboard-mode
+        :config
+        (setq dashboard-banner-logo-title "Design like barktók, code like coltrane, langs and libs like instruments, pursue harmony. -- Rich Hickey")
+        (setq dashboard-startup-banner "~/.emacs.d/spalsh.png")
+        (setq dashboard-items '((bookmarks . 10)
+                                (projects . 10)
+                                (recents  . 10)))
+        (dashboard-setup-startup-hook)))
 #+END_SRC
 
 *** Scratch buffer should always start empty
