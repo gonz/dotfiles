@@ -810,6 +810,15 @@ Very handy open-any-file in specific or all know repos:
   (global-set-key (kbd "C-ñ") 'hydra-super-menu/body)
 #+END_SRC
 
+** which-key
+
+#+BEGIN_SRC emacs-lisp
+  (use-package which-key
+   :ensure t
+   :config
+   (which-key-mode))
+#+END_SRC
+
 * Coding: General
 ** Project management
 *** Setup projectile
