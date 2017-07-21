@@ -316,10 +316,27 @@ trying to keep the same horizontal position.
 *** Hydra: zooming a buffer
 
 #+BEGIN_SRC emacs-lisp
-  (defhydra hydra-zoom (:color amaranth)
+  (setq default-font-size-pt 12)
+
+  (defun font-size-change (&optional arg)
+    (interactive "p")
+    (if (= arg 0)
+        (setq font-size-pt default-font-size-pt)
+      (setq font-size-pt (+ font-size-pt arg)))
+    (set-face-attribute 'default nil :height (* font-size-pt 10)))
+
+  (defun font-size-increase ()  (interactive) (font-size-change +1))
+  (defun font-size-decrease ()  (interactive) (font-size-change -1))
+  (defun font-size-reset () (interactive) (font-size-change 0))
+
+  (defhydra hydra-zoom (:quit nil :foreign-keys run)
     "zoom"
-    ("-" text-scale-decrease "Smaller (C-x C--)")
-    ("+" text-scale-increase "Bigger (C-x C-+)")
+    ("j" text-scale-decrease "Decrease local")
+    ("k" text-scale-increase "Increase local")
+    ("u" text-scale-adjust "Undo local")
+    ("J" font-size-decrease  "Decrease global")
+    ("K" font-size-incrrease  "Increase global")
+    ("U" font-size-reset "Undo global")
     ("q" nil "cancel"))
 #+END_SRC
 
