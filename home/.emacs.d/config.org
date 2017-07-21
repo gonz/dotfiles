@@ -477,11 +477,13 @@ _j_ ↓   _k_ ↑     _H_orizontal  _O_nly      _r_edo"
 *** Hydra: Buffers
 
 #+BEGIN_SRC emacs-lisp
-  (defhydra hydra-buffers (:color amaranth)
+  (defhydra hydra-buffers (:quit t)
     "Buffers menu"
     ("b" helm-buffers-list "Buffer list")
+    ("r" revert-buffer "Revert buffer")
     ("q" nil "cancel"))
 #+END_SRC
+
 * Editing and moving around
 ** Character cleanup
 *** Delete trailing whitespaces and add final new line after saving
