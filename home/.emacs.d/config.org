@@ -682,17 +682,20 @@ Jump menu:
 *** Hydra: Breadcrumbs
 
 #+BEGIN_SRC emacs-lisp
-  (defhydra hydra-breadcrumbs (:exit t)
+  (defhydra hydra-breadcrumbs (:exit nil)
     "
-  Breadcrumb bookmarks:
-    _<up>_:   prev   _S-<up>_:   local prev
-    _<down>_: next   _S-<down>_: local next
-    _s_: set  _c_: clear  _l_: list  _q_: quit
+
+    _k_: prev   _K_: file prev
+    _j_: next   _J_: file next
+   ——————————————————————————————————————————————————————————
+    _s_: set     _l_: list       _c_: clear    _q_: quit
+
+
   "
-    ("<down>" bc-next nil :exit nil)
-    ("<up>" bc-previous nil :exit nil)
-    ("S-<down>" bc-local-next nil :exit nil)
-    ("S-<up>" bc-local-previous nil :exit nil)
+    ("j" bc-next nil)
+    ("k" bc-previous nil :exit nil)
+    ("J" bc-local-next nil :exit nil)
+    ("K" bc-local-previous nil :exit nil)
     ("l" bc-list nil)
     ("s" bc-set nil)
     ("c" bc-clear nil)
