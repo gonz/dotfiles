@@ -753,6 +753,30 @@ Jump menu:
                                  try-complete-file-name-partially
                                  try-complete-file-name) t))
 #+END_SRC
+** Multiple cursors
+*** Setup multiple-cursors
+
+#+BEGIN_SRC emacs-lisp
+  (use-package multiple-cursors
+    :ensure t
+    :config
+    (global-unset-key (kbd "M-<down-mouse-1>"))
+    (global-set-key (kbd "M-<mouse-1>") 'mc/add-cursor-on-click))
+#+END_SRC
+
+*** Hydra: mc
+
+#+BEGIN_SRC emacs-lisp
+  (defhydra hydra-mc (:exit t :foreign-keys run)
+    "Add multiple cursors"
+    ("a" mc/mark-all-like-this "All like selected")
+    ("c" mc/edit-lines "Lines in region")
+    ("n" mc/mark-next-like-this "Next Line")
+    ("p" mc/mark-previous-like-this "Prev Line")
+    ("r" mc/edit-lines "Lines in region")
+    ("q" nil "Quit"))
+#+END_SRC
+
 * Minibuffer
 ** Ido
 *** Use ido by default everywhere
@@ -817,11 +841,12 @@ Very handy open-any-file in specific or all know repos:
 #+BEGIN_SRC emacs-lisp
   (defhydra hydra-super-menu (:exit t)
     "Super menu"
-    ("j" hydra-jump/body "Jump")
-    ("w" hydra-windows/body "Windows")
     ("b" hydra-buffers/body "Buffers")
-    ("r" hydra-bookmarks/body "Bookmarks")
+    ("c" hydra-mc/body "Multiple Cursors")
+    ("j" hydra-jump/body "Jump")
     ("m" hydra-breadcrumbs/body "Marks/Breadcrumbs")
+    ("r" hydra-bookmarks/body "Bookmarks")
+    ("w" hydra-windows/body "Windows")
     ("z" hydra-zoom/body "Zoom")
     ("q" nil "cancel"))
 
