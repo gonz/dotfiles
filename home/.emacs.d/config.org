@@ -284,7 +284,6 @@ trying to keep the same horizontal position.
 #+END_SRC
 
 ** Point/Cursor
-
 *** Show cursor as a bar
 
 #+BEGIN_SRC emacs-lisp
@@ -867,14 +866,16 @@ Very handy open-any-file in specific or all know repos:
      ("u" undo "Undo")
      ("q" nil "cancel"))
 
-   (defhydra hydra-super-menu (:exit t :hint nil)
-     "
+  (defhydra hydra-super-menu (:exit t :hint nil)
+    "
 
-_bu_ → Buffers       _bm_ → Boockmarks      _de_ → Delete           _aj_ → Ace Jump
-_wi_ → Windows       _bc_ → Breadcrumbs     _mc_ → Multi-cursor     _zo_ → Zoom
------------------------------------------------------------------------------------
-_bb_ → Open buffer   _ff_ → Open File
-"
+
+    _bu_ → Buffers       _bm_ → Boockmarks    _de_ → Delete          _aj_ → Ace Jump
+    _wi_ → Windows       _bc_ → Breadcrumbs   _mc_ → Multi-cursor    _zo_ → Zoom
+   ————————————————————————————————————————————————————————————————————————————————————
+    _ss_ → Save Buffer   _bb_ →  Open Buffer  _ff_ → Open Proj File  _mm_ → Magit Status
+
+    "
      ("aj" hydra-jump/body)
      ("bc" hydra-breadcrumbs/body)
      ("bm" hydra-bookmarks/body)
@@ -884,11 +885,12 @@ _bb_ → Open buffer   _ff_ → Open File
      ("wi" hydra-windows/body)
      ("zo" hydra-zoom/body)
      ; Short Shortcuts
+     ("ss" save-buffer)
      ("bb" helm-buffers-list)
      ("ff" helm-projectile-switch-project)
+     ("mm" magit-status)
      ("q" nil))
-
-   (global-set-key (kbd "S-<SPC>") 'hydra-super-menu/body)
+   (global-set-key (kbd "C-S-<SPC>") 'hydra-super-menu/body)
 #+END_SRC
 
 * Coding: General
