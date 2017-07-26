@@ -369,23 +369,6 @@ trying to keep the same horizontal position.
 (fset 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 
-** Fill column indicator
-*** Show column inicator in some modes
-Show a dashed line on the fill-column column. Enable in python and js modes.
-
-#+BEGIN_SRC emacs-lisp
-(use-package fill-column-indicator
-  :ensure t
-  :init
-  (setq fci-rule-column 100
-        fci-rule-color "#595959"
-        fci-rule-width 1
-        fci-rule-use-dashes t
-        fci-dash-pattern 0.4)
-  :config
-  (add-hook 'python-mode-hook 'fci-mode)
-  (add-hook 'js-mode-hook 'fci-mode))
-#+END_SRC
 * Window and Buffer management
 ** Moving and swapping windows
 *** Install windmove
