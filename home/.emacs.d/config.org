@@ -408,7 +408,7 @@ trying to keep the same horizontal position.
 *** Hydra: Windows
 
 #+BEGIN_SRC emacs-lisp
-    (defhydra hydra-windows (:color amaranth :hint nil)
+    (defhydra hydra-windows (:exit nil :hint nil :foreign-keys run)
      "
 Movement^^      ^Split^       ^Delete^    ^History^
 ---------------------------------------------------
@@ -697,24 +697,25 @@ Jump menu:
 *** Hydra: Breadcrumbs
 
 #+BEGIN_SRC emacs-lisp
-  (defhydra hydra-breadcrumbs (:exit nil)
+  (defhydra hydra-breadcrumbs (:exit nil :hint nil)
     "
 
-    _k_: prev   _K_: file prev
-    _j_: next   _J_: file next
-   ——————————————————————————————————————————————————————————
-    _s_: set     _l_: list       _c_: clear    _q_: quit
 
+    _k_ → prev     _K_ → file prev
+    _j_ → next     _J_ → file next
+   ——————————————————————————————————————————————
+    _RET_ → set    _l_ → list      _cc_ → clear all
 
-  "
-    ("j" bc-next nil)
-    ("k" bc-previous nil :exit nil)
-    ("J" bc-local-next nil :exit nil)
-    ("K" bc-local-previous nil :exit nil)
-    ("l" bc-list nil)
-    ("s" bc-set nil)
-    ("c" bc-clear nil)
-    ("q" nil nil))
+    "
+    ("j" bc-next)
+    ("k" bc-previous)
+    ("J" bc-local-next)
+    ("K" bc-local-previous)
+    ("l" bc-list :exit t)
+    ("RET" bc-set)
+    ("cc" bc-clear)
+    ("<backspace>" hydra-super-menu/body :exit t)
+    ("ESC" nil))
 #+END_SRC
 
 ** Killing text
@@ -732,6 +733,16 @@ Jump menu:
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-S-k") 'kill-whole-line)
+#+END_SRC
+
+*** Hydra: Delete
+
+#+BEGIN_SRC emacs-lisp
+  (defhydra hydra-delete (:exit nil :foreign-keys run)
+     "Delete"
+     ("w" syntax-subword-backward-kill "Word back")
+     ("u" undo "Undo")
+     ("q" nil "cancel"))
 #+END_SRC
 
 ** Joining lines
@@ -857,12 +868,6 @@ Very handy open-any-file in specific or all know repos:
 *** Mother hydra
 
 #+BEGIN_SRC emacs-lisp
-  (defhydra hydra-delete (:exit nil :foreign-keys run)
-     "Delete"
-     ("w" syntax-subword-backward-kill "Word back")
-     ("u" undo "Undo")
-     ("q" nil "cancel"))
-
   (defhydra hydra-super-menu (:exit t :hint nil)
     "
 
@@ -871,22 +876,27 @@ Very handy open-any-file in specific or all know repos:
     _wi_ → Windows       _bc_ → Breadcrumbs   _mc_ → Multi-cursor    _zo_ → Zoom
    ————————————————————————————————————————————————————————————————————————————————————
     _ss_ → Save Buffer   _bb_ →  Open Buffer  _ff_ → Open Proj File  _mm_ → Magit Status
+    _ww_ → Ace window    _jj_ →  Ace Jump
 
     "
-     ("aj" hydra-jump/body)
-     ("bc" hydra-breadcrumbs/body)
-     ("bm" hydra-bookmarks/body)
-     ("bu" hydra-buffers/body)
-     ("de" hydra-delete/body)
-     ("mc" hydra-mc/body)
-     ("wi" hydra-windows/body)
-     ("zo" hydra-zoom/body)
-     ; Short Shortcuts
-     ("ss" save-buffer)
-     ("bb" helm-buffers-list)
-     ("ff" helm-projectile-switch-project)
-     ("mm" magit-status)
-     ("q" nil))
+    ("aj" hydra-jump/body)
+    ("bc" hydra-breadcrumbs/body)
+    ("bm" hydra-bookmarks/body)
+    ("bu" hydra-buffers/body)
+    ("de" hydra-delete/body)
+    ("mc" hydra-mc/body)
+    ("wi" hydra-windows/body)
+    ("zo" hydra-zoom/body)
+    ; Short Shortcuts
+    ("ss" save-buffer)
+    ("bb" helm-buffers-list)
+    ("ff" helm-projectile-switch-project)
+    ("mm" magit-status)
+    ("ww" ace-window)
+    ("jj" ace-jump-char-mode)
+    ; Menu nav
+    ("<backspace>" nil)
+    ("ESC" nil))
    (global-set-key (kbd "C-S-<SPC>") 'hydra-super-menu/body)
 #+END_SRC
 
@@ -946,6 +956,7 @@ Very handy open-any-file in specific or all know repos:
 
 ** Syntax checkers
 *** Setup Flycheck
+
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
     :ensure t
@@ -1192,9 +1203,10 @@ Install sass-mode and add automodes:
     ("o" ido-find-file "Open file")
     ("s" save-buffer "Save file")
     ("qq" save-buffers-kill-terminal "Quit Emacs")
-    ("c" cancel "Cancel"))
+    ("ESC" cancel "Cancel"))
   (global-set-key (kbd "<f1>") 'hydra-nano/body)
 #+END_SRC
+
 ** which-key
 
 #+BEGIN_SRC emacs-lisp
