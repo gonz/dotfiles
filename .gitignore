@@ -2,6 +2,7 @@
 *~
 *.swp
 *.pyc
+*.elc
 
 # Emacs: Ignore files created automatically:
 
