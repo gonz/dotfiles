@@ -1168,6 +1168,13 @@ Install sass-mode and add automodes:
   ("\\.jsx\\'" . js2-jsx-mode))
 #+END_SRC
 
+** CSV
+
+#+BEGIN_SRC emacs-lisp
+  (use-package csv-mode
+    :ensure t)
+#+END_SRC
+
 ** Ruby
 *** Automodes
 
