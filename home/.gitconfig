@@ -3,11 +3,10 @@
     email = gonzalosaavedra@gmail.com
 [color]
     ui = auto
-[core]
-    excludesfile = $HOME/.gitignore
 [alias]
     tree = log --pretty='%Cgreen%h%Creset [%ai] %s %Cred<%Creset%an%Cred>' --decorate --graph
 [branch]
-    autosetupmerge = true
+    autosetupmerge = always
+    autosetuprebase = always
 [push]
-	default = simple
+    default = simple
