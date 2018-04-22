@@ -59,3 +59,6 @@ end
 function emacsremote
     emacsclient --tty --socket-name /tmp/emacs-shared/server $argv
 end
+
+# Editor
+set -gx EDITOR /Applications/Emacs.app/Contents/MacOS/bin/emacsclient
