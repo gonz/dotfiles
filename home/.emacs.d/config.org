@@ -807,6 +807,16 @@ Jump menu:
     ("q" nil "Quit"))
 #+END_SRC
 
+** File browse
+*** neotree
+
+#+BEGIN_SRC emacs-lisp
+  (use-package neotree
+    :ensure t
+    :bind
+    ("M-t" . neotree-toggle))
+#+END_SRC
+
 * Minibuffer
 ** Ido
 *** Use ido by default everywhere
