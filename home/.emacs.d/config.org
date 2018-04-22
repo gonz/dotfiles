@@ -233,9 +233,9 @@ Load Monokai theme as the main theme:
 Mouse wheel follows the pointer and scrolls one line at a time with progressive speed:
 
 #+BEGIN_SRC emacs-lisp
-(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
-(setq mouse-wheel-progressive-speed 1)
-(setq mouse-wheel-follow-mouse 't)
+;(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+;(setq mouse-wheel-progressive-speed 1)
+;(setq mouse-wheel-follow-mouse 't)
 #+END_SRC
 
 ** Keyboard
@@ -349,17 +349,17 @@ trying to keep the same horizontal position.
 *** Theme: spaceline
 
 #+BEGIN_SRC emacs-lisp
-  (when (display-graphic-p)
-    (use-package spaceline-all-the-icons
-      :ensure t
-      :config
-      (set-face-background 'spaceline-highlight-face "#319dfb")
-      (setq spaceline-all-the-icons-separator-type 'arrow
-            spaceline-all-the-icons-icon-set-modified 'circle
-            spaceline-all-the-icons-icon-set-bookmark 'bookmark)
-      (spaceline-all-the-icons-theme)
-      (spaceline-toggle-all-the-icons-buffer-position-on)
-      (spaceline-toggle-all-the-icons-narrowed-on)))
+  ;(when (display-graphic-p)
+  ;  (use-package spaceline-all-the-icons
+  ;    :ensure t
+  ;    :config
+  ;    (set-face-background 'spaceline-highlight-face "#319dfb")
+  ;    (setq spaceline-all-the-icons-separator-type 'arrow
+  ;          spaceline-all-the-icons-icon-set-modified 'circle
+  ;          spaceline-all-the-icons-icon-set-bookmark 'bookmark)
+  ;    (spaceline-all-the-icons-theme)
+  ;    (spaceline-toggle-all-the-icons-buffer-position-on)
+  ;    (spaceline-toggle-all-the-icons-narrowed-on)))
 #+END_SRC
 
 ** Minibuffer
@@ -579,10 +579,10 @@ point reaches the beginning or end of the buffer, stop there."
 *** Jump to a character anywere in the visible portion of the buffer
 
 #+BEGIN_SRC emacs-lisp
-  (use-package ace-jump-mode
+  (use-package avy
     :ensure t
     :bind
-    ("M-j" . ace-jump-char-mode))
+    ("M-j" . avy-goto-char-2))
 #+END_SRC
 
 *** Jump to symbol (function, uses ido, taken from prelude)
@@ -643,10 +643,11 @@ Jump menu:
 #+BEGIN_SRC emacs-lisp
   (defhydra hydra-jump (:exit t)
     "Jump menu"
-    ("c" ace-jump-char-mode "character")
-    ("j" ace-jump-char-mode "character")
-    ("w" ace-jump-word-mode "word")
-    ("l" ace-jump-line-mode "line")
+    ("c" ace-goto-char-2 "character")
+    ("j" avy-goto-char-2 "character")
+    ("w" avy-goto-word-1 "word")
+    ("l" avy-goto-line "line")
+    ("r" avy-goto-line "resume")
     ("q" nil "cancel"))
 #+END_SRC
 
@@ -870,13 +871,13 @@ Very handy open-any-file in specific or all know repos:
 #+BEGIN_SRC emacs-lisp
   (defhydra hydra-super-menu (:exit t :hint nil)
     "
-
+e
 
     _bu_ → Buffers       _bm_ → Boockmarks    _de_ → Delete          _aj_ → Ace Jump
     _wi_ → Windows       _bc_ → Breadcrumbs   _mc_ → Multi-cursor    _zo_ → Zoom
    ————————————————————————————————————————————————————————————————————————————————————
     _ss_ → Save Buffer   _bb_ →  Open Buffer  _ff_ → Open Proj File  _mm_ → Magit Status
-    _ww_ → Ace window    _jj_ →  Ace Jump
+    _ww_ → Ace window    _jj_ →  Avy jump     _jr_ →  resume
 
     "
     ("aj" hydra-jump/body)
@@ -893,7 +894,8 @@ Very handy open-any-file in specific or all know repos:
     ("ff" helm-projectile-switch-project)
     ("mm" magit-status)
     ("ww" ace-window)
-    ("jj" ace-jump-char-mode)
+    ("jj" avy-goto-char-2)
+    ("jr" avy-resume)
     ; Menu nav
     ("<backspace>" nil)
     ("ESC" nil))
