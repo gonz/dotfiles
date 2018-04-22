@@ -969,6 +969,8 @@ e
 #+BEGIN_SRC emacs-lisp
   (use-package ag
     :ensure t
+    :bind
+    ("M-s g g" . ag)
     :init
     (setq ag-highlight-search 1))
 
@@ -993,7 +995,7 @@ e
     ("M-s g f" . helm-do-ag-this-file)
     ("M-s g b" . helm-do-ag-buffers)
     :config
-    (global-set-key (kbd "C-c g d") '(lambda ()
+    (global-set-key (kbd "M-s g G") '(lambda ()
      (interactive)
      (setq current-prefix-arg '(4))
      (helm-ag))))
