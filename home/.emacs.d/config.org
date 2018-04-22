@@ -132,7 +132,7 @@ Save customizations to custom.el and not my init.el file:
         :ensure t
         :diminish dashboard-mode
         :config
-        (setq dashboard-banner-logo-title "Design like barktók, code like coltrane, langs and libs like instruments, pursue harmony. -- Rich Hickey")
+        (setq dashboard-banner-logo-title "C-S-Space")
         (setq dashboard-startup-banner "~/.emacs.d/spalsh.png")
         (setq dashboard-items '((bookmarks . 10)
                                 (projects . 10)
@@ -228,29 +228,17 @@ Load Monokai theme as the main theme:
   (setq scroll-step 5)
 #+END_SRC
 
-*** Mouse wheel scroll
-
-Mouse wheel follows the pointer and scrolls one line at a time with progressive speed:
-
-#+BEGIN_SRC emacs-lisp
-;(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
-;(setq mouse-wheel-progressive-speed 1)
-;(setq mouse-wheel-follow-mouse 't)
-#+END_SRC
-
 ** Keyboard
-
 *** AltGr and Meta
 
 AltGr and Meta (right left Alt keys) should be treated different, this is important for
-my keyboard layouts
+many keyboard layouts
 
 #+BEGIN_SRC emacs-lisp
   (setq ns-right-alternate-modifier nil)
 #+END_SRC
 
 ** Disabled commands
-
 *** Enable narrowing region
 
 Disabled by default, narrowing means focusing in on some portion of the buffer, making the
@@ -1175,9 +1163,7 @@ Install sass-mode and add automodes:
   :ensure t
   :mode
   ("\\.md$" . markdown-mode)
-  ("\\.markdown$" . markdown-mode)
-  ("\\.js\\'" . js2-mode)
-  ("\\.jsx\\'" . js2-jsx-mode))
+  ("\\.markdown$" . markdown-mode))
 #+END_SRC
 
 ** CSV
@@ -1211,19 +1197,7 @@ Install sass-mode and add automodes:
     ("f" describe-function "Function")
     ("v" describe-variable "Variable")
     ("m" describe-mode "Modes"))
-  (global-set-key (kbd "S-<f1>") 'hydra-help/body)
-#+END_SRC
-
-*** Hydra: Noob shortcuts
-
-#+BEGIN_SRC emacs-lisp
-  (defhydra hydra-nano (:exit t)
-    "Panic help"
-    ("o" ido-find-file "Open file")
-    ("s" save-buffer "Save file")
-    ("qq" save-buffers-kill-terminal "Quit Emacs")
-    ("ESC" cancel "Cancel"))
-  (global-set-key (kbd "<f1>") 'hydra-nano/body)
+  (global-set-key (kbd "<f1>") 'hydra-help/body)
 #+END_SRC
 
 ** which-key
