@@ -371,8 +371,6 @@ trying to keep the same horizontal position.
 #+BEGIN_SRC emacs-lisp
   (use-package ace-window
     :ensure t
-    :bind
-    ("C-x o" . ace-window)
     :config
     (set-face-attribute 'aw-leading-char-face nil :foreground "deep sky blue" :weight 'bold :height 4.0)
     (set-face-attribute 'aw-mode-line-face nil :inherit 'mode-line-buffer-id :foreground "lawn green")
@@ -470,9 +468,7 @@ _j_ ↓   _k_ ↑     _H_orizontal  _O_nly      _r_edo"
 #+END_SRC
 
 ** Selection
-*** General behaviour
-
-Region is like a tipical selection, type and region is replaced:
+*** Replace selection if text is modified
 
 #+BEGIN_SRC emacs-lisp
   (pending-delete-mode t)
@@ -496,15 +492,10 @@ Region is like a tipical selection, type and region is replaced:
     ("C-c h r" . hide-region-hide)
     ("C-c h u" . hide-region-unhide))
 
-  (defhydra hydra-hide-region (:exit t :foreign-keys run :hint nil)
-     "
-     HIDE-REGION MENU
-
-     _r_  → hide           _u_  → Unhide
-
-     "
-     ("r" hide-region-hide nil :exit t)
-     ("u" hide-region-unhide))
+  (defhydra hydra-hide-region (:exit t :foreign-keys run)
+     "hide-region"
+     ("h" hide-region-hide "Hide")
+     ("u" hide-region-unhide "Unhide"))
 #+END_SRC
 
 ** Search
@@ -560,11 +551,26 @@ point reaches the beginning or end of the buffer, stop there."
 #+END_SRC
 
 ** Jumping in a buffer
+*** Jump to next/prev line
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "M-j") 'next-line)
+(global-set-key (kbd "M-k") 'previous-line)
+#+END_SRC
+*** Jump to next/prev line x5
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "s-j")
+    (lambda () (interactive) (forward-line  6)))
+(global-set-key (kbd "s-k")
+    (lambda () (interactive) (forward-line -6)))
+#+END_SRC
+
 *** Jump to the beginning/end of buffer
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-{") 'beginning-of-buffer)
-(global-set-key (kbd "C-}") 'end-of-buffer)
+(global-set-key (kbd "C-M-j") 'end-of-buffer)
+(global-set-key (kbd "C-M-j") 'beginning-of-buffer)
 #+END_SRC
 
 *** Jumping to prev/next paragraph
@@ -580,7 +586,7 @@ point reaches the beginning or end of the buffer, stop there."
   (use-package avy
     :ensure t
     :bind
-    ("M-j" . avy-goto-char-2))
+    ("C-j" . avy-goto-char-2))
 #+END_SRC
 
 *** Jump to symbol (function, uses ido, taken from prelude)
@@ -684,23 +690,23 @@ point reaches the beginning or end of the buffer, stop there."
 
 #+BEGIN_SRC emacs-lisp
   (defhydra hydra-breadcrumbs (:exit nil :hint nil)
-    "
+     "
 
-
-    _k_ → prev     _K_ → file prev
-    _j_ → next     _J_ → file next
-   ——————————————————————————————————————————————
-    _RET_ → set    _l_ → list      _cc_ → clear all
-
-    "
+     _j_ → Next            _K_ → File Next     _RET_ → Set               _l_ → List
+     _k_ → Prev            _J_ → File Prev      _cc_ → Clear
+  ————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+   _ESC_ → Close         _SPC_ → Prev menu                                                                              B"
     ("j" bc-next)
     ("k" bc-previous)
     ("J" bc-local-next)
     ("K" bc-local-previous)
-    ("l" bc-list :exit t)
+    ("l" bc-list)
     ("RET" bc-set)
     ("cc" bc-clear)
-    ("<backspace>" hydra-super-menu/body :exit t)
+    ; Menu nav
+    ("SPC" hydra-super-menu/body :exit t)
+    ("<backspace>" nil)
+    ("q" nil)
     ("ESC" nil))
 #+END_SRC
 
@@ -719,16 +725,6 @@ point reaches the beginning or end of the buffer, stop there."
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-S-k") 'kill-whole-line)
-#+END_SRC
-
-*** Hydra: Delete
-
-#+BEGIN_SRC emacs-lisp
-  (defhydra hydra-delete (:exit nil :foreign-keys run)
-     "Delete"
-     ("w" syntax-subword-backward-kill "Word back")
-     ("u" undo "Undo")
-     ("q" nil "cancel"))
 #+END_SRC
 
 ** Joining lines
@@ -864,22 +860,22 @@ Very handy open-any-file in specific or all know repos:
 *** Mother hydra
 
 #+BEGIN_SRC emacs-lisp
-   (defhydra hydra-super-menu2 (:exit t :foreign-keys nil :hint nil)
+  (defun edit-config ()
+    (interactive)
+    (find-file "~/.emacs.d/config.org"))
+
+  (defhydra hydra-super-menu2 (:exit t :foreign-keys nil :hint nil)
      "
 
-
-     _bu_ → Buffers        _bm_ → Boockmarks     _de_ → Delete           _h_  → Hide region    _SPC_ → Next menu
-     _wi_ → Windows        _bc_ → Breadcrumbs    _mc_ → Multi-cursor     _zo_ → Zoom           _ESC_ → Close
-
-     "
-     ("bc" hydra-breadcrumbs/body)
+    _bu_ → Buffers        _bm_ → Boockmarks  _mc_ → Multi-cursor
+     _w_ → Windows         _z_ → Zoom
+  ————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+   _ESC_ → Close         _SPC_ → Prev menu                                                                              B"
      ("bm" hydra-bookmarks/body)
      ("bu" hydra-buffers/body)
-     ("de" hydra-delete/body)
      ("mc" hydra-mc/body)
-     ("wi" hydra-windows/body)
-     ("zo" hydra-zoom/body)
-     ("h" hydra-hide-region/body)
+     ("w" hydra-windows/body)
+     ("z" hydra-zoom/body)
      ; Secondary menu
      ("SPC" hydra-super-menu/body)
      ; Menu nav
@@ -890,11 +886,10 @@ Very handy open-any-file in specific or all know repos:
   (defhydra hydra-super-menu (:exit t :foreign-keys nil :hint nil)
      "
 
-
-     _s_  → Save Buffer    _b_  → Open Buffer    _f_  → Open Proj File   _m_  → Magit Status   _SPC_ → Next menu
-     _w_  → Ace window     _j_  → Jump char      _g_  → Ag grep                              _ESC_ → Close
-
-     "
+    _s_  → Save Buffer    _b_  → Open Buffer    _f_  → Open Proj File   _m_  → Marks           _h_ → Hide region
+    _w_  → Ace window     _j_  → Jump char      _g_  → Ag grep          _c_  → Config emacs
+  ————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+   _ESC_ → Close         _SPC_ → Next menu                                                                              A"
      ("s" save-buffer)
      ("b" helm-buffers-list)
      ("f" helm-projectile-switch-project)
@@ -902,6 +897,9 @@ Very handy open-any-file in specific or all know repos:
      ("w" ace-window)
      ("j" avy-goto-char)
      ("g" ag)
+     ("c" edit-config)
+     ("m" hydra-breadcrumbs/body)
+     ("h" hydra-hide-region/body)
      ; Secondary menu
      ("SPC" hydra-super-menu2/body)
      ; Menu nav
@@ -931,9 +929,6 @@ Very handy open-any-file in specific or all know repos:
 
 ** Code versioning
 *** Setup maggit
-
-[C-.] Show magit-status for current file's repo
-[C-:] Show known repos
 
 #+BEGIN_SRC emacs-lisp
   (use-package magit
@@ -1223,3 +1218,7 @@ Install sass-mode and add automodes:
    :config
    (which-key-mode))
 #+END_SRC
+| Parameter                            | Default | Description                                                                                                                                                                                                                                                            |
+| ---------                            | ------- | -----------                                                                                                                                                                                                                                                            |
+| data<div class="sm g">REQUIRED</div> |         | A list of data to classify. Each element may be a *string* with the text or an *object* with the required key *text* and a string with the text and an optional *external_id* key that will be included in the corresponding classification result.                    |
+| production_model                     | `false` | Boolean that indicates if the classification is performed by the *production model*. Only use this parameter on *custom models*. Note that you first need to *deploy* it from the UI model settings or using the [Classifier deploy](#classifier-deploy) API endpoint. |
