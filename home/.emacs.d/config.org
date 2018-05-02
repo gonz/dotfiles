@@ -570,7 +570,7 @@ point reaches the beginning or end of the buffer, stop there."
 
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-M-j") 'end-of-buffer)
-(global-set-key (kbd "C-M-j") 'beginning-of-buffer)
+(global-set-key (kbd "C-M-k") 'beginning-of-buffer)
 #+END_SRC
 
 *** Jumping to prev/next paragraph
@@ -693,16 +693,17 @@ point reaches the beginning or end of the buffer, stop there."
      "
 
      _j_ → Next            _K_ → File Next     _RET_ → Set               _l_ → List
-     _k_ → Prev            _J_ → File Prev      _cc_ → Clear
+     _k_ → Prev            _J_ → File Prev                             _C_ → Clear
   ————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-   _ESC_ → Close         _SPC_ → Prev menu                                                                              B"
+   _ESC_ → Close         _SPC_ → Prev menu                                                                              B
+    "
     ("j" bc-next)
     ("k" bc-previous)
     ("J" bc-local-next)
     ("K" bc-local-previous)
-    ("l" bc-list)
-    ("RET" bc-set)
-    ("cc" bc-clear)
+    ("l" bc-list :exit t)
+    ("RET" bc-set :exit t)
+    ("C" bc-clear :exit t)
     ; Menu nav
     ("SPC" hydra-super-menu/body :exit t)
     ("<backspace>" nil)
@@ -867,13 +868,15 @@ Very handy open-any-file in specific or all know repos:
   (defhydra hydra-super-menu2 (:exit t :foreign-keys nil :hint nil)
      "
 
-    _bu_ → Buffers        _bm_ → Boockmarks  _mc_ → Multi-cursor
+    _bu_ → Buffers        _bm_ → Bookmarks      _mc_ → Multi-cursor     _ag_ → Grep ag
      _w_ → Windows         _z_ → Zoom
   ————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-   _ESC_ → Close         _SPC_ → Prev menu                                                                              B"
+   _ESC_ → Close         _SPC_ → Prev menu                                                                              B
+     "
      ("bm" hydra-bookmarks/body)
      ("bu" hydra-buffers/body)
      ("mc" hydra-mc/body)
+     ("ag" helm-projectile-ag)
      ("w" hydra-windows/body)
      ("z" hydra-zoom/body)
      ; Secondary menu
@@ -881,33 +884,46 @@ Very handy open-any-file in specific or all know repos:
      ; Menu nav
      ("<backspace>" nil)
      ("C-S-<SPC>" nil)
+     ("C-ñ" nil)
      ("ESC" nil))
 
-  (defhydra hydra-super-menu (:exit t :foreign-keys nil :hint nil)
+  (defhydra hydra-super-menu (:exit t :foreign-keys warn :hint nil)
      "
 
     _s_  → Save Buffer    _b_  → Open Buffer    _f_  → Open Proj File   _m_  → Marks           _h_ → Hide region
-    _w_  → Ace window     _j_  → Jump char      _g_  → Ag grep          _c_  → Config emacs
+    _w_  → Ace window     _j_  → Jump char      _g_  → Ag grep          _#_  → Comment         _c_ → Config emacs
   ————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-   _ESC_ → Close         _SPC_ → Next menu                                                                              A"
+   _ESC_ → Close         _SPC_ → Next menu                                                                              A
+     "
      ("s" save-buffer)
      ("b" helm-buffers-list)
      ("f" helm-projectile-switch-project)
      ("m" magit-status)
      ("w" ace-window)
      ("j" avy-goto-char)
-     ("g" ag)
+     ("g" helm-projectile-ag)
      ("c" edit-config)
+     ("#" comment-dwim)
      ("m" hydra-breadcrumbs/body)
      ("h" hydra-hide-region/body)
+     ; breadcrumbs shortcuts
+     ("C-j" bc-next :exit nil)
+     ("C-k" bc-previous :exit nil)
+     ("C-S-J" bc-local-next :exit nil)
+     ("C-S-K" bc-local-previous :exit nil)
+     ("C-RET" bc-set :exit t)
+     ("C-l" bc-list :exit t)
      ; Secondary menu
      ("SPC" hydra-super-menu2/body)
      ; Menu nav
      ("<backspace>" nil)
      ("C-S-<SPC>" nil)
+     ("C-ñ" nil)
+     ("RET" nil)
      ("ESC" nil))
 
   (global-set-key (kbd "C-S-<SPC>") 'hydra-super-menu/body)
+  (global-set-key (kbd "C-ñ") 'hydra-super-menu/body)
 
 #+END_SRC
 
